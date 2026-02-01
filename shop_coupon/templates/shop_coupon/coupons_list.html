@@ -1,0 +1,392 @@
+{% extends 'shop_coupon/base.html' %}
+{% block shop_coup %}
+
+<title>
+    لیست کوپن ها
+</title>
+
+<div class="grid grid-cols-1 gap-2 sm:p-6 p-2">
+  <a href="#" id="openModalBtn" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-folder-plus text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">افزودن کوپن </p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ len }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">افزودن </button>
+  </a>
+</div>
+ 
+
+
+  <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+      <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-black text-white flex items-center gap-2">
+              <span class="w-2 h-6 bg-gradient-to-b from-[#0bffff] to-[#0bffffee] rounded-full"></span>
+              لیست کوپن‌ها
+          </h2>
+          <div class="flex items-center gap-4">
+              <select class="bg-[#0b1421aa] border border-[#0bffff44] rounded-lg px-3 py-2 text-white text-sm focus:border-[#0bffff] outline-none">
+                  <option>همه کوپن‌ها</option>
+              </select>
+          </div>
+      </div>
+
+      <div class="space-y-4">
+          {% for i in coupon %}
+            <div class="bg-[#0b142133] rounded-xl md:p-6 p-3 border border-[#0bffff22] hover:border-[#0bffff] transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="md:w-16 md:h-16 w-10 h-10 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-xl flex items-center justify-center">
+                            <i class="bi bi-ticket-perforated text-[#0bffff] text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="md:text-lg text-sm font-black text-white">{{ i.code }}</h3>
+                            <div class="flex items-center gap-4 mt-2">
+                                <span class="bg-[#0bffff33] text-[#0bffff] md:px-3 py-1 rounded-full text-xs border border-[#0bffff33]">
+                                    <i class="bi bi-clock ml-1"></i>
+                                    انقضا: {{ i.valid_to|date:"Y/m/d" }}
+                                </span>
+                                {% if i.active == True %}
+                                <span class="bg-[#4ecdc433] text-[#4ecdc4] px-3 py-1 rounded-full text-xs border border-[#4ecdc433]">
+                                    فعال
+                                </span>
+                                {% else %}
+                                  <span class="bg-[#ff6b6b33] text-[#ff6b6b] md:px-3 py-1 rounded-full text-xs border border-[#ff6b6b33]">
+                                      غیرفعال
+                                  </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center md:gap-3 gap-1">
+                        <button data-id="{{ i.id }}" class="md:w-10 md:h-10 w-8 h-8 open-delete-modal bg-[#0b1421aa] hover:bg-[#ff6b6b33] text-[#0bffffaa] hover:text-[#ff6b6b] rounded-lg flex items-center justify-center border border-[#0bffff33] transition-all duration-300 hover:scale-110" onclick="deleteCoupon('SUMMER25')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <button data-id="{{ i.id }}" data-code="{{ i.code }}" data-value="{{ i.value }}" class="md:w-10 md:h-10 w-8 h-8 open-coupon-modal bg-[#0b1421aa] hover:bg-[#0bffff33] text-[#0bffffaa] hover:text-[#0bffff] rounded-lg flex items-center justify-center border border-[#0bffff33] transition-all duration-300 hover:scale-110" onclick="toggleCouponStatus('SUMMER25')">
+                            <i class="bi bi-pen"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="confirmModal-{{ i.id }}" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+              <div class="bg-[#0b1421] rounded-lg shadow-lg w-11/12 max-w-md p-6">
+                <h2 class="text-xl font-semibold text-white mb-4">حذف کوپن</h2>
+                <p class="text-white mb-6">آیا مطمئن هستید که می‌خواهید این کوپن را حذف کنید؟ این عملیات قابل بازگشت نیست.</p>
+                <div class="flex justify-end gap-4">
+                  <button onclick="closeModal({{ i.id }})"
+                          class="bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded">انصراف</button>
+
+                  <form id="deleteForm-{{ i.id }}" action="{% url 'cou:coupon_delete' shop_id i.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                      بله، حذف کن
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div id="couponModal-{{ i.id }}" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 px-4">
+              <div class="bg-[#0b1421] p-5 rounded-xl shadow-lg max-w-5xl w-full relative text-white">
+                
+                <button 
+                  class="close-coupon-modal absolute top-3 left-3 text-[#0bffffcc] hover:text-[#0bffffee] text-3xl font-bold"
+                  data-id="{{ i.id }}">
+                  &times;
+                </button>
+
+                <form action="{% url 'cou:coupon_edit' shop_id i.id %}" method="POST" class="space-y-5" dir="rtl">
+                  {% csrf_token %}
+                  
+                  <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+                    <input
+                      type="text"
+                      name="code"
+                      value="{{ i.code }}"
+                      autocomplete="off"
+                      placeholder="کد کوپن"
+                      class="flex-1 px-4 py-2 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] placeholder-[#b0bfd1] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+                    />
+                    <input
+                      type="number"
+                      name="usage_limit"
+                      value="{{ i.usage_limit }}"
+                      min="1"
+                      placeholder="تعداد محدودیت استفاده"
+                      class="flex-1 px-4 py-2 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] placeholder-[#b0bfd1] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+                    />
+                  </div>
+                  <div class="flex flex-row">
+                    <select
+                      name="is_percent"
+                      required
+                      class="w-1/4 p-3 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] text-white focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+                    >
+                    {% if i.is_percent %} <option value="False">درصدی</option> <option value="True">تومان</option>
+                    {% else %} <option value="True">تومان</option> <option value="False">درصدی</option> {% endif %}
+                    </select>
+
+                    <input
+                      type="text"
+                      name="value"
+                      value="{{ i.value }}"
+                      placeholder="مقدار تخفیف"
+                      class="w-3/4 px-4 py-2 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] placeholder-[#b0bfd1] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+                    />
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label for="" class="text-xs">{{ i.valid_from }}</label>
+                      <input
+                        type="date"
+                        name="valid_from"
+                        required
+                        class="w-full px-4 py-2 rounded-xl text-white border-2 border-[#0bffffcc] bg-[#0b1421] placeholder-[#ffff] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+                      />
+                    </div>
+                    <div>
+                      <label for="" class="text-xs">{{ i.valid_to }}</label>
+                      <input
+                        type="date"
+                        name="valid_to"
+                        required
+                        value="{{ i.valid_to }}"
+                        class="w-full px-4 py-2 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] placeholder-[#b0bfd1] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+                    <select
+                      name="category"
+                      class="w-full p-3 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] text-white focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+                    >
+                    {% if i.category %}
+                      <option value="{{ i.category.id }}">{{ i.category.name }}</option>
+                      {% for c in main_category %}
+                        <option value="{{ c.id }}">{{ c.name }}</option>
+                      {% endfor %}
+                    {% else %}
+                    <option value="">دسته بندی را انخاب کنید</option>
+                      {% for c in main_category %}
+                        <option value="{{ c.id }}">{{ c.name }}</option>
+                      {% endfor %}
+                      {% endif %}
+                    </select>
+
+                    <select
+                      name="for_followers"
+                      class="w-full p-3 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] text-white focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+                    >
+                    {% if i.for_followers %}
+                      <option value="True">برای دنبال‌کنندگان</option>
+                      <option value="False">برای همه کاربران</option>
+                    {% else %}
+                      <option value="False">برای همه کاربران</option>
+                      <option value="True">برای دنبال‌کنندگان</option>
+                    {% endif %}
+
+                    </select>
+                  </div>
+
+                  <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer" name='active' {% if i.active %}checked {% endif %}>
+                    <div
+                      class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#b0ffffcc]"
+                    ></div>
+                    <span class="ms-3 text-sm font-medium text-gray-300"> {% if i.active %}فعال{% else %}غیر فعال{% endif %}</span>
+                  </label>
+
+                  <button
+                    type="submit"
+                    class="w-full py-3 rounded-xl bg-[#0bffffcc] text-[#0b1421] font-bold hover:bg-[#0bffffaa] transition duration-300"
+                  >
+                    ذخیره
+                  </button>
+                </form>
+
+              </div>
+            </div> 
+          {% endfor %}
+      </div>
+  </div>
+
+
+
+
+<script>
+  // باز کردن مودال
+document.querySelectorAll('.open-coupon-modal').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    const id = this.getAttribute('data-id');
+    const code = this.getAttribute('data-code');
+    const value = this.getAttribute('data-value');
+    const modal = document.getElementById(`couponModal-${id}`);
+
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      
+      // مقداردهی دستی برای اطمینان
+      modal.querySelector('input[name="code"]').value = code;
+      modal.querySelector('input[name="value"]').value = value;
+    }
+  });
+});
+
+  // بستن مودال با دکمه ×
+  document.querySelectorAll('.close-coupon-modal').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      const modal = document.getElementById(`couponModal-${id}`);
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    });
+  });
+
+  // بستن مودال با کلیک بیرون از فرم
+  document.querySelectorAll('[id^="couponModal-"]').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    });
+  });
+</script>
+
+
+
+<div id="addCouponModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 hidden z-50">
+  <div class="bg-[#0b1421] p-5 rounded-xl shadow-lg mx-auto max-w-4xl w-full text-white relative">
+    <button id="closeAddCouponModal" class="absolute top-3 end-3 text-white text-2xl font-bold hover:text-[#0bffffcc] transition">&times;</button>
+
+    <form action="{% url 'cou:coupon_add' shop_id %}" method="POST" class="space-y-5 text-white bg-[#0b1421] p-5 rounded-xl shadow-lg mx-auto">
+      {% csrf_token %}
+
+      <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+        <input
+          type="text"
+          name="code"
+          placeholder="کد کوپن"
+          class="flex-1 px-4 py-2 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] placeholder-[#b0bfd1] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+        />
+        <input
+          type="number"
+          name="usage_limit"
+          min="1"
+          placeholder="تعداد محدودیت استفاده"
+          class="flex-1 px-4 py-2 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] placeholder-[#b0bfd1] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+        />
+      </div>
+      <div class="flex flex-row">
+        <select
+          name="is_percent"
+          required
+          class="w-1/4 p-3 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] text-white focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+        >
+          <option value="True">تومان</option>
+          <option value="False">درصدی</option>
+        </select>
+
+        <input
+          type="text"
+          name="value"
+          placeholder="مقدار تخفیف"
+          class="w-3/4 px-4 py-2 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] placeholder-[#b0bfd1] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+        />
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input
+          type="date"
+          name="valid_from"
+          required
+          class="w-full px-4 py-2 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] placeholder-[#b0bfd1] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+        />
+        <input
+          type="date"
+          name="valid_to"
+          required
+          class="w-full px-4 py-2 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] placeholder-[#b0bfd1] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+        />
+      </div>
+
+      <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+        <select
+          name="category"
+          class="w-full p-3 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] text-white focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+        >
+          {% for c in main_category %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
+          {% endfor %}
+        </select>
+
+        <select
+          name="for_followers"
+          class="w-full p-3 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] text-white focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+        >
+          <option value="True">برای دنبال‌کنندگان</option>
+          <option value="False">برای همه کاربران</option>
+        </select>
+      </div>
+
+      <label class="inline-flex items-center cursor-pointer">
+        <input type="checkbox" class="sr-only peer" name='active' checked>
+        <div
+          class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"
+        ></div>
+        <span class="ms-3 text-sm font-medium text-gray-300">فعال</span>
+      </label>
+
+      <button
+        type="submit"
+        class="w-full py-3 rounded-xl bg-[#0bffffcc] text-[#0b1421] font-bold hover:bg-[#0bffffaa] transition duration-300"
+      >
+        افزودن کوپن
+      </button>
+    </form>
+  </div>
+</div>
+
+
+<script>
+  const openModalBtn = document.getElementById('openModalBtn');
+  const addCouponModal = document.getElementById('addCouponModal');
+  const closeAddCouponModal = document.getElementById('closeAddCouponModal');
+
+  openModalBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    addCouponModal.classList.remove('hidden');
+  });
+
+  closeAddCouponModal.addEventListener('click', () => {
+    addCouponModal.classList.add('hidden');
+  });
+
+  // بستن مودال با کلیک روی بک‌دراپ
+  addCouponModal.addEventListener('click', (e) => {
+    if (e.target === addCouponModal) {
+      addCouponModal.classList.add('hidden');
+    }
+  });
+</script>
+
+ 
+<script>
+  // وقتی روی لینک حذف کلیک شد، مودال مربوطه باز شود
+  document.querySelectorAll('.open-delete-modal').forEach(link => {
+    link.addEventListener('click', function(event) {
+      event.preventDefault();
+      const id = this.getAttribute('data-id');
+      document.getElementById(`confirmModal-${id}`).classList.remove('hidden');
+    });
+  });
+
+  // تابع بستن مودال
+  function closeModal(id) {
+    document.getElementById(`confirmModal-${id}`).classList.add('hidden');
+  }
+</script>
+{% endblock %}

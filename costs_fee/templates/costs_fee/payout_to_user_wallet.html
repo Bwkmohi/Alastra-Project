@@ -1,0 +1,85 @@
+{% extends "costs_fee/base.html" %}
+    {% block cost_con %}
+   
+    
+    
+<section class="min-h-screen bg-[#0b1421] text-white font-semibold" dir="rtl">
+    <div class="container mx-auto p-4 w-full max-w-6xl">
+        <div class="bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0b1421] rounded-2xl p-6 shadow-2xl shadow-[#0bffffcc]/40 mb-6 text-center glass-effect neon-glow relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-20 h-20 bg-[#0bffff33] rounded-full blur-xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-[#0bffff33] rounded-full blur-xl"></div>
+            
+            <div class="relative z-10">
+                <p class="text-sm text-[#b0bfd1] mb-1">موجودی کیف پول</p>
+                <p class="text-4xl font-bold drop-shadow pulse-animation">{{ WebsiteWallet.balance }}<span class="text-2xl">تومان</span></p>
+            </div>
+        </div>
+      
+        <div class="grid grid-cols-1 gap-4 text-center mb-8">
+            <!-- <button class="action-btn bg-[#0bffffcc] text-[#0b1421] rounded-xl py-4 shadow-md hover:bg-[#0bffff] transition duration-300 flex flex-col items-center justify-center gap-2">
+                <i class="bi bi-arrow-left-right text-2xl"></i>
+                <span class="text-sm font-medium">انتقال</span>
+            </button> -->
+<button onclick="transferDialog.showModal()"
+    class="action-btn bg-[#0bffffcc] text-[#0b1421] rounded-xl py-4 shadow-md hover:bg-[#0bffff] transition duration-300 flex flex-col items-center justify-center gap-2">
+    <i class="bi bi-arrow-left-right text-2xl"></i>
+    <span class="text-sm font-medium">انتقال</span>
+</button>
+
+        </div>
+    </div>
+
+<dialog id="transferDialog"
+    class="bg-[#0b1421] text-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-[#0bffff55]">
+
+    <h2 class="text-xl font-bold mb-4 text-center text-[#0bffff]">
+        انتقال وجه
+    </h2>
+    <p class="text-md">
+        در صورت اشتباه وارد کردن اطلاعات مبلغ به کاربر دیگر انتقال میاید!!!
+    </p>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+    <div class="mb-4">
+        <label class="block text-sm mb-1 text-[#b0bfd1]">ولت ای دی(Wallet Id)</label>
+        <input type="number"
+                name="wallet_id"
+               class="w-full rounded-xl bg-[#061726] border border-[#0bffff33] p-3 text-white focus:outline-none focus:border-[#0bffff]"
+               placeholder="">
+    </div>
+
+    <div class="mb-6">
+        <label class="block text-sm mb-1 text-[#b0bfd1]">ای دی کاربری(User Id)</label>
+        <input type="number"
+                name="user_id"
+                class="w-full rounded-xl bg-[#061726] border border-[#0bffff33] p-3 text-white focus:outline-none focus:border-[#0bffff]"
+                placeholder="">
+    </div>
+
+    <div class="flex gap-3">
+        <button type="submit" class="flex-1 bg-[#0bffff] text-[#0b1421] rounded-xl py-3 font-semibold">
+            تایید انتقال
+        </button>
+
+        <button onclick="transferDialog.close()"
+                class="flex-1 bg-[#1a2636] rounded-xl py-3">
+            انصراف
+        </button>
+    </div>
+    </form>
+</dialog>
+
+<style>
+dialog::backdrop {
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+}
+</style>
+
+</section>
+
+ 
+
+    
+    {% endblock %}

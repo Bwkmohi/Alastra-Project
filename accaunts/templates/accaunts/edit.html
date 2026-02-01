@@ -1,0 +1,384 @@
+{% extends "accaunts/base.html" %}
+
+{% block account_content %}
+
+<title>
+    ویرایش اطلاعات کاربری
+</title>
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl">
+        
+        <!-- Progress Bar -->
+        <div class="mb-12">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-full flex items-center justify-center">
+                        <i class="bi bi-check-lg text-lg text-[#062441]"></i>
+                    </div>
+                    <span class="text-white font-bold">مرحله اول</span>
+                </div>
+                <div class="flex-1 h-1 bg-[#0bffff33] mx-4">
+                    <div class="h-full bg-gradient-to-r from-[#0bffff] to-[#0bffffee] w-full"></div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-full flex items-center justify-center">
+                        <span class="text-[#062441] font-bold">۲</span>
+                    </div>
+                    <span class="text-white font-bold">احراز هویت</span>
+                </div>
+                <div class="flex-1 h-1 bg-[#0bffff33] mx-4">
+                    <div class="h-full bg-gradient-to-r from-[#0bffff] to-[#0bffffee] w-1/2"></div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-full flex items-center justify-center">
+                        <span class="text-[#062441] font-bold">۲</span>
+                    </div>
+                    <span class="text-white font-bold">احراز هویت</span>
+                </div>
+            </div>
+            <p class="text-[#0bffffaa] text-center text-sm">اطلاعات هویتی خود را تکمیل کنید</p>
+        </div>
+
+        <!-- فرم احراز هویت -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm overflow-hidden">
+            
+            <!-- هدر فرم -->
+            <div class="p-8 border-b border-[#0bffff33] bg-gradient-to-r from-[#0bffff11] to-transparent">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center">
+                        <i class="bi bi-shield-check text-2xl text-[#062441]"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-white">تکمیل احراز هویت</h2>
+                        <p class="text-[#0bffffaa] mt-1">لطفا اطلاعات هویتی خود را وارد کنید</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بدنه فرم -->
+            <form method="POST" enctype="multipart/form-data" class="p-8">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    
+                    <!-- ستون سمت راست - اطلاعات شخصی -->
+                    <div class="space-y-6">
+                        
+                        <!-- آپلود تصویر پروفایل -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-4 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-person-square ml-2"></i>
+                                تصویر پروفایل
+                            </label>
+                            <div class="flex items-center gap-6">
+                                <div class="relative">
+                                    <div class="w-24 h-24 bg-gradient-to-br from-[#0bffff33] to-[#0bffff55] rounded-2xl border-2 border-dashed border-[#0bffff44] flex items-center justify-center cursor-pointer hover:border-[#0bffff] transition-all duration-300">
+                                        <input type="file" name="profile" accept="image/*" class="hidden" id="profile-upload">
+                                        <label for="profile-upload" class="cursor-pointer text-center">
+                                            <i class="bi bi-camera text-2xl text-[#0bffffaa] mb-2 block"></i>
+                                            <span class="text-[#0bffffaa] text-xs">آپلود تصویر</span>
+                                        </label>
+                                    </div>
+                                    <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+                                        <i class="bi bi-arrow-repeat text-xs text-[#062441]"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-[#0bffffaa] text-sm mb-2">تصویر واضح و با کیفیت از خودتان</p>
+                                    <div class="space-y-1 text-[#0bffff66] text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <i class="bi bi-check-circle"></i>
+                                            <span>فرمت‌های مجاز: JPG, PNG</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i class="bi bi-check-circle"></i>
+                                            <span>حداکثر حجم: ۵ مگابایت</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- کد ملی -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-credit-card ml-2"></i>
+                                کد ملی
+                            </label>
+                            <input type="text" name="national_code" required maxlength="10"
+                                   class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none text-left dir-ltr"
+                                   placeholder="۰۹۱۲۳۴۵۶۷۸۹"
+                                   oninput="this.value = this.value.replace(/[^5-31]/g, '')">
+                        </div>
+
+                        <!-- جنسیت -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-4 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-gender-ambiguous ml-2"></i>
+                                جنسیت
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <label class="flex items-center gap-4 p-4 rounded-xl bg-[#0b142133] border-2 border-[#0bffff] cursor-pointer transition-all duration-300">
+                                    <input type="radio" name="gender" value="MEN" class="hidden">
+                                    <div class="w-6 h-6 border-2 border-[#0bffff] rounded-full flex items-center justify-center">
+                                        <div class="w-3 h-3 bg-[#0bffff] rounded-full"></div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <span class="text-white font-medium">آقا</span>
+                                    </div>
+                                    <i class="bi bi-gender-male text-[#0bffff] text-xl"></i>
+                                </label>
+                                
+                                <label class="flex items-center gap-4 p-4 rounded-xl bg-[#0b142133] border-2 border-[#0bffff44] cursor-pointer hover:border-[#0bffff] transition-all duration-300">
+                                    <input type="radio" name="gender" value="WOMEN" class="hidden">
+                                    <div class="w-6 h-6 border-2 border-[#0bffff66] rounded-full flex items-center justify-center">
+                                        <div class="w-3 h-3 bg-[#0bffff] rounded-full hidden"></div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <span class="text-white font-medium">خانم</span>
+                                    </div>
+                                    <i class="bi bi-gender-female text-[#0bffffaa] text-xl"></i>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- تاریخ تولد -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-calendar-heart ml-2"></i>
+                                تاریخ تولد
+                            </label>
+                            <input type="date" name="age" required
+                                   class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none">
+                        </div>
+
+                    </div>
+
+                    <!-- ستون سمت چپ - اطلاعات مکانی -->
+                    <div class="space-y-6">
+                        
+                        <!-- شماره تلفن -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-phone ml-2"></i>
+                                شماره تلفن
+                            </label>
+                            <div class="flex gap-4">
+                                <div class="bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-4 py-4 text-white w-24 text-center">
+                                    +۹۸
+                                </div>
+                                <input type="text" name="phone" required maxlength="11"
+                                       class="flex-1 bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none text-left dir-ltr"
+                                       placeholder="9123456789"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+                        </div>
+
+                        <!-- استان و شهر -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="group">
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    استان
+                                </label>
+                                <select name="province" required
+                                        class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none appearance-none">
+                                    <option value="" selected disabled>انتخاب استان</option>
+                                    {% for i in province %}
+                                      <option value="{{ i.id }}">{{ i.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="group">
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    شهر
+                                </label>
+                                <select name="city" required
+                                        class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none appearance-none">
+                                    <option value="" selected disabled>ابتدا استان انتخاب کنید</option>
+                                    {% for i in citys %}
+                                      <option value="{{ i.id }}">{{ i.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- کد پستی -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-mailbox ml-2"></i>
+                                کد پستی
+                            </label>
+                            <input type="text" name="postal_code" required maxlength="10"
+                                   class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none text-left dir-ltr"
+                                   placeholder="۱۳۴۵۷۸۹۶۳۲"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+
+                        <!-- آدرس -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-geo-alt ml-2"></i>
+                                آدرس کامل
+                                <span class="text-[#0bffff66] text-sm font-normal">(حداکثر ۵۰۰ کاراکتر)</span>
+                            </label>
+                            <textarea name="address" required maxlength="500" rows="4"
+                                      class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium resize-none transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none"
+                                      placeholder="آدرس کامل پستی خود را وارد کنید..."></textarea>
+                            <div class="flex justify-between items-center mt-3">
+                                <span class="text-[#0bffff66] text-sm">این آدرس برای ارسال مرسلات پستی استفاده می‌شود</span>
+                                <span id="address-counter" class="text-[#0bffff] text-sm font-bold">۰/۵۰۰</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- دکمه‌های اقدام -->
+                <div class="flex gap-4 pt-8 mt-8 border-t border-[#0bffff33]">
+                    <button type="button" class="flex-1 py-4 bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] font-bold rounded-2xl hover:border-[#ff6b6b] hover:shadow-[0_0_20px_rgba(255,107,107,0.3)] transition-all duration-300">
+                        <i class="bi bi-arrow-right ml-2"></i>
+                        بازگشت
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 py-4 bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] text-[#062441] font-black text-lg rounded-2xl shadow-2xl shadow-[#0bffff66] hover:shadow-[0_0_40px_rgba(11,255,255,0.8)] hover:scale-[1.02] transition-all duration-500">
+                        <i class="bi bi-shield-check ml-2"></i>
+                        تکمیل احراز هویت
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- اطلاعات امنیتی -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] text-center">
+                <i class="bi bi-lock text-3xl text-[#0bffff] mb-3"></i>
+                <h4 class="text-white font-bold mb-2">اطلاعات امن</h4>
+                <p class="text-[#0bffffaa] text-sm">تمام داده‌ها به صورت رمزنگاری شده ذخیره می‌شوند</p>
+            </div>
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] text-center">
+                <i class="bi bi-eye-slash text-3xl text-[#0bffff] mb-3"></i>
+                <h4 class="text-white font-bold mb-2">حریم خصوصی</h4>
+                <p class="text-[#0bffffaa] text-sm">اطلاعات شما نزد ما محفوظ خواهد ماند</p>
+            </div>
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] text-center">
+                <i class="bi bi-shield-check text-3xl text-[#0bffff] mb-3"></i>
+                <h4 class="text-white font-bold mb-2">تأیید هویت</h4>
+                <p class="text-[#0bffffaa] text-sm">این اطلاعات برای احراز هویت استفاده می‌شود</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // شمارنده آدرس
+    const addressTextarea = document.querySelector('textarea[name="address"]');
+    const addressCounter = document.getElementById('address-counter');
+    
+    addressTextarea.addEventListener('input', function() {
+        const count = this.value.length;
+        addressCounter.textContent = `${count}/500`;
+        
+        if (count > 400) {
+            addressCounter.style.color = '#ffa726';
+        } else {
+            addressCounter.style.color = '#0bffff';
+        }
+    });
+    
+    // مدیریت radio buttons جنسیت
+    document.querySelectorAll('input[name="gender"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.querySelectorAll('input[name="gender"]').forEach(r => {
+                const label = r.closest('label');
+                const dot = label.querySelector('.bg-\\[#0bffff\\]');
+                const icon = label.querySelector('i:last-child');
+                
+                if (r.checked) {
+                    label.style.borderColor = '#0bffff';
+                    label.style.background = '#0bffff22';
+                    if (dot) dot.classList.remove('hidden');
+                    if (icon) icon.style.color = '#0bffff';
+                } else {
+                    label.style.borderColor = '#0bffff44';
+                    label.style.background = '#0b142133';
+                    if (dot) dot.classList.add('hidden');
+                    if (icon) icon.style.color = '#0bffffaa';
+                }
+            });
+        });
+    });
+    
+    // مدیریت آپلود تصویر پروفایل
+    const profileUpload = document.getElementById('profile-upload');
+    const profileContainer = profileUpload.closest('.relative');
+    
+    profileUpload.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                profileContainer.querySelector('.bg-gradient-to-br').innerHTML = `
+                    <img src="${e.target.result}" class="w-full h-full rounded-2xl object-cover border-2 border-[#0bffff]">
+                `;
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    });
+    
+  
+    // اعتبارسنجی کد ملی
+    function validateNationalCode(code) {
+        if (code.length !== 10) return false;
+        
+        const sum = code.split('').slice(0, 9).reduce((acc, digit, index) => {
+            return acc + (parseInt(digit) * (10 - index));
+        }, 0);
+        
+        const remainder = sum % 11;
+        const controlDigit = parseInt(code[9]);
+        
+        return (remainder < 2 && controlDigit === remainder) || 
+               (remainder >= 2 && controlDigit === (11 - remainder));
+    }
+    
+    const nationalCodeInput = document.querySelector('input[name="national_code"]');
+    nationalCodeInput.addEventListener('blur', function() {
+        if (this.value.length === 10 && !validateNationalCode(this.value)) {
+            this.style.borderColor = '#ff6b6b';
+            // می‌تونید پیام خطا هم نمایش بدید
+        } else {
+            this.style.borderColor = '#0bffff44';
+        }
+    });
+});
+</script>
+
+<style>
+.dir-ltr {
+    direction: ltr;
+    text-align: left;
+}
+
+/* استایل برای input type date در مرورگرهای مختلف */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg);
+    cursor: pointer;
+}
+
+/* استایل برای select ها */
+select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230bffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: left 1rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-left: 3rem;
+}
+</style>
+
+
+{% endblock %}

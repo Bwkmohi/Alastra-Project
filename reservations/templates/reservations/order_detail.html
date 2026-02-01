@@ -1,0 +1,498 @@
+{% extends "accaunts/base.html" %}
+    {% block account_content %} 
+
+
+{% if order.tracking_code %}
+    <a href="https://tracking.post.ir/fa/?id={{ order.tracking_code }}">trac code</a>
+{% endif %}
+      
+<title>جزئیات سفارش</title>
+
+
+ 
+ 
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0bffff',
+                        dark: '#0b1421',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');        
+        .status-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(11, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(11, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(11, 255, 255, 0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+<div class="bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] min-h-screen p-4">
+    
+    <div class="max-w-6xl mx-auto">
+
+
+        <!-- هدر صفحه -->
+        <div class="text-center mb-8 relative fade-in">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#0bffff22] to-transparent blur-xl"></div>
+            <h1 class="text-5xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent relative drop-shadow-[0_0_30px_rgba(11,255,255,0.6)]">
+                جزئیات سفارش
+            </h1>
+            <p class="text-[#0bffffaa] text-md mt-4 font-medium">شماره سفارش: #{{ order.pk }}</p>
+        </div>
+
+
+    <div class="w-full py-8 px-4">
+    <div class="max-w-4xl mx-auto relative flex justify-between items-center text-center">
+  
+      <div class="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-[#062441] via-[#0bffffcc] to-[#062441] z-0 rounded-full shadow-inner"></div>
+  
+      <div class="z-10 flex flex-col items-center w-1/3">
+        <div class="w-10 h-10 bg-[#0d4370] text-white flex items-center justify-center rounded-full font-bold shadow-md ring-4 ring-[#b0bfd1]/40 transition-all duration-500">
+          1
+        </div>
+        <p class="mt-2 text-sm font-semibold text-white drop-shadow">پرداخت</p>
+      </div>
+  
+      <div class="z-10 flex flex-col items-center w-1/3">
+        <div class="w-14 h-14 bg-[#062441] text-white flex items-center justify-center rounded-full font-bold ring-4 ring-[#0bffffcc] animate-pulse shadow-lg transition-all duration-500">
+          2
+        </div>
+        <p class="mt-2 text-sm font-semibold text-[#0bffffcc] drop-shadow">ارسال</p>
+      </div>
+
+      <div class="z-10 flex flex-col items-center w-1/3">
+        <div class="w-10 h-10 bg-gray-400 text-white flex items-center justify-center rounded-full font-bold shadow-sm transition-all duration-500">
+          3  
+        </div>
+        <p class="mt-2 text-sm font-semibold text-gray-300">دریافت</p>
+      </div
+  
+    </div>
+  </div>
+
+
+        <!-- کارت وضعیت سفارش -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm mb-6 fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-xl flex items-center justify-center">
+                        <span class="text-[#062441] font-bold text-xl"><i class="bi bi-boxes"></i></span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-black text-white">لیست سفارشات</h2>
+                        <p class="text-[#0bffffaa]">تاریخ ثبت:  {{ order.created_at }}:</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-1 md:gap-3">
+                    <a href="{% url 'res:order_export' order.id %}" class="status-badge bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] text-[#0bffff] md:px-6 px-2 md:py-3 py-2 rounded-xl font-bold border border-[#0bffff33]">
+                       فاکتور
+                    </a>
+                <div class="relative inline-block text-right"> 
+                    <button id="dropdownButton" class="status-badge bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] text-[#0bffff] md:px-6 px-2 md:py-3 py-2 rounded-xl font-bold border border-[#0bffff33]">
+                       تکرار مجدد خرید
+                    </button>
+                    <div id="dropdownMenu" class="hidden absolute right-0 bottom-full mb-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-[9999]">
+                        <a href="{% url 'res:repeat_purchase' order.id 'wallet' %}" class="px-4 py-4 text-gray-700 hover:bg-gray-100">کیف پول</a>
+                        <a href="{% url 'res:repeat_purchase' order.id 'zarinpal' %}" class="px-4 py-4 text-gray-700 hover:bg-gray-100">درگاه انلاین</a>
+                        
+                    </div>
+                </div>
+                    {% if order.paid == False %}
+                    <div class="relative inline-block text-right">
+                        <button id="dropdownButton2" class="status-badge bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] text-[#0bffff] md:px-6 px-2 md:py-3 py-2 rounded-xl font-bold border border-[#0bffff33]">
+                            پرداخت مجدد
+                        </button>
+                
+                        <div id="dropdownMenu2" class="hidden absolute right-0 bottom-full mb-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-[9999]">
+                            <a href="{% url 'res:pay_again' order.id 'wallet' %}" class="px-4 py-4 text-gray-700 hover:bg-gray-100">کیف پول</a>
+                            <a href="{% url 'res:pay_again' order.id 'zarinpal' %}" class="px-4 py-4 text-gray-700 hover:bg-gray-100">درگاه انلاین</a>
+                        </div>
+                    </div>
+                     {% endif %}
+                </div>
+                
+                   
+
+                    
+
+                    <span class="bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] text-[#0bffff] px-6 py-3 rounded-xl font-bold border border-[#0bffff33]">
+                        مجموع: {{ order.total_price }} تومان
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 md:gap-6 gap-4">
+            <!-- ستون سمت راست - اطلاعات مشتری -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- کارت اطلاعات مشتری -->
+                <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                            <span class="text-[#062441] font-bold"><i class="bi bi-person"></i></span>
+                        </div>
+                        <h3 class="text-lg font-black text-white">اطلاعات مشتری</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center py-2 border-b border-[#0bffff22]">
+                            <span class="text-[#0bffffaa]">نام گیرنده</span>
+                            <span class="text-white font-medium">{{ order.name }} {{ order.lastname }}</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-[#0bffff22]">
+                            <span class="text-[#0bffffaa]">شماره تماس:</span>
+                            <span class="text-white font-medium">{{ order.phone }}</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-[#0bffff22]">
+                            <span class="text-[#0bffffaa]">ایمیل:</span>
+                            <span class="text-white font-medium">{{ order.user.email }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- کارت آدرس تحویل -->
+                <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                            <span class="text-[#062441] font-bold"><i class="bi bi-geo-alt"></i></span>
+                        </div>
+                        <h3 class="text-lg font-black text-white">آدرس تحویل</h3>
+                    </div>
+                    
+                    <div class="text-white">
+                        <p class="leading-relaxed">{{ order.address }}</p>
+                        <div class="mt-4 p-3 bg-[#0b1421aa] rounded-lg border border-[#0bffff22]">
+                            <p class="text-[#0bffffaa] text-sm">کد پستی: {{ order.postaddress }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ستون سمت چپ - جزئیات سفارش -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- کارت آیتم‌های سفارش -->
+                <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl md:p-6 p-2 border border-[#0bffff33] shadow-lg backdrop-blur-sm fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                                <span class="text-[#062441] font-bold"><i class="bi bi-cart"></i></span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">آیتم‌های سفارش</h3>
+                        </div>
+                        <span class="bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] text-[#0bffff] px-4 py-2 rounded-full font-bold text-sm border border-[#0bffff33]">
+                        {{ count }} آیتم
+                        </span>
+                    </div>
+
+                    <div class="space-y-4">
+                         {% for i in reservs %}
+                            <div class="bg-gradient-to-br from-[#0b142188] to-[#06244188] rounded-xl md:p-6 p-4 border border-[#0bffff33]">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                                        <span class="text-2xl"><a href="{% url 'product_detail' i.product.id i.product.slug %}"><img src="{{ i.product.image.url }}" class="object-cover w-full h-full" alt=""></a></span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <h4 class="text-white font-bold text-lg">{{ i.product.name }}</h4>
+                                                <p class="text-[#0bffffaa] text-sm mt-1">رنگ: {{ i.product.color.name }} - برند: {{ i.product.brand.name }}</p>
+                                            </div>
+                                            <div>
+                                              <span class="bg-[gradient-to-r from-[#0bffff33] to-[#0bffff11]] text-[#0bffff] px-3 py-2 rounded-lg text-xs sm:text-sm font-bold">
+                                                {% if i.paid %}
+                                                    <i class="bi bi-check-circle"></i> پرداخت شده
+                                                {% else %}
+                                                <i class="bi bi-x-circle"></i> پرداخت نشده
+                                                {% endif %}
+                                              </span>
+                                            {% if i.delivered == False and i.post_delivery == False %}
+                                              <span class="text-[#0bffff] px-3 py-1 rounded-lg text-sm font-bold">
+                                                <button onclick="document.getElementById('confirmModal-{{ i.id }}').classList.remove('hidden')" title="لغو سفارش">
+                                                  <i class="bi bi-x-lg text-red-500"></i>
+                                                </button>
+                                              </span>
+                                            {% endif %}
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="flex justify-between items-center mt-3">
+                                            <div class="text-white text-xs md:text-lg">
+                                                <span class="text-[#0bffffaa]">تعداد: </span>
+                                                <span class="font-bold">{{ i.quantity }}</span>
+                                            </div>
+                                            <div class="text-left">
+                                                <span class="text-[#0bffffaa] text-sm">مجموع قیمت :</span>
+                                                <span class="text-white font-bold md:text-lg text-xs mr-2">{{ i.totalprice }} تومان</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-col w-full mt-2 md:p-4 p-2 text-center">
+                                          {% if i.canceled == False %}
+                                            <div class="w-full flex justify-between text-xs text-[#0bffffaa] mb-2">
+                                                <span>برسی</span>
+                                                <span>آماده‌سازی</span>
+                                                <span>ارسال به پست</span>
+                                                <span>تحویل پست</span>
+                                                <span>تحویل شده</span>
+                                            </div>
+                                            <div class="w-full bg-[#0b1421aa] rounded-full h-1">
+                                                <div class="bg-gradient-to-r from-[#0bffff] to-[#0bffffee] h-1 rounded-full 
+                                                {% if i.preparation == True and i.sent_to_post == False %}
+                                                  w-1/4
+                                                {% elif i.sent_to_post == True and i.post_delivery == False %}
+                                                  w-2/4
+                                                {% elif i.post_delivery == True and i.delivered == False %}
+                                                  w-3/4
+                                                {% elif i.delivered == True %}
+                                                  w-4/4
+                                                {% else %}
+                                                  w-1/4
+                                                {% endif %}
+                                            "></div>
+                                            </div>
+                                            {% else %}
+                                              <center>
+                                                <p class="text-xs text-[#0bffffaa] mb-2">
+                                                  سفارش شما لغو شده است!
+                                                </p>
+                                              </center>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="confirmModal-{{ i.id }}" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 hidden">
+                                <div class="bg-[#0b1421] rounded-lg shadow-lg w-full max-w-md p-4 md:p-6">
+                                    <h2 class="text-lg md:text-xl font-semibold text-white mb-3 md:mb-4">لغو سفارش</h2>
+                                    <p class="text-white mb-4 md:mb-6 text-sm md:text-base">آیا مطمئن هستید که می‌خواهید این سفارش را لغو کنید؟</p>
+                                    <div class="flex justify-end gap-3 md:gap-4">
+                                        <button onclick="document.getElementById('confirmModal-{{ i.id }}').classList.add('hidden')"
+                                            class="bg-gray-200 hover:bg-gray-300 text-black px-3 md:px-4 py-2 rounded text-sm md:text-base">انصراف</button>
+                                        
+                                        <form>
+                                            {% csrf_token %}
+                                            <a href="{% url 'res:cancel_order' i.id %}" class="bg-red-600 hover:bg-red-700 text-white px-3 md:px-4 py-2 rounded text-sm md:text-base">
+                                                بله، لغو کن
+                                            </a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- خلاصه مالی -->
+                    <div class="mt-6 pt-6 border-t border-[#0bffff33]">
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-white">
+                                <span>جمع کل:</span>
+                                <span class="font-bold">{{ order.total_price }} تومان</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+    <script>
+        // افزودن انیمیشن به المان‌ها
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            fadeElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // شبیه‌سازی به‌روزرسانی وضعیت
+            const statusBadge = document.querySelector('.status-badge');
+            setInterval(() => {
+                statusBadge.style.animation = 'none';
+                setTimeout(() => {
+                    statusBadge.style.animation = 'pulse 2s infinite';
+                }, 10);
+            }, 4000);
+        });
+    </script>
+</div>
+ 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // دکمه و منوی اول
+    const dropdownButton = document.getElementById('dropdownButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    // دکمه و منوی دوم
+    const dropdownButton2 = document.getElementById('dropdownButton2');
+    const dropdownMenu2 = document.getElementById('dropdownMenu2');
+
+    dropdownButton?.addEventListener('click', function () {
+      dropdownMenu.classList.toggle('hidden');
+      // اگه منوی دوم باز بود ببندش
+      if (!dropdownMenu2.classList.contains('hidden')) {
+        dropdownMenu2.classList.add('hidden');
+      }
+    });
+
+    dropdownButton2?.addEventListener('click', function () {
+      dropdownMenu2.classList.toggle('hidden');
+      // اگه منوی اول باز بود ببندش
+      if (!dropdownMenu.classList.contains('hidden')) {
+        dropdownMenu.classList.add('hidden');
+      }
+    });
+
+    // اگر بخوایم کلیک بیرون از منو باعث بسته شدنشون بشه:
+    document.addEventListener('click', function (e) {
+      if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.classList.add('hidden');
+      }
+      if (dropdownButton2 && dropdownMenu2 && !dropdownButton2.contains(e.target) && !dropdownMenu2.contains(e.target)) {
+        dropdownMenu2.classList.add('hidden');
+      }
+    });
+  });
+</script>
+
+
+ 
+
+
+<div id="rateModal" class="fixed inset-0 bg-[#0b142199] flex justify-center items-center z-[9999] hidden">
+  <form id="rateForm" action="{% url 'sellers:add_shop_rate' %}" method="POST" class="bg-gradient-to-br from-[#062441] to-[#041b2d] rounded-2xl p-8 max-w-sm w-full shadow-lg border border-[#0bffff66] text-center">
+    {% csrf_token %}
+    <h3 class="text-[#0bffff] text-2xl font-black mb-6">امتیاز به فروشگاه<br><span class="text-white text-lg" id="shopName"></span></h3>
+    <div id="stars" class="flex justify-center gap-3 text-5xl cursor-pointer select-none text-[#0bffffaa]">
+      <span data-value="1" class="transition-colors duration-300">☆</span>
+      <span data-value="2" class="transition-colors duration-300">☆</span>
+      <span data-value="3" class="transition-colors duration-300">☆</span>
+      <span data-value="4" class="transition-colors duration-300">☆</span>
+      <span data-value="5" class="transition-colors duration-300">☆</span>
+    </div>
+
+    <!-- فیلد مخفی برای ارسال امتیاز -->
+    <input type="hidden" name="rate" id="rateInput" value="">
+    <input type="hidden" name="reserv_id" id="reservIdInput" value="">
+    <input type="hidden" name="url" value="{{ request.path }}">
+
+    <div class="mt-8 flex justify-around gap-4">
+      <button type="submit" class="bg-[#0bffff] hover:bg-[#0affffdd] text-[#062441] font-bold rounded-xl px-6 py-2 shadow-md transition duration-300">
+        ارسال امتیاز
+      </button>
+      <button type="button" id="laterRate" class="bg-transparent border border-[#0bffff66] text-[#0bffffaa] rounded-xl px-6 py-2 font-bold hover:bg-[#0bffff33] transition duration-300">
+        بعداً امتیاز می‌دهم
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // فرض می‌کنیم اگر بخوای باز کنی، این متغیر true هست
+  if (typeof openRateModal !== 'undefined' && openRateModal) {
+    const modal = document.getElementById('rateModal');
+    const shopNameEl = document.getElementById('shopName');
+    const starsDiv = document.getElementById('stars');
+    const stars = starsDiv.querySelectorAll('span');
+    const rateInput = document.getElementById('rateInput');
+    const form = document.getElementById('rateForm');
+    let currentRating = 0;
+
+    const reservIdInput = document.getElementById('reservIdInput');
+    reservIdInput.value = "{{ i.id }}";  // مقدار رزرو را از بک‌اند بگیر و در قالب رندر کن
+
+    shopNameEl.textContent = shopName;
+    modal.classList.remove('hidden');
+
+    function renderStars(rating) {
+      stars.forEach(star => {
+        if (+star.getAttribute('data-value') <= rating) {
+          star.textContent = '★';
+          star.classList.add('text-[#0bffff]');
+          star.classList.remove('text-[#0bffffaa]');
+        } else {
+          star.textContent = '☆';
+          star.classList.remove('text-[#0bffff]');
+          star.classList.add('text-[#0bffffaa]');
+        }
+      });
+    }
+
+    stars.forEach(star => {
+      star.addEventListener('click', function() {
+        currentRating = +this.getAttribute('data-value');
+        rateInput.value = currentRating; // مقدار را در input مخفی می‌ریزیم
+        renderStars(currentRating);
+      });
+      star.addEventListener('mouseover', function() {
+        const hoverVal = +this.getAttribute('data-value');
+        renderStars(hoverVal);
+      });
+      star.addEventListener('mouseout', function() {
+        renderStars(currentRating);
+      });
+    });
+
+    form.addEventListener('submit', function(e) {
+      if (currentRating === 0) {
+        e.preventDefault();
+        alert('لطفا یک امتیاز انتخاب کنید.');
+      }
+    });
+
+    document.getElementById('laterRate').addEventListener('click', function() {
+      modal.classList.add('hidden');
+    });
+  }
+});
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+  {% for i in open_rate_modal_premess %}
+    {% if i.open %}
+      document.getElementById('reservIdInput').value = "{{ i.id }}";
+      document.getElementById('shopName').textContent = "{{ i.name_shop }}";
+      // مودال رو باز کن
+      document.getElementById('rateModal').classList.remove('hidden');
+    {% endif %}
+  {% endfor %}
+});
+
+
+
+const stars = document.querySelectorAll('#stars span');
+const rateInput = document.getElementById('rateInput');
+
+stars.forEach(star => {
+  star.addEventListener('click', () => {
+    const value = star.getAttribute('data-value');
+    rateInput.value = value;
+    // آپدیت کلاس برای ستاره ها (پر کردن ستاره ها)
+    stars.forEach(s => s.textContent = '☆');
+    for (let i = 0; i < value; i++) {
+      stars[i].textContent = '★';
+    }
+  });
+});
+</script>
+{% endblock %}

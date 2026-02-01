@@ -1,0 +1,334 @@
+{% extends 'cart/base.html' %}
+
+
+{% block cart_content %}
+{% load humanize %}
+
+<title>
+  سبد خرید
+</title>
+
+
+
+
+  <style>
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+ 
+.animated-gradient-bg {
+background: linear-gradient(90deg, #0b14215b 0%, #062441 20%, #164e63a1 40%, #0bffff70 60%, #062441 80%, #0b14215b 100%);
+background-size: 200% 200%;
+animation: gradientShift 20s ease infinite;
+}
+
+  </style>
+
+
+ 
+  {% if cart %}
+
+
+
+  <div class="w-full py-8 px-4" dir="ltr">
+    <div class="max-w-4xl mx-auto relative flex justify-between items-center text-center">
+  
+      <!-- خط زمینه -->
+      <div class="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#062441] z-0 rounded-full shadow-inner"></div>
+  
+      <!-- مرحله 1 - کامل‌شده -->
+      <div class="z-10 flex flex-col items-center w-1/3">
+        <div class="w-10 h-10 bg-[#0d4370] text-white flex items-center justify-center rounded-full font-bold shadow-md ring-4 ring-[#b0bfd1]/40 transition-all duration-500">
+          1
+        </div>
+        <p class="mt-2 text-sm font-semibold text-white drop-shadow">سبد خرید</p>
+      </div>
+  
+      <!-- مرحله 2 - جاری -->
+      <div class="z-10 flex flex-col items-center w-1/3">
+        <div class="w-10 h-10 bg-[#062441] text-white flex items-center justify-center rounded-full font-bold ring-4 ring-[#0bffffcc] animate-pulse shadow-lg transition-all duration-500">
+          2
+        </div>
+        <p class="mt-2 text-sm font-semibold text-[#0bffffcc] drop-shadow">اطلاعات ارسال</p>
+      </div>
+  
+      <!-- مرحله 3 - آینده -->
+      <div class="z-10 flex flex-col items-center w-1/3">
+        <div class="w-10 h-10 bg-gray-400 text-white flex items-center justify-center rounded-full font-bold shadow-sm transition-all duration-500">
+          3  
+        </div>
+        <p class="mt-2 text-sm font-semibold text-gray-300">پرداخت</p>
+      </div>
+  
+    </div>
+  </div>
+
+<div class="bg-gradient-to-r from-[#062441] via-[#0bffffcc] to-[#0bffffcc] py-2 px-4 rounded-xl w-full shadow-2xl"></div>
+  <div class="min-h-screen bg-[#0b1421] flex md:flex-row flex-col md:justify-between gap-y-4 md:gap-0 p-4 pb-24">
+
+    <div class="space-y-4 overflow-y-auto w-full md:w-2/3">
+      
+    {% for pr in cart %}
+      <div class="mt-2 rounded-xl shadow-md flex items-center p-4 animated-gradient-bg">
+        <div class="w-1/3">
+          <img src="{{ pr.product.image.url }}" alt="محصول" class="rounded-lg w-full h-32 object-cover">
+        </div>
+        <div class="w-2/3 px-4 flex flex-col justify-between">
+          <div class="font-bold text-[#ffff] text-sm mb-1"><a href="{% url 'product_detail' pr.product.id pr.product.slug %}">{{ pr.product.name }}</a></div>
+          <div class="text-[#ffff] font-semibold mb-2">{{ pr.product.price|intcomma  }}</div>
+          
+          {% if pr.coupon_applyed == True %}   
+          <p class="text-[#ffff]">
+            تخفیف {% if pr.use_coupon_code.is_percent == True %} {{ pr.use_coupon_code.value }}% {% else %} {{ pr.use_coupon_code.value|intcomma  }} تومان  {% endif %}
+          </p>
+          {% endif %}         
+
+          <div class="flex items-center space-x-2 rtl:space-x-reverse">
+            <button class="bg-[#b0bfd1] text-[#ffff] w-8 h-8 rounded-full delete-btn" data-product-id="{{ pr.id }}">-</button>
+            
+            <span class="font-bold text-[#ffff] product-quantity" data-product-id="{{ pr.id }}">
+              {{ pr.quantity }}
+            </span>
+            
+            <button class="bg-[#b0bfd1] text-[#ffff] w-8 h-8 rounded-full add-btn" data-product-id="{{ pr.id }}">+</button>
+
+            <a href="{% url 'cart:cart_remove' pr.id %}">
+              <i class="bi bi-trash text-[#0bffffcc]"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+
+  <div class="bg-gradient-to-r from-[#0b1421] via-[#062441] to-[#062441] mt-2 mx-2 p-4 w-full md:w-1/3 rounded-xl shadow-lg space-y-3">
+    
+    {% for i in cost_fee %}
+    <div class="flex justify-between text-sm text-[#ffff]">
+      <span>{{ i.title }} :</span>
+      <span>{{ i }}</span>
+    </div>
+    {% endfor %}    
+ 
+    {% if cart_data.is_cart_use_coupon.applyed == True %}
+    <div class="flex justify-between text-sm text-[#ffff]">
+        <span>تخفیف:</span>
+        {% if cart_data.is_cart_use_coupon.coupon.is_percent %}
+        <span>{{ cart_data.is_cart_use_coupon.coupon.value }}%</span>    
+        {% else %}
+        <span>{{ cart_data.is_cart_use_coupon.coupon.value }}تومان</span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+   
+    {% if cart_data.coupon.applyed == True %}
+    <div class="flex justify-between text-lg font-bold text-[#ffff]">
+      <span>جمع نهایی : 1</span>
+      <span style="color: green;" class="font-extrabold">{{ cart_data.is_cart_use_coupon.total_price|intcomma  }}</span>
+    </div>
+    {% endif %} 
+    
+    {% if cart_data %}
+    <div class="flex justify-between text-lg font-bold text-[#ffff]">
+      <span>جمع نهایی:</span>
+      <span style="color: green;" class="font-extrabold">{{ cart_data.is_cart_use_coupon.total_price|intcomma  }}</span>
+    </div>
+    {% endif %}
+      
+    <div class="flex flex-col gap-2 mt-4">
+      <a href="{% url 'res:user_addreses' %}" class="text-white bg-gradient-to-r from-[#0bffffcc] via-[#0bffffcc] to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80 font-medium rounded-lg text-sm py-3 text-center me-2 mb-2">اقدام به پرداخت</a>
+        <a href="{% url 'products_list' %}" class="border border-[#0bffffcc] text-[#ffff] text-center py-3 rounded-lg font-bold hover:bg-[#f0fdfa] transition">ادامه خرید</a>
+        <a href="{% url 'res:res' %}" class="border border-[#0bffffcc] text-[#ffff] py-3 rounded-lg text-center font-bold hover:bg-[#f0fdfa] transition">پرداخت از کیف پول</a>        
+    </div>
+  </div>
+  </div>
+
+
+
+
+ 
+
+
+
+
+
+<div class="fixed bottom-14 md:bottom-0 left-0 right-0 bg-[#062441] text-[#b0bfd1] flex justify-around items-center h-16 shadow-inner z-50 px-4">
+  <a href="{% url 'res:user_addreses' %}" class="bg-[#0bffffcc] text-center w-2/3 text-[#ffff] py-3 rounded-lg font-bold shadow-md hover:bg-[#0bffff] transition">اقدام به پرداخت <i class="bi bi-credit-card ml-2"></i></a>
+  <a href="{% url 'products_list' %}" class="border w-1/3 border-[#0bffffcc] text-center text-[#ffff] py-3 rounded-lg font-bold hover:bg-[#f0fdfa] transition">ادامه خرید <i class="bi bi-handbag"></i></a>
+</div>
+
+
+ 
+
+{% else %}
+<div class="min-h-[70vh] flex flex-col items-center justify-center text-center text-[#b0bfd1] space-y-4">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-[#0bffffcc]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.2 6H19M7 13L5.4 5M16 17a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z" />
+  </svg>
+  <h2 class="text-2xl font-bold text-white drop-shadow">سبد خرید شما خالی است</h2>
+  <p class="text-sm text-[#b0bfd1]">هنوز محصولی به سبد خرید اضافه نکرده‌اید</p>
+  <a href="{% url 'products_list' %}" class="mt-4 bg-[#0bffffcc] hover:bg-[#0bffff] text-[#0b1421] font-bold py-2 px-6 rounded-lg shadow-md transition">
+    مشاهده محصولات
+  </a>
+</div>
+{% endif %}
+
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- remove from cart -->
+<!-- <script>
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const mins_id = this.dataset.msgId;
+      fetch("/cart/mines/", {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `id=${mins_id}`
+      })
+      .then(res => res.json())
+      .then(data => {
+          if (data.success) {
+            cartQuantity()
+            document.getElementById('productQuantity').innerText = data.qty_mines
+          } else if (data.error) {
+  
+          }
+        });
+    });
+  });
+</script> -->
+<!-- حذف از سبد خرید -->
+<!--افزودن سبد خرید -->
+<!-- <script>
+  document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const add_id = this.dataset.msgId;
+      fetch("/cart/plus/", {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `id=${add_id}`
+      })
+      .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            cartQuantity()
+            document.getElementById('productQuantity').innerText = data.qty_add
+ 
+          } else if (data.error) {
+  
+          }
+        });
+    });
+  });
+</script> -->
+         
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // برای دکمه منهای
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const quantitySpan = this.parentElement.querySelector('.product-quantity');
+            
+            fetch("/cart/mines/", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${productId}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // به‌روزرسانی quantity مربوط به همان محصول
+                    quantitySpan.textContent = data.qty_mines;
+                    
+                    // به‌روزرسانی تعداد کل سبد خرید (اگر تابع cartQuantity دارید)
+                    if (typeof cartQuantity === 'function') {
+                        cartQuantity();
+                    }
+                    
+                    // به‌روزرسانی قیمت‌ها (اگر نیاز است)
+                    updateCartTotals();
+                } else if (data.error) {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    // برای دکمه پلاس
+    document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const quantitySpan = this.parentElement.querySelector('.product-quantity');
+            
+            fetch("/cart/plus/", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${productId}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // به‌روزرسانی quantity مربوط به همان محصول
+                    quantitySpan.textContent = data.qty_add;
+                    
+                    // به‌روزرسانی تعداد کل سبد خرید
+                    if (typeof cartQuantity === 'function') {
+                        cartQuantity();
+                    }
+                    
+                    // به‌روزرسانی قیمت‌ها
+                    updateCartTotals();
+                } else if (data.error) {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+</script>
+{% endblock cart_content %} 

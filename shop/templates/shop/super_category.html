@@ -1,0 +1,719 @@
+{% extends 'shop/base.html' %}
+
+{% block content_sh %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>
+  {% if web_seo.page == 'category' %}{{ web_seo.title }}{% else %}فهرست دسته بندی ها | {{ site_info.site_title }}{% endif %}
+  </title>
+
+  <meta name="description" content="{% if web_seo.page == 'category' %}{{ web_seo.description }}{% else %}{{ site_info.site_title }} | فهرست دسته بندی ها{% endif %}" />
+  <meta name="robots" content="index, follow" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="{% if web_seo.page == 'category' %}{{ web_seo.title }}{% else %}فهرست دسته بندی ها | {{ site_info.site_title }}{% endif %}" />
+  <meta property="og:description" content="{% if web_seo.page == 'category' %}{{ web_seo.description }}{% else %}{{ site_info.site_title }} | فهرست دسته بندی ها{% endif %}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+  <meta property="og:image" content="{% if category.0.image %}{{ category.0.image.url }}{% else %}https://example.com/default-category-image.jpg{% endif %}" />
+  <!-- JSON-LD Schema for category List -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      {% for c in category %}
+      {
+        "@type": "ListItem",
+        "position": {{ forloop.counter }},
+        "url": "category_view/"
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+  </script>
+</head>
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE و Edge */
+        scrollbar-width: none;     /* Firefox */
+    }
+</style>
+
+<style>
+  .group2 {
+  position: relative;
+  overflow: hidden;
+}
+
+.group2::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: linear-gradient(45deg, #0bffffcc, #062441, #0bffffcc);
+  background-size: 400% 400%;
+  z-index: -1;
+  animation: move-border 3s linear infinite;
+}
+
+/* انیمیشن حرکت بوردر */
+@keyframes move-border {
+  0% {
+    background-position: 400% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 400% 0%;
+  }
+}
+
+.group2:hover::before {
+  animation: move-border-hover 1.5s ease-out forwards;
+}
+
+/* انیمیشن حرکت بوردر در حالت هاور */
+@keyframes move-border-hover {
+  0% {
+    background-position: 400% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+</style>
+<style>
+  /* سبک تایتل */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0bffffee;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, #062441, #0bffffcc);
+    animation: lineMove 2s ease-in-out infinite;
+}
+
+/* انیمیشن حرکت خط پایین تایتل */
+@keyframes lineMove {
+    0% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+    50% {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    100% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+}
+
+/* افکت هاله برای تایتل */
+.section-title:hover {
+    color: #fff;
+    text-shadow: 0 0 15px rgba(11, 255, 255, 0.8);
+    animation: glowEffect 1.5s ease-in-out infinite alternate;
+}
+
+/* افکت هاله برای تایتل */
+@keyframes glowEffect {
+    0% {
+        text-shadow: 0 0 10px rgba(11, 255, 255, 0.6), 0 0 20px rgba(11, 255, 255, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(11, 255, 255, 0.9), 0 0 30px rgba(11, 255, 255, 0.8);
+    }
+}
+
+</style>
+ <style>
+  .gradient-bg {
+      background: linear-gradient(135deg, #062441, #0bffffcc);
+      animation: gradientShift 2s ease infinite alternate;
+      background-size: 400% 400%; /* حرکت روان رنگ‌ها */
+  }
+
+  @keyframes gradientShift {
+      0% { background: linear-gradient(135deg, #062441, #0bffffcc); }
+      50% { background: linear-gradient(135deg, #062441, #0bffffaa); }
+      100% { background: linear-gradient(135deg, #062441, #0bffff77); }
+  }
+</style> 
+ 
+<style>
+.card-container {
+perspective: 1300px;
+}
+
+/* لایه‌ها با preserve-3d */
+.board-layer {
+transform-style: preserve-3d;
+transition: transform 0.35s ease-out, box-shadow 0.35s ease-out;
+border-radius: 20px;
+}
+
+/* نور نئون متحرک با keyframe */
+@keyframes neonGlow {
+0%, 100% {
+box-shadow:
+  0 0 3px rgba(14, 211, 233, 0.5),
+  0 0 7px rgba(14, 211, 233, 0.5),
+  0 0 15px rgba(14, 211, 233, 0.5),
+  0 0 20px rgba(6, 183, 204, 0.4);
+}
+50% {
+box-shadow:
+  0 0 5px rgba(0, 255, 247, 0.4),
+  0 0 12px rgba(0, 255, 247, 0.4),
+  0 0 22px rgba(0, 255, 247, 0.4),
+  0 0 30px rgba(11, 193, 214, 0.3);
+}
+}
+
+
+/* نور متحرک روی لایه اول */
+.board-layer.layer-1 {
+background: linear-gradient(135deg, #062441 0%, #0b1421 50%, #062441 100%);
+border: 2px solid #0ef3ff;
+box-shadow:
+0 6px 5px rgba(14, 211, 233, 0.4);
+animation: neonGlow 3s ease-in-out infinite;
+overflow: hidden;
+}
+
+/* افکت بازتاب شیشه‌ای */
+.frosted-glass {
+background: rgba(11, 255, 255, 0.15);
+backdrop-filter: blur(8px);
+border-radius: 16px;
+border: 1px solid rgba(11, 255, 255, 0.3);
+box-shadow: 0 0 20px rgba(11, 255, 255, 0.25);
+}
+
+/* سایه‌های داخلی */
+.inner-shadow {
+box-shadow: inset 0 0 20px rgba(11, 255, 255, 0.5);
+}
+
+/* بازتاب متحرک */
+.reflective-glass::before {
+content: "";
+position: absolute;
+top: -50%;
+left: -30%;
+width: 60%;
+height: 200%;
+background: linear-gradient(120deg, rgba(255,255,255,0.25) 0%, transparent 60%);
+transform: rotate(25deg);
+pointer-events: none;
+animation: shine 3s infinite;
+border-radius: 20px;
+}
+
+@keyframes shine {
+0% {
+  transform: translateX(-100%) rotate(25deg);
+}
+100% {
+  transform: translateX(200%) rotate(25deg);
+}
+}
+</style>
+<style>
+
+
+.card-3d {
+  perspective: 1000px;
+}
+
+.inner-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+.card-3d:hover .inner-card {
+  box-shadow: 0 20px 40px rgba(11, 255, 255, 0.2);
+}
+</style>
+<style>
+
+.neon-border {
+  position: relative;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #0b1421, #062441);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.neon-border::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(90deg, #0bffffcc, transparent, #0bffffcc);
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.3;
+  filter: blur(4px);
+}
+
+.neon-border:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 30px #0bffff55;
+}
+
+.category-card-content {
+  position: relative;
+  z-index: 1;
+}
+</style>
+
+<div class="relative w-full h-60 md:h-72 lg:h-80 rounded-xl overflow-hidden shadow-lg mb-8">
+  <img src="indexpage=image=media" class="w-full h-full object-cover object-center" alt="">
+  <div class="absolute inset-0 bg-[#0b1421]/60"></div>
+</div>
+
+<header class="gradient-bg text-center py-12">
+    <h1 class="text-4xl font-bold">دسته بندی های اصلی</h1>
+    <p class="text-lg mt-2">حس مدرن، لوکس و اسپرت برای وب‌سایت شما</p>
+</header>
+ 
+
+
+
+<section dir="rtl" class="bg-gradient-to-r from-[#0b1421] via-[#062441] to-[#0b1421] py-12 px-6">
+  <h2 class="section-title text-5xl font-bold mb-10 text-center py-12">دسته‌بندی‌های اصلی</h2>
+  <br><br><br>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {% for i in category %}
+        <article 
+        itemscope 
+        itemtype="https://schema.org/Product" 
+        class="group group2 relative bg-gradient-to-tr from-[#062441] via-[#0b1421] to-[#0b1421] border border-[#0bffffcc] rounded-2xl p-6 shadow-2xl hover:scale-105 hover:shadow-[#0bffffcc]/40 transition duration-500 cursor-pointer flex flex-col items-center"
+        >
+          {% if i.icon %}
+          <a href="javascript:void(0)" class="modal-open" 
+             data-name="{{ i.name }}" 
+             data-description="{{ i.short_des|default:'توضیحات دسته بندی' }}" 
+             data-image="{% if i.image %}{{ i.image.url }}{% else %}https://placehold.co/800x500?text={{ i.name }}{% endif %}"
+             data-super-category-id="{{ i.id }}"
+             data-super-category-slug="{{ i.slug }}"
+             itemprop="url">
+              <i class="{{ i.icon }} text-[#0bffffcc] text-4xl mb-3"></i>
+          </a>     
+          {% else %}
+          <a href="javascript:void(0)" class="modal-open" 
+             data-name="{{ i.name }}" 
+             data-description="{{ i.short_des|default:'توضیحات دسته بندی' }}" 
+             data-image="{% if i.image %}{{ i.image.url }}{% else %}https://placehold.co/800x500?text={{ i.name }}{% endif %}"
+             data-super-category-id="{{ i.id }}"
+             data-super-category-slug="{{ i.slug }}"
+             itemprop="url">
+            <img src="{{ i.image.url }}" class="mb-3 h-14 w-20 rounded-md" alt="{{ i.name }}" itemprop="image" loading="lazy">
+          </a>
+          {% endif %}
+          <h3 class="text-white font-bold text-lg" itemprop="name">{{ i.name }}</h3>
+        </article>
+      {% endfor %}
+  </div>
+  <br>
+</section>
+
+<!-- Modal -->
+<div id="trend-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden">
+  <div class="bg-[#1a1a2e] rounded-lg shadow-lg p-6 w-11/12 max-w-6xl max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <button id="close-modal-btn" class="bg-[#0bffffcc] text-[#0b1421] px-6 py-2 rounded-2xl hover:bg-[#0bffff11] transition">بستن</button>
+    </div>
+    
+    <div id="modal-content" class="text-[#b0bfd1]">
+      <!-- محتوای مودال اینجا با JavaScript پر می‌شود -->
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // Select all modal open buttons and the modal
+  const modalOpenButtons = document.querySelectorAll('.modal-open');
+  const modal = document.getElementById('trend-modal');
+  const modalContent = document.getElementById('modal-content');
+  const closeModalBtn = document.getElementById('close-modal-btn');
+
+  // Add click event to each modal open button
+  modalOpenButtons.forEach(button => {
+    button.addEventListener('click', async function() {
+      // Get data from the clicked button
+      const name = this.getAttribute('data-name');
+      const description = this.getAttribute('data-description');
+      const image = this.getAttribute('data-image');
+      const superCategoryId = this.getAttribute('data-super-category-id');
+      const superCategorySlug = this.getAttribute('data-super-category-slug');
+
+      const Url_ = `/super_category_products/${superCategoryId}/${superCategorySlug}`;
+
+      
+      // Show loading state
+      modalContent.innerHTML = '<div class="text-center py-8">در حال بارگذاری...</div>';
+      modal.classList.remove('hidden');
+      
+      try {
+        // Fetch main categories for this super category
+        const response = await fetch(`/api/main-categories/${superCategoryId}/`);
+        const mainCategories = await response.json();
+        
+        // Create cards HTML from main categories
+        const cardsHTML = mainCategories.map((category, index) => `
+          <div class="group relative rounded-2xl p-4 md:p-5 bg-[#071827] border border-[#0bffff22] hover:border-[#0bffff66] hover:scale-[1.02] transform transition-all duration-300 shadow-md">
+            <div class="flex items-start gap-3">
+              <div class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-[#0b1421] bg-[#0bffffcc] shadow-md">
+                ${index + 1}
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="text-sm md:text-base font-extrabold text-white truncate">
+                  <a href="/main_category_detail/${category.slug}">
+                    ${category.name}
+                  </a>
+                </h4>
+                <p class="text-xs md:text-sm text-[#b0bfd1] mt-1 line-clamp-2">
+                  ${category.short_des || 'توضیحاتی برای این دسته‌بندی'}
+                </p>
+              </div>
+              <div class="hidden md:flex items-center justify-center rounded-full w-12 h-12 overflow-hidden ring-2 ring-[#0bffff33]">
+                ${category.icon ? 
+                  `<i class="${category.icon} text-[#0bffffcc] text-xl"></i>` :
+                  `<img src="${category.image || 'https://placehold.co/80x80?text=📁'}" alt="${category.name}" class="w-full h-full object-cover">`
+                }
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        // Create modal content with the data
+        const modalHTML = `
+          <div dir="rtl" class="max-w-7xl mx-auto px-4 py-6">
+            <div class="bg-gradient-to-tr from-[#062441] via-[#0b1421] to-[#0b1421] rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.6)] border border-[#0bffff33] overflow-hidden">
+              <!-- Hero top -->
+              <div class="md:flex md:items-center gap-8 p-8 md:p-10">
+                <div class="flex-1">
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-[#0bffffcc] leading-tight drop-shadow-md">
+                    ${name}
+                  </h1>
+                  <p class="mt-3 text-sm md:text-base text-[#b0bfd1] max-w-2xl">
+                    ${description}
+                  </p>
+
+                  <div class="mt-6 flex flex-wrap gap-3">
+                    <a href="${Url_}" class="inline-flex items-center gap-2 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded-2xl shadow-lg hover:scale-[1.03] transition">
+                      دیدن همه
+                    </a>
+                  </div>
+                </div>
+
+                <div class="mt-6 md:mt-0 md:w-96 flex-shrink-0 relative">
+                  <div class="rounded-2xl overflow-hidden border border-[#0bffff33] shadow-xl">
+                    <img src="${image}" alt="${name}" class="w-full h-48 md:h-56 object-cover">
+                  </div>
+                  <div class="absolute -top-3 left-4 md:left-6 bg-gradient-to-r from-[#0bffffcc] to-[#00e6e6cc] text-[#0b1421] font-bold px-3 py-1 rounded-full shadow-lg">
+                    ${mainCategories.length} مورد
+                  </div>
+                </div>
+              </div>
+
+              <hr class="border-[#0bffff22]">
+
+              <div class="p-6 md:p-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-4">
+                  ${cardsHTML}
+                </div>
+              </div>  
+            </div>
+          </div>
+        `;
+        
+        // Insert the content into modal
+        modalContent.innerHTML = modalHTML;
+        
+      } catch (error) {
+        console.error('Error loading categories:', error);
+        modalContent.innerHTML = '<div class="text-center py-8 text-red-400">خطا در بارگذاری اطلاعات</div>';
+      }
+    });
+  });
+
+  // Close modal functionality
+  closeModalBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+  });
+
+  // Close modal when clicking outside
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+  });
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+  });
+</script>
+ 
+
+
+
+
+<section class="px-6 bg-[#0b1421] py-32">  
+  <h2 class="section-title text-xl font-bold text-center my-8">دسته بندی های میانی</h2>
+    <div class="grid md:grid-cols-6 grid-cols-3 sm:grid-cols-4 justify-center gap-6 mb-5">
+      {% for i in main_category %}
+      {% if i.image %}
+      <article itemscope itemtype="https://schema.org/Product" class="w-28 h-40 rounded-full flex flex-col justify-center items-center hover:scale-110 duration-500 cursor-pointer">
+        <a href="{% url 'main_category_detail' i.slug %}" itemprop="url">
+          <img src="{{ i.image.url }}" class="rounded-full sm:w-28 sm:h-28 w-24 h-24 object-cover" alt="{{ i.name }}" itemprop="image" loading="lazy">
+          <span class="text-white text-center justify-center text-xs sm:text-sm mt-2 font-bold" itemprop="name">{{ i.name }}</span>
+        </a>
+      </article>
+      {% endif %}
+      {% endfor %}
+    </div>
+</section>
+
+
+{% if promotional_products %}
+<section class="p-10 bg-gradient-to-r from-[#0b1421] via-[#062441] to-[#0b1421]">
+  <br><br><br>
+  <div
+    class="max-w-4xl mx-auto bg-gradient-to-r from-[#0b1421] via-[#0b1421] to-[#062441] rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row hover:shadow-[#0bffffcc]/40 transition-shadow duration-500"
+  >
+    <!-- بخش عکس -->
+    <div class="md:w-1/2 relative h-64 md:h-auto group overflow-hidden rounded-t-xl md:rounded-l-xl">
+      <img
+        src="{{ promotional_products.product.image.url }}"
+        alt="{{ promotional_products.product.name }}"
+        class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+        loading="lazy"
+      />
+      <!-- افکت نوری نرم -->
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-transparent via-[#0bffff33] to-transparent opacity-30 pointer-events-none"
+      ></div>
+    </div>
+
+    <!-- بخش توضیحات -->
+    <div
+      class="md:w-1/2 p-10 flex flex-col justify-center text-white text-right space-y-6"
+    >
+      <h3 class="text-4xl font-extrabold tracking-tight drop-shadow-lg">
+        {{ promotional_products.name }}
+      </h3>
+      <p class="text-[#b0bfd1] leading-relaxed text-lg max-w-xl">
+          {{ promotional_products.description }}
+      </p>
+      <a
+        href="{% url 'product_detail' promotional_products.product.id promotional_products.product.slug %}"
+        class="self-start bg-[#0b1421] hover:bg-[#062441] transition-colors duration-300 font-semibold px-8 py-3 rounded-lg shadow-lg"
+      >
+        خرید اکنون
+    </a>
+    </div>
+  </div>
+  <br><br><br>
+</section>
+{% endif %}
+
+
+
+<section class="w-full px-4 py-10 bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#0b1421] px-6">
+  <br />
+  <h2 class="section-title text-5xl font-bold mt-10 mb-2 text-center mb-3">برترین برند ها</h2>
+  <br /><br>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2">
+      {% for i in brands %}
+        <article class="group relative p-2" itemscope itemtype="https://schema.org/Product">
+          <div class="card-container w-full h-48 cursor-pointer relative" id="card">
+            <!-- لایه 3 -->
+            <div
+              class="board-layer layer-3 absolute inset-8 rounded-xl border border-cyan-500/20 bg-cyan-900/20 shadow-inner inner-shadow z-10"
+            ></div>
+
+            <!-- لایه 2 -->
+            <div
+              class="board-layer layer-2 absolute inset-4 rounded-xl border border-cyan-500/40 bg-cyan-900/40 backdrop-blur-sm frosted-glass z-20"
+            ></div>
+
+            <!-- لایه 1 -->
+            <div
+              class="board-layer layer-1 absolute inset-0 z-30 flex flex-col items-center justify-center rounded-xl reflective-glass"
+            >
+              <div
+                class="p-3 w-full bg-gradient-to-tr from-cyan-900 to-[#0b1421] border border-cyan-300 rounded-xl shadow-lg hover:scale-105 transition-transform duration-500"
+              >
+                <div class="flex items-center justify-center h-18">
+                  {% if i.icon %}
+                  <a href="{% url 'brand_detail' i.id i.slug %}" itemprop="url">
+                    <i class="{{ i.icon }} text-5xl text-[#0bffffcc]"></i>
+                  </a>
+                  {% else %}
+                    <a href="{% url 'brand_detail' i.id i.slug %}" itemprop="url">
+                      <img
+                        src="{{ i.image.url }}"
+                        alt="{{ i.name }}"
+                        class="h-14 w-16"
+                        itemprop="image"
+                        loading="lazy"
+                      />                      
+                    </a>
+                  {% endif %}
+                </div>
+                <h3
+                  itemprop="name"
+                  class="mt-2 text-center text-cyan-400 font-extrabold text-lg drop-shadow-[0_0_8px_rgba(14,211,233,0.8)]"
+                >
+                  {{ i.name }}
+                </h3>
+              </div>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  <br /><br /><br /><br />
+</section>
+
+<script>
+  const card = document.getElementById("card");
+
+  // حرکت 3D با موس
+  card.addEventListener("mousemove", (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left; // X داخل کارت
+    const y = e.clientY - rect.top; // Y داخل کارت
+
+    // مقادیر چرخش (درجه)
+    const rotateX = ((y / rect.height) - 0.5) * 20; 
+    const rotateY = ((x / rect.width) - 0.5) * 30; 
+
+    // لایه‌ها رو جداگانه بچرخونیم با عمق بیشتر
+    card.querySelector(".layer-1").style.transform = `
+      rotateY(${rotateY}deg) rotateX(${-rotateX}deg) translateZ(50px)
+    `;
+    card.querySelector(".layer-2").style.transform = `
+      rotateY(${rotateY * 0.7}deg) rotateX(${-rotateX * 0.7}deg) translateZ(30px)
+    `;
+    card.querySelector(".layer-3").style.transform = `
+      rotateY(${rotateY * 0.4}deg) rotateX(${-rotateX * 0.4}deg) translateZ(10px)
+    `;
+  });
+
+  card.addEventListener("mouseleave", () => {
+    ["layer-1", "layer-2", "layer-3"].forEach((cls) => {
+      card.querySelector(`.${cls}`).style.transform = "none";
+    });
+  });
+</script>
+
+ 
+ 
+
+
+
+
+
+
+
+<section class="bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0b1421] py-6 px-4 rounded-xl max-w-full shadow-2xl">
+  <div class="space-y-6 grid grid-cols-1 md:grid-cols-2 gap-3" id="products-container">
+    {% for i in products %}
+      <div class="bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0b1421] rounded-2xl shadow-2xl border-2 border-[#0bffff33] flex flex-row group hover:border-[#0bffffcc] transition-all duration-500 hover:shadow-2xl hover:shadow-[#0bffffcc]/20"
+            data-category="color-similar"
+            role="region"
+            aria-label="کارت محصول">
+        
+        <!-- بخش تصویر (سمت راست) -->
+        <div class="w-2/5 relative h-48 overflow-hidden rounded-l-2xl">
+          <img
+            src="{{ i.image.url }}"
+            alt="{{ i.name }}"
+            class="w-full h-48 object-cover rounded-2xl transform transition-transform duration-700 group-hover:scale-105"
+            loading="lazy"
+          />
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#0bffff33] to-transparent opacity-30 pointer-events-none"></div>
+          
+          <!-- برچسب وضعیت -->
+          <div class="absolute top-3 left-3 bg-[#0bffffcc] text-[#0b1421] text-xs px-3 py-1 rounded-full font-bold shadow-lg">
+            {% if forloop.first %}جدید{% elif forloop.counter == 2 %}تخفیف{% else %}ویژه{% endif %}
+          </div>
+        </div>
+
+        <!-- بخش توضیحات (سمت چپ) -->
+        <div class="w-3/5 p-6 flex flex-col justify-between text-white">
+          <div>
+            <h3 class="text-2xl font-extrabold mb-3 drop-shadow-lg group-hover:text-[#0bffffcc] transition-colors duration-300">
+              {{ i.name }}
+            </h3>
+            <p class="text-[#b0bfd1] leading-relaxed text-base mb-4 line-clamp-3">
+              {{ i.description_ }}
+            </p>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="text-right">
+              {% if i.sell_price %}
+                <div class="flex items-center gap-2">
+                  <span class="text-[#0bffffcc] text-sm md:text-2xl font-bold">{{ i.sell_price|floatformat:0 }}</span>
+                  <span class="text-red-400 text-base line-through">{{ i.price|floatformat:0 }}</span>
+                </div>
+                <span class="text-[#b0bfd1] text-sm">تومان</span>
+              {% else %}
+                <span class="text-[#0bffffcc] text-sm md:text-2xl font-bold">{{ i.price|floatformat:0 }}</span>
+                <span class="text-[#b0bfd1] text-sm mr-2">تومان</span>
+              {% endif %}
+            </div>
+            <a
+              class="bg-[#0bffffcc] hover:bg-[#0bffff] text-[#0b1421] transition-all duration-300 font-bold md:px-6 px-3 md:py-3 py-1 rounded-xl shadow-lg md:text-xl text-sm text-center hover:scale-105 active:scale-95"
+              href="{% url 'product_detail' i.id i.slug %}">
+              مشاهده جزئیات
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+
+
+{% endblock %}

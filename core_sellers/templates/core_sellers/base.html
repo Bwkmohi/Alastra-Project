@@ -1,0 +1,484 @@
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<header>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+</header>
+
+ 
+<style>
+  .my-scrollable-div {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.my-scrollable-div::-webkit-scrollbar {
+  display: none;
+}
+
+/* موبایل: منو مخفی باشه */
+@media (max-width: 1023px) {
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* مخفی سمت چپ */
+    width: 250px;
+    height: 100vh;
+    transition: left 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+  #sidebar.open {
+    left: 0; /* باز شدن منو */
+  }
+}
+
+/* دسکتاپ: همون حالت قبلی */
+@media (min-width: 1024px) {
+  #sidebar {
+    position: fixed;
+    left: 0;
+    top: auto;
+    height: auto;
+    max-height: 700px;
+    overflow: auto;
+  }
+}
+
+</style>
+
+
+
+<body class="bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0b1421] font-serif">
+<div class="w-full py-6 px-8 bg-gradient-to-br from-[#0b142188] via-[#062441cc] to-[#0b142188] rounded-b-3xl shadow-2xl shadow-[#0bffff33] border-b border-[#0bffff33] backdrop-blur-sm">
+
+  <!-- نوتیفیکیشن -->
+  <div class="ml-4 relative">
+    <a href="{% url 'notf:notifications' %}" class="relative bg-[#0b1421] p-3 rounded-xl border border-[#0bffffcc] shadow-2xl hover:shadow-[#b0bfd1]/40 transition">
+      <i class="bi bi-bell text-[#0bffffcc] text-2xl"></i>
+      <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full shadow-md">{{ un_seen_notf }}</span>
+    </a>
+  </div>
+
+</div>
+
+
+
+<div class="flex flex-col lg:flex-row sm:mx-4 my-6 gap-4 text-white font-serif" dir="rtl">
+
+
+<div class="w-full lg:w-3/4 my-scrollable-div " style="overflow: auto; max-height: 700px;">
+  <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-8 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm">
+    <div class="flex items-center gap-6 mb-4">
+      <!-- آواتار -->
+      <img src="{{ shop_data.logo.url }}" 
+          alt="avatar" 
+          class="w-20 h-20 rounded-full border-4 border-[#0bffffcc]" />
+
+      <!-- اطلاعات اصلی -->
+      <div class="flex-1">
+        <p class="text-2xl font-bold"><a href="{% url 'sellers:shop_public_page' shop_id %}">{{ shop_data.name_shop }}</a></p>
+        <p class="text-sm mt-2">{{ shop_data.description|default:"بیوگرافی ثبت نشده" }}</p>
+      </div>
+    </div>
+
+    <!-- آمار -->
+    <div class="grid grid-cols-3 gap-6 text-center border-t border-[#b0bfd1]/30 pt-4">
+      <div>
+        <p class="text-xl font-bold">{{ shop_data.shop_products_count }}</p>
+        <p class="text-sm text-[#b0bfd1]">محصولات</p>
+      </div>
+      <div>
+        <p class="text-xl font-bold">{{ shop_data.shop_followers_count }}</p>
+        <p class="text-sm text-[#b0bfd1]">دنبال‌کننده</p>
+      </div>
+      <div>
+        <p class="text-xl font-bold">{{ shop_data.rateing }}</p>
+        <p class="text-sm text-[#b0bfd1]">امتیاز</p>
+      </div>
+    </div>
+  </div>
+
+
+<div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-6">
+<!-- کارت فروش -->
+<div class="relative bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg text-center backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+<div class="absolute top-3 right-3 bg-[#0bffffcc] text-[#0b1421] font-bold px-3 py-1 rounded-full text-sm">مجموع فروش</div>
+<i class="bi bi-cash-stack text-4xl text-[#0bffffcc] mb-3"></i>
+<p class="text-white font-extrabold text-2xl sm:text-3xl">{{ shop_data.shop_profit|default:"0" }}</p>
+<p class="text-[#b0bfd1] mt-1 text-sm">تومان</p>
+</div>
+
+<!-- کارت سفارش‌ها -->
+<div class="relative bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg text-center backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+<div class="absolute top-3 right-3 bg-[#0bffffcc] text-[#0b1421] font-bold px-3 py-1 rounded-full text-sm">سفارش‌ها</div>
+<i class="bi bi-bag-check text-4xl text-[#0bffffcc] mb-3"></i>
+<p class="text-white font-extrabold text-2xl sm:text-3xl">{{ shop_data.shop_total_orders|default:"0" }}</p>
+<p class="text-[#b0bfd1] mt-1 text-sm">تعداد</p>
+</div>
+
+<!-- کارت امتیاز میانگین -->
+<div class="relative bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg text-center backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+<div class="absolute top-3 right-3 bg-yellow-400 text-[#0b1421] font-bold px-3 py-1 rounded-full text-sm">میانگین امتیاز</div>
+<i class="bi bi-star-fill text-4xl text-yellow-400 mb-3"></i>
+<p class="text-white font-extrabold text-2xl sm:text-3xl">{{ shop_data.rateing|default:"0" }}</p>
+<p class="text-[#b0bfd1] mt-1 text-sm">ستاره</p>
+</div>
+
+<!-- کارت دنبال‌کننده‌ها -->
+<div class="relative bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg text-center backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+<div class="absolute top-3 right-3 bg-[#0bffffcc] text-[#0b1421] font-bold px-3 py-1 rounded-full text-sm">دنبال‌کننده</div>
+<i class="bi bi-people text-4xl text-[#0bffffcc] mb-3"></i>
+<p class="text-white font-extrabold text-2xl sm:text-3xl">{{ shop_data.shop_followers_count|default:"0" }}</p>
+<p class="text-[#b0bfd1] mt-1 text-sm">نفر</p>
+</div>
+</div>
+
+
+
+
+  
+
+
+{% block core_sellers %}
+
+
+
+
+{% endblock %}
+
+<div id="notification" class="fixed top-6 left-1/2 -translate-x-1/2 max-w-xl w-[90vw] rounded-xl shadow-lg
+bg-gradient-to-r from-[#062441cc] via-[#0b1421dd] to-[#062441cc]
+text-[#0bffffcc]
+font-extrabold
+px-8 py-6
+z-50
+opacity-0 pointer-events-none
+transform -translate-y-12 scale-95
+transition-all duration-500 ease-out
+flex items-center space-x-4 rtl:space-x-reverse
+backdrop-blur-sm
+border border-[#0bffff44]
+">
+<svg id="notification-icon" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 18a6 6 0 100-12 6 6 0 000 12z" />
+</svg>
+<p id="notification-message" class="flex-1 text-right leading-tight text-sm md:text-base"></p>
+<button id="notification-close" aria-label="بستن" class="text-[#0bffffcc] hover:text-[#0bffffee] transition">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+</button>
+</div> 
+
+
+<script>
+const notification = document.getElementById('notification');
+const messageEl = document.getElementById('notification-message');
+const iconEl = document.getElementById('notification-icon');
+const closeBtn = document.getElementById('notification-close');
+
+const icons = {
+success: `<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />`,
+error: `<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />`,
+warning: `<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M12 17a5 5 0 100-10 5 5 0 000 10z" />`,
+info: `<path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 18a6 6 0 100-12 6 6 0 000 12z" />`
+};
+function showNotification(message, type = "info", duration = 6000) {
+messageEl.textContent = message;
+iconEl.innerHTML = icons[type] || icons.info;
+
+notification.classList.remove('opacity-0', 'pointer-events-none', 'scale-95', '-translate-y-12');
+notification.classList.add('opacity-100', 'pointer-events-auto', 'scale-100', 'translate-y-0');
+
+const timeoutId = setTimeout(() => {
+hideNotification();
+}, duration);
+
+closeBtn.onclick = () => {
+clearTimeout(timeoutId);
+hideNotification();
+};
+}
+
+function hideNotification() {
+notification.classList.remove('opacity-100', 'pointer-events-auto', 'scale-100', 'translate-y-0');
+notification.classList.add('opacity-0', 'pointer-events-none', 'scale-95', '-translate-y-12');
+}
+
+
+// اتصال با جنگو
+{% if messages %}
+document.addEventListener("DOMContentLoaded", () => {
+{% for message in messages %}
+  showNotification("{{ message|escapejs }}", "{{ message.tags }}");
+{% endfor %}
+});
+{% endif %}
+</script>
+
+
+
+<div class="bg-[#0b1421] p-5 rounded-lg shadow-md">
+  <h2 class="text-xl font-bold mb-4">اطلاعات حساب کاربری</h2>
+  <div class="flex items-center gap-4 mb-4">
+    <img src="{{ authed_user.profile }}" alt="avatar" class="w-16 h-16 rounded-full border border-[#0bffffcc]" />
+    <div>
+      <p class="text-2xl font-bold">{{ user.username }}</p>
+      <p class="text-sm text-[#b0bfd1]">ایمیل: {{ user.email }}</p>
+    </div>
+  </div>
+</div>
+
+
+</div>    
+
+
+
+ 
+<div class="w-full lg:w-1/4 p-5 rounded-lg shadow-md fixed left-0">
+<!-- جایگزین کل سایدبار فعلی از خط 185 به بعد -->
+<div id="sidebar" class="w-full lg:w-1/4 bg-gradient-to-b from-[#0b1421] to-[#062441] p-6 rounded-2xl shadow-2xl shadow-[#0bffff33] border border-[#0bffff33] backdrop-blur-sm fixed left-0 my-scrollable-div" style="overflow: auto; max-height: 700px;">
+    
+    <!-- هدر سایدبار -->
+    <div class="text-center mb-8">
+        <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center border-4 border-[#0bffff33] shadow-lg">
+            <img src="{{ shop_data.logo.url }}" class="w-16 h-16 rounded-full" alt="Shop Logo">
+        </div>
+        <h3 class="text-xl font-black text-white">{{ shop_data.name_shop }}</h3>
+        <div class="flex items-center justify-center gap-2 mt-2">
+          {% if shop_data.active %}
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span class="text-[#0bffffaa] text-sm">فعال</span>
+          {% else %}
+            <div class="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+            <span class="text-[#0bffffaa] text-sm">غیر فعال</span>
+          {% endif %}
+        </div>
+    </div>
+
+    <!-- کارت اطلاعات سریع -->
+    <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-3 mb-6 border border-[#0bffff33] shadow-lg">
+        <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="p-3 rounded-xl bg-[#0bffff11] hover:bg-[#0bffff22] transition-colors cursor-pointer group">
+                <i class="bi bi-wallet2 text-2xl text-[#0bffff] mb-1 group-hover:scale-110 transition-transform block"></i>
+                <span class="text-white text-xs font-medium">کیف پول</span>
+            </div>
+            <div class="p-3 rounded-xl bg-[#0bffff11] hover:bg-[#0bffff22] transition-colors cursor-pointer group">
+                <i class="bi bi-person text-2xl text-[#0bffff] mb-1 group-hover:scale-110 transition-transform block"></i>
+                <span class="text-white text-xs font-medium">پروفایل</span>
+            </div>
+            <div class="p-3 rounded-xl bg-[#0bffff11] hover:bg-[#0bffff22] transition-colors cursor-pointer group">
+                <i class="bi bi-truck text-2xl text-[#0bffff] mb-1 group-hover:scale-110 transition-transform block"></i>
+                <span class="text-white text-xs font-medium">سفارشات</span>
+            </div>
+        </div>
+        <button class="w-full mt-4 py-3 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300">
+            <a href="{% url 'sellers:shop_edit' shop_id %}">ویرایش فروشگاه <span><i class="bi bi-pen"></i></span></a>
+        </button>
+    </div>
+
+    <!-- منوی آکاردئونی -->
+    <div class="space-y-3">
+        <!-- بخش اصلی -->
+        <div class="menu-section">
+            <div class="menu-header flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-[#0bffff11] to-[#0bffff33] border border-[#0bffff33] cursor-pointer group hover:border-[#0bffff] transition-all duration-300">
+                <div class="flex items-center gap-3">
+                    <i class="bi bi-house text-xl text-[#0bffff]"></i>
+                    <span class="font-bold text-white">صفحه اصلی</span>
+                </div>
+                <i class="bi bi-chevron-down text-[#0bffff] transition-transform duration-300"></i>
+            </div>
+            <div class="menu-content hidden space-y-2 mt-2">
+                {% if shop_id %}
+                <a href="{% url 'sellers:shop_dashbord' shop_id %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-shop text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>فروشگاه</span>
+                </a>
+                {% endif %}
+                <a href="{% url 'sellers:seller_dashbord' %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-person-badge text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>داشبورد فروشنده</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- بخش مدیریت -->
+        <div class="menu-section">
+            <div class="menu-header flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-[#0bffff11] to-[#0bffff33] border border-[#0bffff33] cursor-pointer group hover:border-[#0bffff] transition-all duration-300">
+                <div class="flex items-center gap-3">
+                    <i class="bi bi-gear text-xl text-[#0bffff]"></i>
+                    <span class="font-bold text-white">مدیریت‌ها</span>
+                </div>
+                <i class="bi bi-chevron-down text-[#0bffff] transition-transform duration-300"></i>
+            </div>
+            <div class="menu-content hidden space-y-2 mt-2">
+                <a href="{% url 'ord:orders_list' shop_id %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-bag-check text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>سفارشات</span>
+                    <span class="mr-auto bg-[#0bffff33] text-[#0bffff] px-2 py-1 rounded-full text-xs">{{ count_shop_paid_reservs }}</span>
+                </a>
+                <a href="{% url 'pro:products_list' shop_id %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-box-seam text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>محصولات</span>
+                    <span class="mr-auto bg-[#0bffff33] text-[#0bffff] px-2 py-1 rounded-full text-xs">{{ count_shop_products }}</span>
+                </a>
+                <a href="{% url 'coll:collaborators_list' shop_id %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-people-fill text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>همکاران</span>
+                    <span class="mr-auto bg-[#0bffff33] text-[#0bffff] px-2 py-1 rounded-full text-xs">{{ count_shop_collaborators }}</span>
+                </a>
+                <a href="{% url 's_ques:list_questions' shop_id %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-chat-right-text text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>پرسش پاسخ ها</span>
+                </a>
+                <a href="{% url 'cou:coupon_list' shop_id %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-gift text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>کوپن</span>
+                    <span class="mr-auto bg-[#0bffff33] text-[#0bffff] px-2 py-1 rounded-full text-xs">{{ count_shop_coupons }}</span>
+                </a>
+                <a href="{% url 'notf:notifications' %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-bell text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>اعلان‌ها</span>
+                    <span class="mr-auto bg-red-500 text-white px-2 py-1 rounded-full text-xs">{{ un_seen_notf }} جدید </span>
+                </a>
+            </div>
+        </div>
+
+        <!-- بخش محتوا -->
+        <div class="menu-section">
+            <div class="menu-header flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-[#0bffff11] to-[#0bffff33] border border-[#0bffff33] cursor-pointer group hover:border-[#0bffff] transition-all duration-300">
+                <div class="flex items-center gap-3">
+                    <i class="bi bi-images text-xl text-[#0bffff]"></i>
+                    <span class="font-bold text-white">محتوا و رسانه</span>
+                </div>
+                <i class="bi bi-chevron-down text-[#0bffff] transition-transform duration-300"></i>
+            </div>
+            <div class="menu-content hidden space-y-2 mt-2">
+                <a href="{% url 'pvideo:list_videos' shop_id %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-camera-video text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>ویدیو محصولات</span>
+                </a>
+                <a href="{% url 'gallery:list_product_gallery' shop_id %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-image text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>گالری محصولات</span>
+                </a>
+                <a href="{% url 'story:list_story' shop_id %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-play-btn text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>استوری‌ها</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- بخش مالی -->
+        <div class="menu-section">
+            <div class="menu-header flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-[#0bffff11] to-[#0bffff33] border border-[#0bffff33] cursor-pointer group hover:border-[#0bffff] transition-all duration-300">
+                <div class="flex items-center gap-3">
+                    <i class="bi bi-graph-up text-xl text-[#0bffff]"></i>
+                    <span class="font-bold text-white">مالی و گزارشات</span>
+                </div>
+                <i class="bi bi-chevron-down text-[#0bffff] transition-transform duration-300"></i>
+            </div>
+            <div class="menu-content hidden space-y-2 mt-2">
+                <a href="{% url 'walet' %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-wallet2 text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>کیف پول</span>
+                    <span class="mr-auto bg-green-500 text-white px-2 py-1 rounded-full text-xs">۱۲٫۴۵M</span>
+                </a>
+                <a href="{% url 'ord:export_orders_for_seller' shop_id %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] text-white transition-all duration-300 group">
+                    <i class="bi bi-bar-chart text-lg text-[#0bffffaa] group-hover:text-[#0bffff]"></i>
+                    <span>گزارشات فروشگاه</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- فوتر سایدبار -->
+    <div class="mt-8 pt-6 border-t border-[#0bffff33]">
+        <a href="{% url 'mess:send_tiket' %}" class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#ff6b6b11] text-[#ff6b6b] transition-all duration-300 group">
+            <i class="bi bi-info-circle text-lg"></i>
+            <span>گزارش خطا و پشتیبانی</span>
+        </a>
+    </div>
+</div>
+
+<script>
+// اسکریپت آکاردئون
+document.addEventListener('DOMContentLoaded', function() {
+    const menuSections = document.querySelectorAll('.menu-section');
+    
+    menuSections.forEach(section => {
+        const header = section.querySelector('.menu-header');
+        const content = section.querySelector('.menu-content');
+        const icon = header.querySelector('.bi-chevron-down');
+        
+        header.addEventListener('click', function() {
+            // بستن بقیه بخش‌ها
+            menuSections.forEach(otherSection => {
+                if (otherSection !== section) {
+                    otherSection.querySelector('.menu-content').classList.add('hidden');
+                    otherSection.querySelector('.bi-chevron-down').classList.remove('rotate-180');
+                }
+            });
+            
+            // toggle بخش جاری
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        });
+    });
+
+    // باز کردن اولین بخش به صورت پیشفرض
+    const firstSection = document.querySelector('.menu-section');
+    if (firstSection) {
+        firstSection.querySelector('.menu-content').classList.remove('hidden');
+        firstSection.querySelector('.bi-chevron-down').classList.add('rotate-180');
+    }
+});
+</script>
+
+<style>
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.menu-content {
+    transition: all 0.3s ease-in-out;
+}
+
+.menu-header {
+    transition: all 0.3s ease;
+}
+
+.menu-header:hover {
+    transform: translateX(-5px);
+}
+</style>
+
+</div>
+
+
+
+
+
+<button id="toggleSidebar" class="lg:hidden fixed top-4 left-4 z-1100 p-2 bg-[#0bffffcc] rounded">
+  <i class="bi bi-list text-black text-2xl"></i>
+</button>
+
+</body>
+<script>
+  const toggleBtn = document.getElementById('toggleSidebar');
+  const sidebar = document.getElementById('sidebar');
+
+  toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+
+  // اختیاری: اگر بیرون از منو کلیک شد، منو بسته شود
+  window.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+      sidebar.classList.remove('open');
+    }
+  });
+</script>
+ 

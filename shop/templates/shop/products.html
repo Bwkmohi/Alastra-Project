@@ -1,0 +1,1105 @@
+{% extends 'shop/base.html' %}
+{% block content_sh %}
+{% load static %}
+{% load custom_tags %}
+{% load humanize %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% if web_seo.page == 'products' %}{{ web_seo.title }}{% else %}فهرست محصولات با بهترین کیفیت و قیمت | {{ site_info.site_title }}{% endif %}</title>
+
+  <meta name="description" content="{% if web_seo.page == 'products' %}{{ web_seo.description }}{% else %}فهرست محصولات لپ‌تاپ، کامپیوتر و لوازم جانبی با بهترین کیفیت و قیمت. | {{ site_info.site_title }}{% endif %}" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="{% if web_seo.page == 'products' %}{{ web_seo.title }}{% else %}فهرست محصولات با بهترین کیفیت و قیمت | {{ site_info.site_title }}{% endif %}" />
+  <meta property="og:description" content="{% if web_seo.page == 'products' %}{{ web_seo.description }}{% else %}فهرست محصولات لپ‌تاپ، کامپیوتر و لوازم جانبی با بهترین کیفیت و قیمت. | {{ site_info.site_title }}{% endif %}." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+  <meta property="og:image" content="{% if products.0.image %}{{ products.0.image.url }}{% endif %}" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{% if web_seo.page == 'products' %}{{ web_seo.title }}{% else %}فهرست محصولات با بهترین کیفیت و قیمت | {{ site_info.site_title }}{% endif %}" />
+  <meta name="twitter:description" content="{% if web_seo.page == 'products' %}{{ web_seo.description }}{% else %}فهرست محصولات لپ‌تاپ، کامپیوتر و لوازم جانبی با بهترین کیفیت و قیمت. | {{ site_info.site_title }}{% endif %}" />
+  <meta name="twitter:image" content="{% if products.0.image %}{{ products.0.image.url }}{% endif %}" />
+
+  <!-- JSON-LD Schema for Products List -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      {% for product in products %}
+      {
+        "@type": "ListItem",
+        "position": {{ forloop.counter }},
+        "url": "{{ product.get_absolute_url }}",
+        "name": "{{ product.name }}",
+        "price": "{{ product.price_ }}",
+        "priceCurrency": "IRR"
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+  </script>
+</head>
+
+<style>
+      body {
+        background-color: #0b1421;
+        color: #b0bfd1;
+        font-family: 'Vazirmatn', sans-serif;
+      }
+      .product-card:hover .overlay {
+        opacity: 1;
+      }
+  
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;     /* Firefox */
+    }
+    .fixed-items{
+          position: fixed;
+          bottom: 1.5rem; /* یا bottom: 6px؛ */
+          left: 1.5rem;
+          z-index: 9999;
+
+        }
+        body {
+  overflow-x: hidden;
+}
+@media (max-width: 768px) {
+  #slideComparePanel {
+    width: 90vw;
+    max-width: 300px;
+    left: 50%;
+    top: auto;
+    bottom: 10px;
+    transform: translateX(-50%) translateY(0);
+    border-radius: 1rem;
+  }
+}
+
+
+
+/*  */
+
+
+
+  .aspect-square {
+  aspect-ratio: 1 / 1;
+}
+@media (max-width: 640px) {
+  img {
+    width: 4rem; /* یا 64px */
+    height: 4rem;
+    aspect-ratio: 1 / 1;
+  }
+}
+img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+/*  */
+
+
+.fixed-filter {
+  position: fixed;
+  top: 7rem;
+  right: 1rem;
+  width: 20%; 
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  z-index: 1000;
+}
+.with-fixed-filter {
+  margin-right: 22%; 
+  transition: margin 0.3s ease;
+}
+
+
+/*  */
+
+#actionPanel.show {
+  top: 0;
+  border-radius: 0 0 2rem 2rem; 
+}
+
+/*  */
+
+
+
+.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+}
+
+#filter-sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: #0bffff66 #0b1421;
+}
+
+#filter-sidebar::-webkit-scrollbar {
+    width: 20px;
+}
+
+#filter-sidebar::-webkit-scrollbar-track {
+    background: #0b1421;
+    border-radius: 3px;
+}
+
+#filter-sidebar::-webkit-scrollbar-thumb {
+    background-color: #0bffff66;
+    border-radius: 3px;
+}
+
+
+</style>
+
+
+       
+<div id="searchModal" class="fixed fixed-items w-full top-0 left-0 right-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="w-full max-w-2xl mx-4 bg-gradient-to-r from-[#0b1421] via-[#062441] to-[#0b1421] rounded-2xl shadow-2xl p-6 relative">
+      <button onclick="document.getElementById('searchModal').classList.add('hidden')" 
+        class="absolute top-3 left-3 text-white text-xl hover:text-red-400">
+        &times;
+      </button>
+
+      <h2 class="text-white text-2xl font-bold mb-4 text-center">جستجو در محصولات</h2>
+      <form id="searchForm" action="{% url 'search_products' %}" method="GET">
+        {% csrf_token %}
+        <input type="text" id="searchQuery" placeholder="نام محصول، برند یا ویژگی..." name="q" class="w-full p-3 rounded-xl mt-4 bg-[#0b1421] ring-2 ring-[#0bffffcc] focus:ring-4 focus:ring-[#0bffff66] focus:outline-[#0bffffcc] ring-[#0bffffee] focus:ring-2 focus:ring-[#0bffffcc]" />
+        
+        <div class="mt-4 bg-[#0b1421] rounded-lg shadow-md p-4">
+          <h3 class="text-[#b0bfd1] text-lg font-semibold mb-2">تاریخچه جستجو</h3>
+          <div class="space-y-2">
+            {% for i in search_his %}
+            <div class="flex items-center justify-between py-2 px-4 bg-[#0b1421] rounded-lg hover:bg-[#0b1421] border border-[#0bffffee] transition-all cursor-pointer" onclick="searchFromHistory('{{ i.text }}')">
+              <span class="text-white">{{ i.text }}</span>
+              <i class="bi bi-clock-history text-[#b0bfd1] hover:text-white cursor-pointer"></i>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <button class="mt-4 w-full py-2 bg-[#b0bfd1] text-[#0b1421] font-bold rounded-xl hover:bg-white transition" type="submit">جستجو  <i class="bi bi-search"></i></button>
+      </form>
+    </div>
+</div>
+
+<div id="storyModal" class="fixed inset-0 bg-black/95 z-[9999] hidden flex items-center justify-center p-4">
+  <div class="relative w-full max-w-full max-h-full bg-[#0b1421] rounded-xl shadow-2xl p-2 flex flex-col items-center">
+    <button id="closeStoryModalBtn" class="absolute top-3 left-3 z-10 text-white text-2xl hover:text-[#0bffff] transition">
+      ✕
+    </button>
+
+    <button id="prevStoryBtn" class="absolute top-1/2 left-4 -translate-y-1/2 text-4xl text-[#0bffff] bg-black/50 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer hover:bg-[#0bffff] hover:text-black transition z-50 select-none">
+      ‹
+    </button>
+    <button id="nextStoryBtn" class="absolute top-1/2 right-4 -translate-y-1/2 text-4xl text-[#0bffff] bg-black/50 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer hover:bg-[#0bffff] hover:text-black transition z-50 select-none">
+      ›
+    </button>
+
+    <div id="storyContent" class="w-full h-[80vh] max-w-full max-h-full flex items-center justify-center rounded-xl overflow-hidden bg-black">
+      <!-- اینجا یا ویدیو یا تصویر قرار می‌گیرد -->
+    </div>
+  </div>
+</div>
+
+<div id="filterModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+  <div class="bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0b1421] p-6 rounded-xl shadow-lg border border-[#0bffff66] w-full max-w-2xl">
+    <h2 class="text-xl font-bold text-white mb-4">فیلتر‌ها</h2>
+    <form action="{% url 'filter_products' %}" method="get" class="space-y-4 text-sm text-white">
+      {% csrf_token %}
+      
+      <div>
+        <label class="block mb-1 font-semibold">قیمت تا:</label>
+        <input
+          type="text" name="high_price" placeholder="از 30,000,000"
+          class="w-full p-2 rounded bg-[#0b1421] placeholder-white ring-2 ring-[#0bffffcc] focus:ring-4"
+        />
+        <input
+          type="text" name="low_price" placeholder="تا" id="priceText_M"
+          class="w-full p-2 mt-2 rounded bg-[#0b1421] placeholder-white ring-2 ring-[#0bffffcc] focus:ring-4"
+        />
+        <input
+          type="range" min="1000" max="3000000" class="w-full mt-2" id="priceRange_M"
+        />
+      </div>
+
+
+      <div class="flex flex-row">
+        <div class="mx-2 w-full">
+          <select name="brand" class="w-full p-2 rounded bg-gradient-to-b from-[#062441] to-[#0b1421] ring-2 ring-[#0bffffcc] focus:ring-4">
+            <option value="">انتخاب برند</option>
+            {% for i in brand %}
+              <option value="{{ i.id }}">{{ i.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="mx-2 w-full">
+          <select name="category" id="category-select" class="w-full p-2 rounded bg-gradient-to-b from-[#062441] to-[#0b1421] ring-2 ring-[#0bffffcc] focus:ring-4">
+            <option value="">انتخاب دسته‌بندی</option>
+            {% for i in categorys %}
+              <option value="{{ i.id }}">{{ i }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+    <div class="flex flex-row">
+      <div class="mx-2 w-full">
+        <select name="main_cate" class="w-full p-2 rounded bg-gradient-to-b from-[#062441] to-[#0b1421] ring-2 ring-[#0bffffcc] focus:ring-4">
+          <option value=""> دسته بندی انتخاب کنید</option>
+            {% for i in main_categorys %}
+              <option value="{{ i.id }}" class="bg-[#0b1421] text-lg text-white underline border border-[#0bffffcc]" {% if request.GET.category == i.id|stringformat:"s" %}selected{% endif %}>{{ i }}</option>  
+            {% endfor %}
+        </select>
+      </div>
+      
+      <div class="mx-2 w-full">
+        <select name="color" class="w-full p-2 rounded bg-gradient-to-b from-[#062441] to-[#0b1421] ring-2 ring-[#0bffffcc] focus:ring-4">
+          <option value="">رنگ را انتخاب کنید</option>
+          {% for i in color %}
+            <option value="{{ i.id }}" style="background-color: {{ i.color_grb }};">{{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>  
+
+      <div>
+        <label class="block mb-1 font-extrabold">مرتب سازی:</label>
+        <select name="sort" class="w-full p-2 rounded bg-gradient-to-b from-[#062441] to-[#0b1421] ring-2 ring-[#0bffffcc] focus:ring-4">
+          <option value="">مرتب کردن</option>
+          <option value="highest_price">بالاترین قیمت</option>
+          <option value="lowerest_price">پایین ترین قیمت</option>
+          <option value="newest">جدید ترین</option>
+          <option value="time_old">قدیمی ترین</option>
+        </select>
+      </div>
+      
+      <div class="flex flex-col space-y-2">
+        <label class="inline-flex items-center me-5 cursor-pointer">
+            <input type="checkbox" class="sr-only peer" name='sellprice' checked>
+            <div class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"> تخفیف ویژه </span>
+        </label>
+        <label class="inline-flex items-center me-5 cursor-pointer">
+            <input type="checkbox" class="sr-only peer" name='spessial'>
+            <div class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"> محصولات ویژه </span>
+        </label>
+        <label class="inline-flex items-center me-5 cursor-pointer">
+            <input type="checkbox" class="sr-only peer" name='is_avb'>
+            <div class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">موجودی در انبار</span>
+        </label>
+      </div>
+      
+      <button type="submit" class="w-full py-2 bg-[#0bffffcc] text-[#0b1421] font-semibold rounded hover:bg-[#0bffff66] transition">
+        اعمال فیلتر
+      </button>
+    </form>
+  </div>
+</div>
+ 
+<div id="actionPanel" class="fixed top-[-500px] right-0 left-0 z-50 bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#062441] border-b-2 border-[#0bffffcc] rounded-b-3xl shadow-2xl transition-all duration-500 ease-in-out overflow-hidden">
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+    
+    <div class="flex items-center gap-6">
+      <span class="text-white text-sm sm:text-lg font-bold">انتخاب شده: <span id="selectedCount">0</span></span>
+    </div>
+
+    <div class="flex md:flex-row flex-col gap-3 items-center">
+      <button id="btn-cart" class="bg-[#0bffffcc] hover:bg-[#0bffff] text-sm md:text-lg text-[#0b1421] font-bold px-4 py-2 rounded-xl transition">
+        <i class="bi bi-cart2"></i> سبد خرید
+      </button>
+      <button id="btn-compare" class="bg-[#0bffffcc] hover:bg-[#0bffff] text-sm md:text-lg text-[#0b1421] font-bold px-4 py-2 rounded-xl transition">
+        <i class="bi bi-ui-checks-grid"></i> مقایسه
+      </button>
+      <button id="btn-wishlist" class="bg-[#0bffffcc] hover:bg-[#0bffff] text-sm md:text-lg text-[#0b1421] font-bold px-4 py-2 rounded-xl transition">
+        <i class="bi bi-card-list"></i>  واچ لیست
+      </button>
+      <button
+          onclick="openShareModal()"
+          class="bg-[#0bffffcc] text-[#0b1421] text-sm md:text-lg px-4 py-2 rounded-2xl font-bold flex items-center gap-2"
+        >
+          <i class="bi bi-send"></i> اشتراک‌گذاری با کاربر
+      </button>
+ 
+      <button id="btn-clear" class="text-white text-xl hover:text-[#0bffffcc] transition px-2">✕</button>
+    </div>
+  </div>
+</div>
+
+<div id="userShareModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-end justify-center">
+  <div class="bg-white w-full max-w-md rounded-t-2xl p-6 space-y-4 text-[#0b1421] max-h-[80vh] overflow-y-auto">
+
+    <div class="flex justify-center">
+      <div class="w-12 h-1 bg-gray-400 rounded-full mb-2"></div>
+    </div>
+
+    <h3 class="text-lg font-bold text-center">ارسال برای کاربران</h3>
+
+    <div id="userList" class="space-y-3">
+      <!-- کاربرها از بک‌اند میان -->
+    {% for i in chat_homes %}
+      <div 
+        onclick="selectUser('{{ i.id }}')" 
+        class="flex items-center justify-between p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition border" 
+        id="userRow-{{ i.id }}"
+      >
+        <div class="flex items-center gap-2">
+          <img src="{{ i.user.profile.image.url }}" alt="profile" class="w-10 h-10 rounded-full object-cover" loading="lazy" />
+          <div>
+            <p class="font-bold">{{ i.opponent_first_name }}</p>
+            <p class="text-xs text-gray-500">{{ i.opponent_last_name }}</p>
+          </div>
+        </div>
+        <input type="radio" name="selectedUser" value="{{ i.id }}" class="accent-[#0bffffcc]" />
+      </div>
+        
+      {% endfor %}
+ 
+  
+    </div>
+
+    <button
+      id="sendButton"
+      class="w-full bg-[#0bffffcc] text-[#0b1421] py-2 rounded-lg font-bold hidden"
+      onclick="sendProduct_And_sendoBackEnd()"
+    >
+      ارسال محصول
+    </button>
+
+
+    <button
+      onclick="closeShareModal()"
+      class="w-full bg-gray-200 text-[#0b1421] py-2 rounded-lg font-bold mt-2"
+    >
+      بستن
+    </button>
+  </div>
+</div>
+
+
+  
+<!-- بخش اصلی -->
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d]">
+    <!-- هدر لوکس -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-[#0b1421] via-[#062441] to-[#0b1421] rounded-b-3xl shadow-2xl shadow-[#0bffff33] border-b border-[#0bffff33]">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml,...')] opacity-5"></div>
+        
+        <div class="container mx-auto px-4 py-12 relative">
+            <div class="text-center mb-10">
+              {% if page_title %}
+                <h1 class="text-5xl md:text-7xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent mb-6 drop-shadow-[0_0_30px_rgba(11,255,255,0.6)]">
+                    {{ page_title.name }}
+                </h1>
+                <p class="text-xl text-[#0bffffaa] max-w-2xl mx-auto leading-relaxed">
+                {% if page_title.description %}
+                  {{ page_title.description }}
+                {% elif page_title.short_des %}
+                  {{ page_title.short_des }}
+                {% else %}
+                  بهترین محصولات با کیفیت درجه یک 
+                {% endif %}
+                </p>
+                {% else %}
+                <h1 class="text-5xl md:text-7xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent mb-6 drop-shadow-[0_0_30px_rgba(11,255,255,0.6)]">
+                    لیست محصولات فروشگاه انلاین {{ site_info.site_title }}
+                </h1>
+                <p class="text-xl text-[#0bffffaa] max-w-2xl mx-auto leading-relaxed">
+                    بهترین محصولات با کیفیت درجه یک
+                </p>
+              {% endif %}
+            </div>
+
+            <!-- نوار جستجو -->
+            <div class="max-w-3xl mx-auto mb-12">
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] blur-xl rounded-2xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                      <form action="{% url 'search_products' %}" method="GET" class="relative flex items-center">
+                        <input type="text" 
+                                name="q"
+                                placeholder="جستجوی محصولات..." 
+                                class="flex-1 bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white text-lg placeholder-[#0bffff66] focus:border-[#0bffff] focus:shadow-[0_0_30px_rgba(11,255,255,0.4)] outline-none transition-all pr-16">
+                        <button type="submit" class="absolute left-4 bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#0b1421] font-bold px-6 py-3 rounded-xl hover:shadow-[0_0_20px_rgba(11,255,255,0.6)] transition-all">
+                            <i class="bi bi-search"></i>
+                        </button>
+                      </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-2 py-8">
+        <div class="flex flex-col lg:flex-row gap-4">
+            <!-- filass -->
+              <aside
+                  id="filter-sidebar"
+
+                  class="hidden lg:block lg:w-1/6 lg:sticky lg:top-6 lg:self-start lg:h-[calc(100vh-3rem)] lg:overflow-y-auto bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] p-4 rounded-xl shadow-lg border border-[#0bffff66]"
+              >
+               <div class="lg:relative">
+                  <h4 class="text-xl font-bold text-white mb-4">فیلتر‌ها</h4>
+                  <div class="space-y-4 text-sm">
+                    <form action="{% url 'filter_products' %}" method="get">
+                      {% csrf_token %}
+                      <div>
+                        <input
+                          type="text"
+                          name="low_price"
+                          placeholder="از 5000"
+                          value="{{ request.GET.low_price|default:'5000' }}"
+                          class="w-full p-2 rounded bg-[#0b1421] placeholder-white ring-2 ring-animation ring-[#0bffffcc] focus:ring-4"
+                        />
+                        <input
+                          type="text"
+                          id="priceText"
+                          name="high_price" 
+                          placeholder="تا 3000000"
+                          value="{{ request.GET.high_price|default:'' }}"
+                          class="w-full p-2 rounded bg-[#0b1421] placeholder-white ring-2 ring-animation ring-[#0bffffcc] focus:ring-4"
+                        />
+                      </div>
+
+                      <div>
+                        <input
+                          type="range"
+                          max="3000000"
+                          min="1000"
+                          id="priceRange"
+                          name="priceRange"
+                          value="{{ request.GET.priceRange|default:'' }}"
+                          class="w-full p-2 rounded bg-[#ffff] placeholder-[#0bffffcc] range-blue-400"
+                        />
+                      </div>
+
+                      <div>
+                        <select class="w-full p-2 mb-3 rounded bg-gradient-to-b from-[#062441] to-[#0b1421] ring-2 ring-animation ring-[#0bffffcc] focus:ring-4" name="brand">
+                          <option value="" {% if not request.GET.brand %}selected{% endif %}>انتخاب برند</option>
+                          {% for i in brand %}
+                            <option value="{{ i.id }}" class="bg-[#0b1421] text-lg text-white underline border border-[#0bffffcc]">{{ i.name }}</option>  
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <div>
+                        <select class="w-full p-2 mb-3 rounded bg-gradient-to-b from-[#062441] to-[#0b1421] ring-2 ring-animation ring-[#0bffffcc] focus:ring-4" name="category" id="category-select">
+                          <option value="" {% if not request.GET.category %}selected{% endif %}>دسته‌ را انتخاب کنید</option>
+                          {% for i in categorys %}
+                            <option value="{{ i.id }}" class="bg-[#0b1421] text-lg text-white underline border border-[#0bffffcc]">{{ i }}</option>  
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <div>
+                        <select class="w-full p-2 mb-3 rounded bg-gradient-to-b from-[#062441] to-[#0b1421] ring-2 ring-animation ring-[#0bffffcc] focus:ring-4" name="main_cate">
+                          <option value="" class="bg-[#0b1421] text-lg text-white underline border border-[#0bffffcc]" {% if not request.GET.main_cate %}selected{% endif %}>دسته بندی را انتخاب کنید</option>
+                          {% for i in main_categorys %}
+                            <option value="{{ i.id }}" class="bg-[#0b1421] text-lg text-white underline border border-[#0bffffcc]">{{ i }}</option>  
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <div>
+                        <select class="w-full p-2 mb-3 rounded bg-gradient-to-b from-[#062441] to-[#0b1421] ring-2 ring-animation ring-[#0bffffcc] focus:ring-4" name="color">
+                          <option value="" {% if not request.GET.color %}selected{% endif %}>رنگ را انتخاب کنید</option>
+                          {% for i in color %}
+                            <option value="{{ i.id }}" class="bg-[#0b1421] text-lg text-white underline border border-[#0bffffcc]">{{ i }}</option>  
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <div>
+                        <select class="w-full p-2 mb-3 rounded bg-gradient-to-b from-[#062441] to-[#0b1421] ring-2 ring-animation ring-[#0bffffcc] focus:ring-4" name="sort">
+                          <option value="" {% if not request.GET.sort %}selected{% endif %}>مرتب کردن</option>
+                          <option value="highest_price" {% if request.GET.sort == "highest_price" %}selected{% endif %}>بالاترین قیمت</option>
+                          <option value="lowerest_price" {% if request.GET.sort == "lowerest_price" %}selected{% endif %}>پایین ترین قیمت</option>
+                          <option value="newest" {% if request.GET.sort == "newest" %}selected{% endif %}>جدید ترین</option>
+                          <option value="time_old" {% if request.GET.sort == "time_old" %}selected{% endif %}>قدیمی ترین</option>
+                        </select>
+                      </div>
+
+                    <div class="flex flex-col">
+                      <div class="w-full mx-4 p-2">
+                        <label class="inline-flex items-center me-5 cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" name='sellprice' {% if request.GET.sellprice %}checked{% endif %}>
+                            <div class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+                          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"> تخفیف ویژه </span>
+                        </label>
+                        </div>   
+                      <div class="w-full mx-4 p-2">
+                      <label class="inline-flex items-center me-5 cursor-pointer">
+                          <input type="checkbox" class="sr-only peer" name='spessial' {% if request.GET.spessial %}checked{% endif %}>
+                          <div class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+                          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"> محصولات ویژه </span>
+                      </label>
+                      </div> 
+                      <div class="w-full mx-4 p-2">
+                          <label class="inline-flex items-center me-5 cursor-pointer">
+                              <input type="checkbox" class="sr-only peer" name='is_avb' {% if request.GET.is_avb %}checked{% endif %}>
+                              <div class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+                              <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">موجودی در انبار</span>
+                          </label>
+                      </div>
+                    </div>
+
+                      <button
+                        type="submit"
+                        class="w-full py-2 bg-[#0bffffcc] text-white font-semibold rounded hover:bg-[#0bffff66] transition"
+                      >
+                        اعمال فیلتر
+                      </button>
+                    </form>
+                  </div>
+               </div>
+              </aside>
+
+            <!-- محتوای اصلی سمت چپ -->
+            <div class="lg:w-5/6">
+                <!-- نوار تب‌های افقی -->
+                <div class="mb-8">
+                    <div class="flex flex-wrap gap-3">
+                        <a href="{% url 'products_list' %}" class="px-6 py-3 bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441] font-bold rounded-xl shadow-lg">
+                            همه محصولات
+                        </a>
+                    </div>
+                </div>
+
+                <!-- لیست استوری‌ها -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-black text-white">استوری‌ها</h3>
+                        <button class="text-[#0bffff] hover:text-[#0bffffaa] transition-colors">
+                            مشاهده همه
+                        </button>
+                    </div>
+                    <div class="flex gap-4 overflow-x-auto pb-4">
+                      <div class="inline-flex space-x-4" dir="ltr">
+                        {% for story in storys %}
+                          <div class="flex flex-col items-center cursor-pointer hover:brightness-110 transition" onclick="openStoryModal({{ forloop.counter0 }})">
+                            {% if story.video %}
+                              <div class="relative w-20 h-20 rounded-full border-2 border-[#0bffffcc] overflow-hidden">
+                                <video src="{{ story.video.url }}" muted playsinline class="w-full h-full object-cover"></video>
+                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                  <svg class="w-6 h-6 text-[#0bffffcc]" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                              </div>
+                            {% else %}
+                              <div class="w-20 h-20 rounded-full border-2 border-[#0bffffcc] overflow-hidden relative">
+                                <img src="{{ story.image.url }}" alt="Story {{ forloop.counter }}" class="w-full h-full object-cover" loading="lazy"/>
+                              </div>
+
+                            {% endif %}
+                            <span class="text-xs mt-1 text-[#b0bfd1]">استوری {{ forloop.counter }}</span>
+                          </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex gap-4 overflow-x-auto no-scrollbar">
+                      <div class="inline-flex space-x-4" dir="ltr">
+                        <section class="px-12 mx-auto">
+                          <div class="flex gap-6 overflow-x-auto no-scrollbar pb-1">
+                            {% for i in categorys %}
+                            <div class="min-w-[170px] bg-gradient-to-l from-[#0b142188] to-[#06244188] rounded-xl border border-[#0bffff33] text-white font-bold sidebar-item hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.2)] transition-all duration-300 py-2 px-6">
+                              <img src="{{ i.image.url }} " alt="{{ i.name }}" class="mx-auto w-12 h-12 mb-2" loading="lazy">
+                              <a href="{% url 'super_category_products' i.id i.slug %}" class="text-sm">{{ i.name }}</a>
+                            </div>
+                              {% endfor %}
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="mb-3">
+                    <div class="flex flex-row">
+                      <div class="w-full">
+                        <div class="overflow-x-auto whitespace-nowrap no-scrollbar py-2 mx-5 align-items-center" dir="ltr">
+                          <div class="inline-flex space-x-2">
+                            <button
+                            onclick="document.getElementById('searchModal').classList.remove('hidden')"
+                            class="bg-black text-white px-5 py-2 rounded-3xl"
+                            >
+                                <i class="bi bi-search"></i>
+                            </button>
+                            
+                            <button id="filterBtn" class="block lg:hidden bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-extrabold">
+                              فیلتر <i class="bi bi-sliders"></i>
+                            </button>
+                            <a href="{% url 'best_slng' %}" class="bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-extrabold" >پرفروش ترین</a>
+                            <a href="{% url 'popular' %}" class="bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-bold">محبوب ترین</a>
+                            <a href="{% url 'follower_products' %}" class="bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-bold">فالور های من</a>
+                            <a href="{% url 'watchlist_' %}" class="bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-bold">بر اساس واچ لیست من</a>
+                            <a href="{% url 'exemp_cart' %}" class="bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-bold">بر اساس محصولات سبد خرید من</button>
+                            <a href="{% url 'special_products' %}" class="bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-bold">محصولات ویژه</a>
+                            <a href="{% url 'sell_price' %}" class="bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-bold">محصولات تخفیف ویژه</a>
+                            <a href="{% url 'last_reservs' %}" class="bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-bold">خرید های قبلی</a>          
+                            <a href="{% url 'viewedest' %}" class="bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-bold">پربازدید ترین</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+
+
+                <!-- هدر محصولات -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h2 class="text-3xl font-black text-white">محصولات</h2>
+                        <p class="text-[#0bffffaa] mt-2"> {{ len }} محصول</p>
+                    </div>
+                    
+                    <!-- سورت و انتخاب نمایش -->
+                    <div class="flex gap-4">
+                        <div class="flex bg-[#0b1421aa] border border-[#0bffff33] rounded-xl p-1">
+                            <button class="p-2 rounded-lg bg-[#0bffff22] text-[#0bffff]">
+                                <i class="bi bi-grid-3x3-gap"></i>
+                            </button>
+                            <button class="p-2 rounded-lg text-[#0bffffaa] hover:text-[#0bffff]">
+                                <i class="bi bi-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- گرید محصولات -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {% for product in products %}
+                    <article itemscope itemtype="https://schema.org/Product" class="group bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl overflow-hidden border border-[#0bffff33] shadow-xl hover:shadow-[0_0_40px_rgba(11,255,255,0.2)] hover:border-[#0bffff] transition-all duration-500">
+                        <!-- بخش تصویر -->
+                        <div class="relative overflow-hidden h-56">
+                           <a href="{% url 'product_detail' product.id product.slug %}" itemprop="url">
+                              <img src="{{ product.image.url }}" 
+                                  alt="{{ product.name }}"
+                                  itemprop="image"
+                                  loading="lazy"
+                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                           </a>
+                            
+                            <!-- افکت hover -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            
+                            <!-- دکمه‌های اکشن -->
+                            <div class="absolute top-3 left-3 space-y-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <a href="{% url 'product_detail' product.id product.slug %}" itemprop="url" class="w-10 h-10 bg-[#0b1421aa] backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-[#0bffff] hover:text-[#062441] transition-all">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <label class="relative flex items-center cursor-pointer backdrop-blur-sm transition-opacity">
+                                  <input type="checkbox" class="hidden peer compare-checkbox" id="compare-checkbox" value="{{ product.id }}">
+                                  <i class="bi bi-share text-md inline-block bg-transparent peer-checked:bg-[#0bffff] peer-checked:shadow-lg peer-checked:shadow-[#0bffffcc] transition"></i>
+                                </label>
+                            </div>
+                            
+                            <!-- برچسب‌ها -->
+                            <div class="absolute top-3 right-3">
+                                {% if product.is_sellprice %}
+                                <span class="bg-gradient-to-r from-[#ff6b6b] to-[#ff8e8e] text-white text-xs px-3 py-1 rounded-full font-bold">
+                                     تخفیف
+                                </span>
+                                {% endif %}
+                            </div>
+                        
+                        </div>
+                        
+                        <!-- محتوای محصول -->
+                        <div class="p-5">
+                            <!-- دسته‌بندی -->
+                            <div class="mb-3">
+                                <span class="text-[#0bffffaa] text-xs">{{ product.category }}</span>
+                            </div>
+                            
+                            <!-- عنوان -->
+                            <h3 itemprop="name" class="text-lg font-bold text-white mb-2 group-hover:text-[#0bffff] transition-colors">
+                              <a href="{% url 'product_detail' product.id product.slug %}" itemprop="url">
+                                {{ product.name }}
+                              </a>
+                            </h3>
+
+
+                            
+                            <!-- توضیح کوتاه -->
+                            <p class="text-[#b0bfd1] text-sm mb-4 line-clamp-2">
+                                {{ product.description_ }}
+                            </p>
+                            
+                            <!-- امتیاز -->
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="flex text-yellow-400 text-sm">
+                                  {% for i in 5|to %}
+                                      {% if i <= product.total_rates %}
+                                          <i class="bi bi-star-fill"></i> 
+                                      {% elif i|add:0.5 <= product.total_rates %}
+                                          <i class="bi bi-star-half"></i> 
+                                      {% else %}
+                                          <i class="bi bi-star"></i> 
+                                      {% endif %}
+                                  {% endfor %}
+                                </div>
+                                <span class="text-[#0bffffaa] text-sm">({{ product.total_rates }})</span>
+                            </div>
+                            
+                            <!-- قیمت و دکمه -->
+                            <div class="flex items-center justify-between mt-4">
+                                <div>
+                                    {% if product.sell_price %}
+                                    <div class="flex items-center gap-2">
+                                        <span class="md:text-xl text-md font-bold text-[#0bffff]" itemprop="price">{{ product.sell_price|intcomma }}</span>
+                                        <span class="text-[#ff6b6b] line-through text-sm" itemprop="price">{{ product.price|intcomma }}</span>
+                                    </div>
+                                    {% else %}
+                                    <span class="md:text-xl text-md font-bold text-[#0bffff]" itemprop="price">{{ product.price|intcomma }}</span>
+                                    {% endif %}
+                                    <span class="text-[#0bffffaa] text-sm mr-1">تومان</span>
+                                </div>
+                                <form action="{% url 'cart:cart_add' %}" method="POST">
+                                  {% csrf_token %}
+                                  <input type="text" name="qty" value="1" hidden>
+                                  <input type="text" name="url" value="{{ request.path }}" hidden>
+                                  <input type="text" name="id" value="{{ product.id }}" hidden>
+                                  <button class="bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] hover:from-[#0bffff] hover:to-[#0bffffee] text-white hover:text-[#062441] px-6 py-2 rounded-xl font-bold transition-all border border-[#0bffff33] hover:border-[#0bffff] group-hover:shadow-[0_0_15px_rgba(11,255,255,0.4)]">
+                                    <i class="bi bi-cart3 ml-2"></i>
+                                  </button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+
+                <!-- پagination -->
+                <div class="flex justify-center mt-12">
+                    <div class="flex gap-2">
+                        <button class="w-10 h-10 bg-[#0b1421aa] border border-[#0bffff33] text-white rounded-xl hover:bg-[#0bffff11] transition-all">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                        
+                        {% for i in "123"|make_list %}
+                        <button class="w-10 h-10 {% if forloop.first %}bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441]{% else %}bg-[#0b1421aa] border border-[#0bffff33] text-white{% endif %} rounded-xl font-bold hover:bg-[#0bffff11] transition-all">
+                            {{ i }}
+                        </button>
+                        {% endfor %}
+                        
+                        <button class="w-10 h-10 bg-[#0b1421aa] border border-[#0bffff33] text-white rounded-xl hover:bg-[#0bffff11] transition-all">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    
+<script>
+  const checkboxes = document.querySelectorAll('.compare-checkbox');
+  const panel = document.getElementById('actionPanel');
+  const selectedCount = document.getElementById('selectedCount');
+
+  // بروزرسانی وضعیت پنل بالا
+  function updatePanel() {
+    const checked = document.querySelectorAll('.compare-checkbox:checked');
+    selectedCount.innerText = checked.length;
+
+    if (checked.length > 0) {
+      panel.classList.add('show');
+    } else {
+      panel.classList.remove('show');
+    }
+  }
+
+  // پاک کردن چک‌باکس‌ها
+  function clearAllCheckboxes() {
+    checkboxes.forEach(cb => cb.checked = false);
+    updatePanel();
+  }
+
+  // گرفتن آی‌دی محصولات انتخاب‌شده
+  function getSelectedProductIds() {
+    return Array.from(document.querySelectorAll('.compare-checkbox:checked')).map(cb => cb.value);
+  }
+
+  // ارسال آی‌دی‌ها به ویو مشخص
+  function sendSelectedProducts(url) {
+    const selectedIds = getSelectedProductIds();
+
+    if (selectedIds.length === 0) {
+      alert("هیچ محصولی انتخاب نشده.");
+      return;
+    }
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",  // با فرض اینکه قالب Django هستی
+      },
+      body: JSON.stringify({ product_ids: selectedIds }),
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log("نتیجه:", data);
+      alert("ارسال موفقیت‌آمیز بود.");
+      clearAllCheckboxes(); // اختیاری
+    })
+    .catch(err => {
+      console.error("خطا:", err);
+      alert("مشکلی در ارسال اطلاعات رخ داد.");
+    });
+  }
+
+  // افزودن event به چک‌باکس‌ها
+  checkboxes.forEach(cb => cb.addEventListener('change', updatePanel));
+
+
+  document.getElementById('btn-cart').addEventListener('click', () => {
+    sendSelectedProducts("{% url 'cart:add_to_cart' %}");
+  });
+
+  document.getElementById('btn-compare').addEventListener('click', () => {
+    sendSelectedProducts("{% url 'com:add_to_compare_by_list' %}");
+  });
+
+  document.getElementById('btn-wishlist').addEventListener('click', () => {
+    sendSelectedProducts("{% url 'watchlist:add_to_watchlist_by_list' %}");
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', clearAllCheckboxes);
+
+
+
+// 
+
+
+let selectedUserId = null;
+let selectedProductId = null;  // اضافه می‌کنیم
+
+function openShareModal(productId) {
+  selectedProductId = productId;  // ذخیره محصول انتخاب شده
+  document.getElementById('userShareModal').classList.remove('hidden');
+}
+
+function closeShareModal() {
+  document.getElementById('userShareModal').classList.add('hidden');
+  selectedUserId = null;
+  selectedProductId = null;
+  document.getElementById('sendButton').classList.add('hidden');
+}
+
+function selectUser(userId) {
+  selectedUserId = userId;
+  document.getElementById('sendButton').classList.remove('hidden');
+
+  // highlight انتخاب
+  document.querySelectorAll("[id^='userRow-']").forEach(el => {
+    el.classList.remove('bg-gray-100', 'border-[#0bffffcc]');
+  });
+  document.getElementById(`userRow-${userId}`).classList.add('bg-gray-100', 'border-[#0bffffcc]');
+}
+
+function sendProduct_And_sendoBackEnd() {
+  if (!selectedUserId) {
+    alert("لطفا یک کاربر انتخاب کنید.");
+    return;
+  }
+
+  // گرفتن محصولات انتخاب شده (چک‌باکس‌ها)
+  const selectedProductIds = getSelectedProductIds();  // تابعی که در کد شما هست و آیدی‌ها را برمی‌گرداند
+
+  if (selectedProductIds.length === 0) {
+    alert("هیچ محصولی انتخاب نشده است.");
+    return;
+  }
+
+  fetch("{% url 'send_selected_products' %}", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": "{{ csrf_token }}"
+    },
+    body: JSON.stringify({
+      product_ids: selectedProductIds,
+      chat_home_id: selectedUserId
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert("ارسال موفقیت‌آمیز بود.");
+    closeShareModal();
+    clearAllCheckboxes();  // پاک کردن چک‌باکس‌ها بعد ارسال
+  })
+  .catch(error => {
+    console.error("خطا در ارسال:", error);
+    alert("مشکلی در ارسال اطلاعات رخ داد.");
+  });
+}
+
+
+// 
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterBtn = document.getElementById('filterBtn');
+    const filterModal = document.getElementById('filterModal');
+    filterBtn.onclick = () => filterModal.classList.remove('hidden');
+    filterModal.onclick = (e) => {
+      if (e.target === filterModal) filterModal.classList.add('hidden');
+    };
+  });
+
+// 
+
+  const priceRange = document.getElementById("priceRange");
+  const priceText = document.getElementById("priceText");
+
+  function formatNumber(num) {
+    return Number(num)
+  }
+
+  priceRange.addEventListener("input", function () {
+    priceText.value = formatNumber(this.value) ;
+  });
+
+  priceText.value = formatNumber(priceRange.value);
+
+// 
+
+  const priceRange_M = document.getElementById("priceRange_M");
+  const priceText_M = document.getElementById("priceText_M");
+
+  function formatNumber(num) {
+    return Number(num)
+  }
+
+  priceRange_M.addEventListener("input", function () {
+    priceText_M.value = formatNumber(this.value) ;
+  });
+
+  priceText_M.value = formatNumber(priceRange_M.value);
+
+
+// 
+
+
+  window.addEventListener('DOMContentLoaded', function () {
+  const storyModal = document.getElementById("storyModal");
+  const closeBtn = document.getElementById("closeStoryModalBtn");
+  const prevBtn = document.getElementById("prevStoryBtn");
+  const nextBtn = document.getElementById("nextStoryBtn");
+  const storyContent = document.getElementById("storyContent");
+
+
+  const stories = [
+    {% for story in storys %}
+      {
+        video: {% if story.video %}"{{ story.video.url }}"{% else %}null{% endif %},
+        image: {% if story.image %}"{{ story.image.url }}"{% else %}null{% endif %}
+      }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ];
+
+  let currentIndex = 0;
+
+  window.openStoryModal = function(index) {
+    currentIndex = index;
+    updateStoryContent();
+    storyModal.classList.remove("hidden");
+    storyModal.classList.add("flex");
+  };
+
+  function updateStoryContent() {
+    const story = stories[currentIndex];
+    // پاک کردن محتوای قبلی
+    storyContent.innerHTML = "";
+
+    if (story.video) {
+      const video = document.createElement("video");
+      video.src = story.video;
+      video.controls = true;
+      video.autoplay = true;
+      video.muted = false;
+      video.loop = false;
+      video.className = "w-full h-full object-contain rounded-xl";  // پر کردن فضای کامل مودال
+      storyContent.appendChild(video);
+    } else if (story.image) {
+      const img = document.createElement("img");
+      img.src = story.image;
+      img.alt = "Story Image";
+      img.className = "w-full h-full object-contain rounded-xl";  // پر کردن فضای کامل مودال
+      storyContent.appendChild(img);
+    }
+  }
+
+  function closeModal() {
+    storyModal.classList.remove("flex");
+    storyModal.classList.add("hidden");
+    // اگر ویدیو پخش می‌شد، متوقفش کن
+    const video = storyContent.querySelector("video");
+    if (video) video.pause();
+    storyContent.innerHTML = "";
+  }
+
+  closeBtn.addEventListener('click', closeModal);
+
+  prevBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    currentIndex = (currentIndex - 1 + stories.length) % stories.length;
+    updateStoryContent();
+  });
+
+  nextBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    currentIndex = (currentIndex + 1) % stories.length;
+    updateStoryContent();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (!storyModal.classList.contains("flex")) return;
+    if (e.key === "Escape") closeModal();
+    else if (e.key === "ArrowRight") {
+      currentIndex = (currentIndex + 1) % stories.length;
+      updateStoryContent();
+    } else if (e.key === "ArrowLeft") {
+      currentIndex = (currentIndex - 1 + stories.length) % stories.length;
+      updateStoryContent();
+    }
+  });
+
+  storyModal.addEventListener('click', function(e) {
+    if (e.target === storyModal) closeModal();
+  });
+});
+
+
+// 
+
+
+
+  // تابعی که به تاریخچه جستجو می‌پردازد
+  function searchFromHistory(query) {
+    // مقدار تاریخچه جستجو را به input می‌دهیم
+    document.getElementById('searchQuery').value = query;
+    
+    // فرم را به صورت خودکار ارسال می‌کنیم
+    document.getElementById('searchForm').submit();
+  }
+</script>
+{% endblock %}

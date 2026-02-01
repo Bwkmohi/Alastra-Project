@@ -1,0 +1,154 @@
+{% extends 'supporter/base.html' %}
+
+{% block supp_content %} 
+ 
+<title>
+    لیست سوالات کاربران
+</title>
+
+<style>
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: #071827;
+        border-radius: 10px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #0bffffcc;
+        border-radius: 10px;
+    }
+    .unread-pulse {
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+</style>
+
+<section class="bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#0b1421] min-h-screen text-white">
+    
+    <!-- هدر -->
+    <div class="bg-gradient-to-r from-[#062441] to-[#0b1421] border-b border-[#0bffff33] py-4 px-6">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-[#0bffffcc] rounded-full flex items-center justify-center">
+                    <i class="bi bi-chat-dots text-xl text-[#0b1421]"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-[#0bffffcc]">چت‌های پاسخ داده نشده</h1>
+                    <p class="text-[#b0bfd1] text-sm">مدیریت پیام‌های کاربران</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="bg-red-500 text-white text-sm px-3 py-1 rounded-full font-bold">
+                    {{ unread_chats.count }} جدید
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- محتوای اصلی -->
+    <main class="max-w-6xl mx-auto py-6 px-4">
+        <div class="bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#071827] rounded-2xl shadow-2xl border border-[#0bffff33] overflow-hidden">
+            
+            <!-- هدر لیست -->
+            <div class="bg-gradient-to-r from-[#062441] to-[#0b1421] border-b border-[#0bffff33] p-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <h2 class="font-bold text-[#0bffffcc]">لیست چت‌ها</h2>
+                        <div class="flex gap-2">
+                            <button class="filter-btn active bg-[#0bffffcc] text-[#0b1421] text-xs px-3 py-1 rounded-full font-bold">
+                                همه
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-[#b0bfd1] text-sm">
+                        به‌روزرسانی: <span id="updateTime">همین الان</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- لیست چت‌ها -->
+            <div class="h-[70vh] overflow-y-auto scrollbar-thin">
+                {% for chat in unread_chats %}
+                <div class="chat-item border-b border-[#0bffff22] p-4 hover:bg-[#0bffff11] transition-all duration-300 cursor-pointer group"
+                     onclick="openChat({{ chat.chat_view.id }})">
+                    
+                    <div class="flex items-center gap-4">
+                        <!-- آواتار و وضعیت -->
+                        <div class="relative">
+                            <div class="w-12 h-12 bg-[#0bffff33] rounded-full flex items-center justify-center group-hover:bg-[#0bffff66] transition-colors">
+                                <i class="bi bi-person text-[#0bffffcc]"></i>
+                            </div>
+                            {% if not chat.responsed %}
+                            <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full unread-pulse"></div>
+                            {% endif %}
+                        </div>
+
+                        <!-- اطلاعات اصلی -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-bold text-white text-lg group-hover:text-[#0bffffcc] transition-colors">
+                                    چت #{{ chat.chat_view.id }}
+                                </h3>
+                                <div class="flex items-center md:gap-2">
+                                    <span class="text-xs px-2 py-1 rounded-full 
+                                        {% if not chat.responsed %}bg-red-500 text-white
+                                        {% else %}bg-green-500 text-white{% endif %}">
+                                        {% if not chat.responsed %}نیاز به پاسخ{% else %}پاسخ داده شده{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <p class="text-[#b0bfd1] text-sm line-clamp-2 mb-2">
+                                 پیام جدید از کاربر
+                            </p>
+                            
+                            <div class="flex items-center gap-4 text-xs text-[#b0bfd1]">
+                                <span>کاربر: #{{ chat.chat_view.id }}</span>
+                                <span>تاریخ: {{ chat.created|date:"Y/m/d" }}</span>
+                            </div>
+                        </div>
+
+                        <!-- دکمه اقدام -->
+                        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <button class="md:w-10 md:h-10 w-4 h-4 bg-[#0bffffcc] rounded-full flex items-center justify-center text-[#0b1421] hover:bg-[#0bffff] transition-colors">
+                                <i class="bi bi-reply"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-16 text-[#b0bfd1]">
+                    <i class="bi bi-chat-square text-5xl mb-4 opacity-50"></i>
+                    <p class="text-lg">هیچ چت پاسخ داده نشده‌ای وجود ندارد</p>
+                    <p class="text-sm mt-2">همه پیام‌ها پاسخ داده شده‌اند </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function openChat(chatId) {
+            // باز کردن چت در صفحه جدید یا مودال
+            var url = `/supporter/response_page/${chatId}`
+            window.open(url, '_blank');
+        }
+
+        // Auto-refresh هر 30 ثانیه
+        function refreshChats() {
+            fetch('')
+                .then(response => response.json())
+                .then(data => {
+                    document.querySelector('.bg-red-500').textContent = data.count + ' جدید';
+                    document.getElementById('updateTime').textContent = 'همین الان';
+                });
+        }
+
+        setInterval(refreshChats, 30000);
+    </script>
+</section>
+{% endblock %}

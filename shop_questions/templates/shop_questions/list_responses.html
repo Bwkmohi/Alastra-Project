@@ -1,0 +1,253 @@
+{% extends 'shop_questions/base.html' %}
+
+{% block shop_questions %}
+
+
+<title>
+    لیست پاسخ‌ها
+</title>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-5">
+
+  <!-- کارت پاسخ‌ها -->
+  <a href="{% url 's_ques:list_responses' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-reply-all-fill text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست پاسخ‌ها</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_responses }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+  <!-- کارت کامنت‌ها -->
+  <a href="{% url 's_ques:list_comments' shop_id %}" class="relative group bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-chat-dots-fill text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست کامنت‌ها</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_comments }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+  <!-- کارت سوالات -->
+  <a href="{% url 's_ques:list_questions' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-question-circle-fill text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست سوالات</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_questions }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+</div>
+<style>
+  /* سبک تایتل */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0bffffee;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* انیمیشن متحرک برای تایتل */
+.section-title::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, #062441, #0bffffcc);
+    animation: lineMove 2s ease-in-out infinite;
+}
+
+/* انیمیشن حرکت خط پایین تایتل */
+@keyframes lineMove {
+    0% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+    50% {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    100% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+}
+
+/* افکت هاله برای تایتل */
+.section-title:hover {
+    color: #fff;
+    text-shadow: 0 0 15px rgba(11, 255, 255, 0.8);
+    animation: glowEffect 1.5s ease-in-out infinite alternate;
+}
+
+/* افکت هاله برای تایتل */
+@keyframes glowEffect {
+    0% {
+        text-shadow: 0 0 10px rgba(11, 255, 255, 0.6), 0 0 20px rgba(11, 255, 255, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(11, 255, 255, 0.9), 0 0 30px rgba(11, 255, 255, 0.8);
+    }
+}
+
+</style>
+ 
+<div class="max-w-5xl mx-auto sm:p-6">
+  <h2 class="section-title sm:text-4xl text-3xl font-bold mb-10 text-center">لیست پاسخ ها</h2>
+
+  <div class="space-y-4">
+    {% for response in responses %}
+    <div class="bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0b1421] border border-[#0bffffcc] rounded-2xl shadow-lg p-6 flex flex-col gap-4 hover:shadow-xl transition-all group">
+      
+      <!-- سوال کاربر -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+        <div class="flex-1">
+          {% if response.reply_ques.show_name %}
+            <h2 class="text-lg font-bold text-white">{{ response.reply_ques.user.username }}</h2>
+          {% else %}
+            <h2 class="text-lg font-bold text-gray-400">کاربر ناشناس</h2>
+          {% endif %}
+          <p class="text-sm text-gray-400">محصول: <a href="{% url 'product_detail' response.reply_ques.product.id response.reply_ques.product.slug %}" class="text-[#ffffff] font-bold text-lg">{{ response.reply_ques.product.name }}</a></p>
+          <p class="mt-1 text-white break-words whitespace-normal">{{ response.reply_ques.text }}</p>
+        </div>
+        <span class="text-xs text-[#0bffffcc]">{{ response.reply_ques.time|date:"Y-m-d" }}</span>
+      </div>
+
+      <!-- پاسخ فروشنده -->
+      <div class="bg-[#0b1421] border border-[#0bffff66] rounded-xl p-3 relative group-hover:scale-[1.01] transition-transform">
+        <h3 class="text-sm font-semibold text-[#0bffffcc]">پاسخ فروشنده: {{ response.seller.user.username }}</h3>
+        <p class="text-white mt-1 break-words whitespace-normal">{{ response.response_text }}</p>
+      </div>
+
+      <!-- دکمه‌ها فقط هنگام هاور -->
+      <!-- دکمه‌ها فقط هنگام هاور با افکت از بالا -->
+      <div class="flex gap-3 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-in-out">
+        <a 
+          href="#"
+          data-product="{{ response.reply_ques.product.name }}"
+          data-id="{{ response.id }}"
+          data-image-url="{{ response.reply_ques.product.image.url }}"
+          data-text="{{ response.reply_ques.text }}"
+          data-time="{{ response.reply_ques.time }}"
+          data-responsed="{{ response.reply_ques.responsed }}"
+          class="bg-[#0bffffcc] text-black px-4 py-2 rounded-xl hover:bg-[#0bffff99] flex items-center gap-2 text-sm"
+        >
+          <i class="bi bi-pencil"></i>
+        </a>
+        <a 
+          href="{% url 's_ques:remove_response' shop_id response.id %}" 
+          class="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-500 flex items-center gap-2 text-sm"
+        >
+          <i class="bi bi-trash"></i> 
+        </a>
+      </div>
+
+
+    </div>
+    {% empty %}
+    <div class="text-center text-gray-400 py-6">هیچ پاسخی ثبت نشده است.</div>
+    {% endfor %}
+  </div>
+</div>
+
+ 
+
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden z-50">
+  <div class="max-w-3xl w-full bg-[#0b1421] border border-[#0bffffcc] rounded-xl shadow-lg p-6 text-[#ffffff]" dir="rtl" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    
+    <button id="modalClose" class="absolute top-4 left-4 text-[#0bffffcc] hover:text-white text-2xl font-bold">&times;</button>
+    
+    <!-- عنوان -->
+    <h2 id="modalTitle" class="text-xl font-extrabold mb-2"><span id="modalProduct" class="text-[#0bffffcc]"></span></h2>
+    
+    <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+      <div class="flex-shrink-0 w-32 h-32 rounded-lg overflow-hidden border border-[#0bffffcc]">
+        <img id="modalImage" src="" alt="تصویر سوال" class="object-cover w-full h-full" />
+      </div>
+
+      <div class="flex-grow">
+        <p class="mb-2 text-[#ffffffcc]">متن پرسش: <span id="modalText" class="font-medium"></span></p>
+        <p class="mb-1 break-words whitespace-normal">وضعیت پاسخ: 
+          <span id="modalResponsed" class="font-semibold"></span>
+        </p>
+        <p class="text-sm text-[#888]" id="modalTime"></p>
+      </div>
+    </div>
+
+    <hr class="border-[#0bffff99] mb-6" />
+
+    <form method="POST" id="responseForm" enctype="multipart/form-data" class="space-y-4" novalidate>
+      {% csrf_token %}
+      
+      <label for="response_text" class="block mb-2 font-bold text-[#0bffffcc]">متن پاسخ</label>
+      <textarea id="response_text" name="response_text" rows="4" required
+        placeholder="پاسخ جدید را اینجا وارد کنید!"
+        class="w-full px-4 py-3 pr-12 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] text-white font-bold placeholder-[#b0bfd1] focus:outline-none transition-all duration-500 ease-in-out"></textarea>
+
+
+      <button type="submit"
+        class="w-full bg-[#0bffffcc] hover:bg-[#0bffffee] text-[#0b1421] font-extrabold py-3 rounded-lg transition shadow-md hover:shadow-lg">
+        ارسال پاسخ
+      </button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<script>
+const modal = document.getElementById('modal');
+const modalCloseBtn = document.getElementById('modalClose');
+const responseForm = document.getElementById('responseForm');
+const modalProduct = document.getElementById('modalProduct');
+const modalText = document.getElementById('modalText');
+const modalImage = document.getElementById('modalImage');
+const modalTime = document.getElementById('modalTime');
+const modalResponsed = document.getElementById('modalResponsed');
+
+document.querySelectorAll('a[data-id]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    // پر کردن اطلاعات مودال
+    modalProduct.textContent = this.dataset.product;
+    modalText.textContent = this.dataset.text;
+    modalImage.src = this.dataset.imageUrl || '/static/default-image.png';
+    modalTime.textContent = `زمان ثبت: ${new Date(this.dataset.time).toLocaleString('fa-IR')}`;
+    
+    if(this.dataset.responsed === 'True' || this.dataset.responsed === 'true'){
+      modalResponsed.innerHTML = '<span class="text-green-400"><i class="bi bi-check2-circle"></i> پاسخ داده شده</span>';
+    } else {
+      modalResponsed.innerHTML = '<span class="text-red-400"><i class="bi bi-x-circle"></i> بدون پاسخ</span>';
+    }
+ 
+    const id = this.dataset.id;
+    const shopId = '{{ shop_id }}';
+    responseForm.action = `/shop/shop_questions/${shopId}/edit_reseponse/${id}/`;
+    
+    modal.classList.remove('hidden');
+  });
+});
+
+// بستن مودال
+modalCloseBtn.addEventListener('click', () => {
+  modal.classList.add('hidden');
+});
+
+// بستن مودال با کلیک بیرون فرم
+modal.addEventListener('click', e => {
+  if(e.target === modal) {
+    modal.classList.add('hidden');
+  }
+});
+
+</script>
+{% endblock %}

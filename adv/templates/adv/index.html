@@ -1,0 +1,978 @@
+{% load static %}
+
+
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <meta name="robots" content="index, follow">
+        <title>
+            Alastra MarketPlace | مارکتپلیس برای شرکت های نرم افزاز
+        </title>
+    
+        <meta property="og:title" content="">
+        <meta property="og:description" content="">
+
+            
+
+    
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                primary: '#062441',
+                secondary: '#0d4370',
+                text: '#0b1421'
+              },
+              fontFamily: {
+                serif: ['serif']
+              }
+            }
+          }
+        }
+        
+      </script>
+      <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0b1421] text-[#F5F7F9] font-serif" dir="rtl">
+ 
+<style>
+    body {
+      padding-top: 5rem;
+    }
+    /* * {
+      
+    } */
+    html {
+      touch-action: manipulation;
+    }
+ 
+  @keyframes shines {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+ 
+  @keyframes shines {
+    0% {
+      background-position: 200% center;
+    }
+    100% {
+      background-position: -200% center;
+    }
+  }
+
+  @keyframes slideDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slideDown {
+    animation: slideDown 0.25s ease forwards;
+  }
+</style>
+
+<header class="fixed top-2 right-0 justify-center left-0 z-50 bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0b1421] shadow-2xl" dir="rtl">
+  <div class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-center">
+        <div class="flex items-center space-x-3 rtl:space-x-reverse">
+            <div
+                class="font-extrabold italic justify-center text-center text-3xl tracking-wider select-none cursor-pointer bg-gradient-to-r from-[#0b1421] via-[#0bffffcc] to-[#b0bfd1] bg-clip-text text-transparent drop-shadow-lg"
+                style="background-size: 200% auto; animation: shines 5s linear infinite;">
+                Alastra Demo
+            </div>
+        </div>
+  </div>
+</header>
+
+
+
+
+
+
+<main class="max-w-7xl mx-auto px-6 py-12">
+  <div class="text-center mb-12">
+    <p class="sm:text-6xl text-4xl text-[#f5f7f9] font-bold mb-6 font-serif pt-8">
+        الاسترا 
+    </p>
+
+    <h1 class="text-3xl md:text-4xl font-bold mb-4 pt-4 text-[#0bffffcc] ">
+    الاسترا یک مارکتپلیس اماده و تست شده با معماری پیچیده برای شرکت های برنامه نویسی
+    </h1>
+    <h2 class="text-lg bg-gradient-to-r from-[#0bffffcc] to-[#0b1421] bg-clip-text text-transparent text-gray-300 mb-8">
+        Alastra برای شرکت هایی است که میخواهند ریسک توسعه از صفر را با حاشیه سود بالا تعویض کنند <br>
+        امکان ری برندینگ و فروش مجدد برای شرکت شما.
+        <br>
+        <b>__ الاسترا یک دارایی فنی برای افزایش حاشیه سود شرکت شماست __</b>
+        
+    </h2>
+
+
+        <a href="#Sec" 
+            class="inline-block px-8 py-3 mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold rounded-lg hover:opacity-90 transition-all shadow-lg hover:shadow-cyan-500/30">
+            مشاهده مستندات پروژه
+        </a>
+  </div>
+
+
+
+
+<!-- بعد از بسته شدن تگ </header> و قبل از فرم -->
+<main class="max-w-7xl mx-auto px-6 py-8 md:py-12">
+    <!-- تست باکس معرفی پروژه -->
+    <div class="relative mb-12 md:mb-16 overflow-hidden rounded-3xl">
+        <!-- پس زمینه گرادیانت داینامیک -->
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] opacity-90"></div>
+        
+        <!-- افکت‌های شیشه‌ای -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[#0bffff33] to-transparent rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-[#0bffff22] to-transparent rounded-full blur-3xl"></div>
+        
+        <!-- محتوای اصلی -->
+        <div class="relative z-10 p-8 md:p-12 lg:p-16">
+            <!-- بدنه شیشه‌ای -->
+            <div class="backdrop-blur-xl bg-gradient-to-br from-[#ffffff08] to-[#ffffff03] border border-[#ffffff15] rounded-2xl p-8 md:p-10 shadow-2xl">
+                
+                <!-- هدر معرفی -->
+                <div class="text-center mb-10">
+                    <div class="inline-flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-xl flex items-center justify-center shadow-lg shadow-[#0bffff66]">
+                            <span class="text-2xl"><i class="bi bi-rocket-takeoff"></i></span>
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                            پروژه Alastra
+                        </h1>
+                    </div>
+                    
+                    <p class="text-xl text-[#f5f7f9cc] max-w-3xl mx-auto leading-relaxed">
+                        دقت در منطق, 
+                        سرعت در اجرا 
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+                    <div class="group bg-gradient-to-br from-[#06244188] to-[#0b142188] border border-[#0bffff33] rounded-xl p-4 hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-300">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-10 h-10 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="text-lg"><i class="bi bi-rocket-takeoff text-[#0b1421]"></i></span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">کنترل بیشتر</h3>
+                        </div>
+                        <p class="text-[#f5f7f9aa] text-sm leading-relaxed">
+                            توسعه و شخصی سازی بر اساس مشتریانات.
+                            کنترل بر روی هسته مارکتپلیس
+                        </p>
+                    </div>
+                    
+                    <div class="group bg-gradient-to-br from-[#06244188] to-[#0b142188] border border-[#0bffff33] rounded-xl p-6 hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-300">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-10 h-10 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="text-lg"><i class="bi bi-rocket-takeoff text-[#0b1421]"></i></span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">ریسک کمتر</h3>
+                        </div>
+                        <p class="text-[#f5f7f9aa] text-sm leading-relaxed">
+                            بدون ریسک: <br>
+                          .  زمان طولانی . ریسک و باگ و نارضایتی مشتریان.  ریسک شکست .هزینه توسعه
+                        </p>
+                    </div>
+                    <div class="group bg-gradient-to-br from-[#06244188] to-[#0b142188] border border-[#0bffff33] rounded-xl p-6 hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-300">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-10 h-10 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="text-lg"><i class="bi bi-rocket-takeoff text-[#0b1421]"></i></span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">سود بیشتر</h3>
+                        </div>
+                        <p class="text-[#f5f7f9aa] text-sm leading-relaxed">
+                           فروش مجدد پروژه به مشتریان . هسته مارکتپلیس.
+                            قابل ری برندینگ 
+                            بازگشت لاننس بعد از 3 فروش
+                        </p>
+                    </div>
+                </div>
+
+                <!-- دکمه CTA -->
+                <div class="text-center">
+                    <a href="#Sec" class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] text-[#062441] font-black rounded-2xl shadow-2xl shadow-[#0bffff66] hover:shadow-[0_0_40px_rgba(11,255,255,0.8)] hover:scale-[1.05] transition-all duration-300 group">
+                        <span>شروع</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<div class="max-w-7xl mx-auto my-12 md:my-16 p-4" id="Sec">
+    <!-- هدر بخش -->
+    <div class="text-center mb-12">
+        <div class="inline-flex items-center gap-4 mb-6">
+            <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center shadow-lg shadow-[#0bffff66] animate-pulse-slow">
+                <span class="text-3xl"><i class="bi bi-folder-check text-[#0b1421]"></i></span>
+            </div>
+            <div>
+                <h2 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                    مستندات پروژه
+                </h2>
+                <p class="text-[#0bffffaa] text-sm mt-1">جهت دریافت اطلاعات بیشتر</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- شبکه کارت‌ها -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        {% for i in ProjectFiles %}
+            <a href="{{ i.file.url }}" target="_blank" download
+            class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#06244188] to-[#0b142188] backdrop-blur-xl border border-[#0bffff33] hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.3)] transition-all duration-300 card-hover-effect">
+                
+                <div class="absolute inset-0 bg-gradient-to-br from-[#0bffff11] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                <div class="relative z-10 p-6">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-[#4285f4] to-[#64b5f6] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <span class="text-xl"><i class="bi bi-file-earmark-fill"></i></span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-black text-white">{{ i.name }}</h3>
+                            <p class="text-[#0bffffaa] text-sm">{{ i.name }}</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-[#f5f7f9cc] text-sm mb-6 leading-relaxed">
+                        {{ i.des }}
+                    </p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-gradient-to-br from-[#ff6b6b] to-[#ff8e8e] rounded-full"></div>
+                            <span class="text-xs text-[#f5f7f9aa]">Markdown</span>
+                        </div>
+                        <div class="text-xs text-[#f5f7f9aa] bg-[#0b1421aa] px-3 py-1 rounded-full">
+                            ۲.۵ KB
+                        </div>
+                    </div>
+                    
+                    <!-- دکمه دانلود -->
+                    <div class="mt-6 flex items-center justify-center gap-2 text-[#0bffff] text-sm font-medium">
+                      <span>Download</span> 
+                        <svg class="w-4 h-4 rtl:rotate-180 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg> 
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+<style>
+/* انیمیشن پالس برای المان‌های مهم */
+@keyframes gentle-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.animate-gentle-pulse {
+    animation: gentle-pulse 3s ease-in-out infinite;
+}
+
+/* انیمیشن شناور */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.float-animation {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* افکت تایپوگرافی */
+.typing-effect {
+    display: inline-block;
+    overflow: hidden;
+    border-right: 3px solid #0bffff;
+    white-space: nowrap;
+    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: #0bffff; }
+}
+
+/* افکت نورپردازی */
+.light-beam {
+    position: relative;
+    overflow: hidden;
+}
+
+.light-beam::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(11, 255, 255, 0.1) 50%,
+        transparent 70%
+    );
+    animation: rotate-light 20s linear infinite;
+}
+
+@keyframes rotate-light {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+<!-- بعد از هدر و قبل از فرم -->
+<div class="relative overflow-hidden mb-8 md:mb-12 mx-4 md:mx-0">
+    <!-- پس‌زمینه گرادیانت -->
+    <div class="absolute inset-0 bg-gradient-to-r from-[#06244188] via-[#0b142188] to-[#06244188] opacity-90 rounded-2xl"></div>
+    
+    <!-- افکت نور -->
+    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#0bffff33] to-transparent rounded-full blur-2xl"></div>
+</div>
+
+
+<!-- بعد از فرم -->
+<div class="max-w-6xl mx-auto mt-12 md:mt-16 p-4" id="Sec1">
+    <div class="relative overflow-hidden rounded-3xl">
+        <!-- گرادیانت پویا -->
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0bffff11] via-[#06244133] to-[#0b142188]"></div>
+        
+        <!-- نور متحرک -->
+        <div class="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-[#0bffff55] to-transparent rounded-full blur-3xl animate-move"></div>
+        <div class="absolute bottom-0 right-0 w-60 h-60 bg-gradient-to-tl from-[#0bffff33] to-transparent rounded-full blur-3xl animate-move-reverse"></div>
+        
+        <!-- محتوا -->
+        <div class="relative z-10 p-8 md:p-12 backdrop-blur-xl border border-[#ffffff15] rounded-3xl shadow-2xl">
+            <div class="text-center max-w-3xl mx-auto">
+                <!-- آیکون متحرک -->
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl mb-6 shadow-lg shadow-[#0bffff66] animate-bounce-slow">
+                    <span class="text-3xl">🌐</span>
+                </div>
+                
+                <h2 class="text-3xl md:text-4xl font-black mb-4">
+                    <span class="bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                        تجربه کامل را از دست ندهید!
+                    </span>
+                </h2>
+                
+                <p class="text-xl text-[#f5f7f9cc] mb-8 leading-relaxed">
+                    این تنها یک دمو است. برای دسترسی به تمامی قابلیت‌ها، 
+                    مدیریت پیشرفته و پنل کاربری کامل، 
+                    <span class="text-[#0bffff] font-bold">به وب‌سایت اصلی مراجعه کنید.</span>
+                </p>
+                
+                <!-- دکمه اصلی با افکت ویژه -->
+                <a href="{% url 'index' %}" target="_blank" 
+                   class="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] text-[#062441] font-black text-xl rounded-2xl shadow-2xl shadow-[#0bffff66] hover:shadow-[0_0_50px_rgba(11,255,255,0.8)] transition-all duration-500 overflow-hidden">
+                    
+                    <!-- متن -->
+                    <span class="relative z-10">مشاهده دموی کامل مارکت‌پلیس</span>
+                    
+                    <!-- فلش دوطرفه -->
+                    <span class="relative z-10 flex items-center gap-2">
+                        <svg class="w-6 h-6 rtl:rotate-180 transform group-hover:translate-x-2 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                        <svg class="w-6 h-6 rtl:rotate-180 transform group-hover:translate-x-2 transition-transform duration-300 delay-100" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </span>
+                    
+                    <!-- افکت پس‌زمینه متحرک -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute -inset-1 bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
+                </a>
+                
+                <!-- پیام فرعی -->
+                <p class="text-[#0bffffaa] text-sm mt-6">
+                    ⚡ تجربه کاربری بهینه شده با سرعت بالا
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- در انتهای body قبل از </body> -->
+<div class="fixed bottom-6 left-6 right-6 z-50 md:hidden">
+    <div class="relative overflow-hidden rounded-2xl shadow-2xl">
+        <!-- پس‌زمینه -->
+        <div class="absolute inset-0 bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#062441] opacity-95"></div>
+        
+        <!-- افکت نور -->
+        <div class="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-[#0bffff44] to-transparent rounded-full blur-xl"></div>
+        
+        <!-- محتوا -->
+        <div class="relative z-10 p-4 border border-[#0bffff33] rounded-2xl backdrop-blur-sm">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                        <span class="text-lg">🚀</span>
+                    </div>
+                    <div>
+                        <p class="text-white font-bold text-sm">وب‌سایت اصلی</p>
+                        <p class="text-[#0bffffaa] text-xs">تجربه کامل</p>
+                    </div>
+                </div>
+                
+                <a href="{% url 'index' %}" target="_blank" 
+                   class="group relative px-4 py-2 bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441] font-bold rounded-lg text-sm">
+                    <span class="flex items-center gap-2">
+                        مشاهده دموی کامل مارکت‌پلیس
+                        <svg class="w-4 h-4 rtl:rotate-180 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* انیمیشن حرکت نور */
+@keyframes move {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(20px, -20px) rotate(90deg); }
+    50% { transform: translate(-20px, 20px) rotate(180deg); }
+    75% { transform: translate(20px, 20px) rotate(270deg); }
+}
+
+@keyframes move-reverse {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-20px, 20px) rotate(-90deg); }
+    50% { transform: translate(20px, -20px) rotate(-180deg); }
+    75% { transform: translate(-20px, -20px) rotate(-270deg); }
+}
+
+.animate-move {
+    animation: move 20s infinite linear;
+}
+
+.animate-move-reverse {
+    animation: move-reverse 25s infinite linear;
+}
+
+/* انیمیشن bounce آهسته */
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
+}
+
+/* انیمیشن پالس برای دکمه */
+@keyframes button-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(11, 255, 255, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(11, 255, 255, 0); }
+}
+
+.animate-button-pulse {
+    animation: button-pulse 2s infinite;
+}
+
+/* انیمیشن فلش چشمک‌زن */
+@keyframes arrow-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.animate-arrow-blink {
+    animation: arrow-blink 1.5s infinite;
+}
+</style>
+
+
+
+
+<!-- بعد از هر بخشی که می‌خواهید -->
+<div class="max-w-6xl mx-auto my-12 md:my-16 p-4">
+    <div class="relative overflow-hidden rounded-3xl">
+        <!-- گرادیانت پویا -->
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d]"></div>
+        
+        <!-- افکت‌های نور -->
+        <div class="absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-bl from-[#0bffff33] to-transparent rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-tr from-[#0bffff22] to-transparent rounded-full blur-3xl"></div>
+        
+        <!-- محتوای اصلی -->
+        <div class="relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                
+                <!-- بخش متن (چپ) -->
+                <div class="p-8 md:p-12 lg:p-16 flex flex-col justify-center bg-gradient-to-br from-[#06244188] to-[#0b142188] backdrop-blur-xl border-r border-[#0bffff33]">
+                    <!-- بدنه شیشه‌ای -->
+                    <div class="backdrop-blur-md bg-gradient-to-br from-[#ffffff08] to-[#ffffff03] border border-[#ffffff15] rounded-2xl p-8 shadow-xl">
+                        
+                        <!-- هدر -->
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-xl flex items-center justify-center shadow-lg shadow-[#0bffff66]">
+                                <span class="text-2xl"><i class="bi bi-person"></i></span>
+                            </div>
+                            <div>
+                                <h2 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-[#0bffff] to-[#0bffffee] bg-clip-text text-transparent">
+                                    تست دمو با حساب اماده
+                                </h2>
+                                <p class="text-[#0bffffaa] text-sm mt-1">تجربه کاربری بی‌نظیر</p>
+                            </div>
+                        </div>
+                        
+                        <!-- ویژگی‌ها -->
+                        <div class="mt-8 grid grid-cols-2 gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                                    <span class="text-[#0bffff] text-sm">✓</span>
+                                </div>
+                                <span class="text-[#f5f7f9cc] text-sm user-select">user name :nite_fise</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                                    <span class="text-[#0bffff] text-sm">✓</span>
+                                </div>
+                                <span class="text-[#f5f7f9cc] text-sm">Password: nite_fise</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                                    <span class="text-[#0bffff] text-sm">✓</span>
+                                </div>
+                                <span class="text-[#f5f7f9cc] text-sm">حساب فروشنده</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                                    <span class="text-[#0bffff] text-sm">✓</span>
+                                </div>
+                                <span class="text-[#f5f7f9cc] text-sm">حساب نویسنده</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                                    <span class="text-[#0bffff] text-sm">✓</span>
+                                </div>
+                                <span class="text-[#f5f7f9cc] text-sm">حساب پیشتبانی</span>
+                            </div>
+                                                        <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                                    <span class="text-[#0bffff] text-sm">✓</span>
+                                </div>
+                                <span class="text-[#f5f7f9cc] text-sm">حساب کاربری</span>
+                            </div>
+                        </div>
+                        
+                        <!-- دکمه -->
+                        <a href="{% url 'acc:login' %}" target="_blank" class="inline-flex items-center gap-3 mt-8 px-6 py-3 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300 group">
+                            <span>ورود</span>
+                            <svg class="w-4 h-4 rtl:rotate-180 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- بخش عکس (راست) -->
+                <div class="relative overflow-hidden bg-gradient-to-br from-[#041b2d] to-[#0b1421]">
+                    <!-- افکت روی عکس -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-[#0bffff22] via-transparent to-[#06244166] z-10"></div>
+                    
+                    <!-- تصویر -->
+                    <div class="relative h-full min-h-[400px] md:min-h-[500px] bg-gradient-to-br from-[#0bffff11] to-[#06244133] flex items-center justify-center p-8">
+                        <!-- آیکون یا تصویر جایگزین -->
+                        <div class="relative group">
+                            <!-- دایره متحرک -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-[#0bffff] to-[#0bffffee] rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 animate-pulse"></div>
+                            
+                            <!-- آیکون اصلی -->
+                            <div class="relative w-48 h-48 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#0bffff66] transform group-hover:scale-105 transition-transform duration-500">
+                                <span class="text-6xl"><i class="bi bi-person text-[#0b1421]"></i></span>
+                            </div>
+                            
+                            <!-- افکت‌های کوچک -->
+                            <div class="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-[#0bffff44] to-transparent rounded-full blur-lg animate-bounce-slow"></div>
+                            <div class="absolute -bottom-6 -right-6 w-20 h-20 bg-gradient-to-tl from-[#0bffff33] to-transparent rounded-full blur-lg animate-bounce-slow animation-delay-1000"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- واتر مارک متن -->
+                    <div class="absolute bottom-8 left-8 z-20">
+                        
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="max-w-7xl mx-auto my-16 md:my-24 p-4">
+    
+    <!-- ردیف ۱: عکس چپ - متن راست -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+        <!-- عکس -->
+        <div class="relative order-2 lg:order-1">
+            <div class="relative overflow-hidden rounded-3xl h-full min-h-[300px]">
+                <!-- گرادیانت پس‌زمینه -->
+                <div class="absolute inset-0 bg-gradient-to-br from-[#0bffff11] to-[#06244188]"></div>
+                
+                <!-- افکت‌های نور -->
+                <div class="absolute -top-10 -left-10 w-40 h-40 bg-gradient-to-br from-[#0bffff33] to-transparent rounded-full blur-2xl"></div>
+                
+                <!-- محتوای عکس -->
+                <div class="relative h-full flex items-center justify-center p-8">
+                    <div class="text-center">
+                        <div class="w-32 h-32 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#0bffff66] mx-auto mb-6 animate-float">
+                            <span class="text-5xl">⚡</span>
+                        </div>
+                        <p class="text-[#0bffff] font-bold text-lg">Performance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- متن -->
+        <div class="order-1 lg:order-2 flex items-center">
+            <div class="bg-gradient-to-br from-[#06244188] to-[#0b142188] backdrop-blur-xl border border-[#0bffff33] rounded-3xl p-8 md:p-12 shadow-xl w-full">
+                <h3 class="text-2xl md:text-3xl font-black text-white mb-4"> تکنولوژی های استفاده شده </h3>
+                <p class="text-[#f5f7f9cc] mb-6 leading-relaxed">
+                    تکنولوژی های به کار رفته این پروژه
+                </p>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-3">
+                        <div class="w-6 h-6 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                            <span class="text-[#0bffff] text-xs">✓</span>
+                        </div>
+                        <span class="text-[#f5f7f9cc]">Backend: Python/Django</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <div class="w-6 h-6 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                            <span class="text-[#0bffff] text-xs">✓</span>
+                        </div>
+                        <span class="text-[#f5f7f9cc]">Fronend: Telwind Css</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <div class="w-6 h-6 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                            <span class="text-[#0bffff] text-xs">✓</span>
+                        </div>
+                        <span class="text-[#f5f7f9cc]">Data Base: SQlite</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="max-w-7xl mx-auto my-12 md:my-16 p-4">
+    <!-- هدر ساده -->
+    <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-xl flex items-center justify-center">
+                <span class="text-xl">🖼️</span>
+            </div>
+            <h3 class="text-2xl font-black text-white">تصاویر پروژه</h3>
+        </div>
+        <div class="text-[#0bffffaa] text-sm">۸ تصویر</div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 space-y-4">
+        {% for i in DemoPhotoGraphs %}
+        <div class="relative overflow-hidden rounded-xl break-inside-avoid group h-56">
+            <a href="{{ i.url }}" class="block aspect-[4/3] bg-gradient-to-br from-[#0bffff11] to-[#06244166] flex items-center justify-center">
+                <div class="w-48 h-48 rounded-2xl flex items-center justify-center shadow-lg shadow-[#0bffff66] transform group-hover:scale-125 transition-transform duration-500">
+                    <img src="{{ i.image.url }}" alt="{{ i.alt }}" loading="lazy">
+                </div>
+                <div class="absolute inset-0 border border-[#0bffff33] group-hover:border-[#0bffff] rounded-xl transition-colors duration-300 pointer-events-none"></div>
+            </a>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+
+
+<div class="max-w-6xl mx-auto my-12 md:my-16 p-4">
+    <div class="bg-gradient-to-br from-[#0b142188] to-[#06244188] backdrop-blur-xl border border-[#0bffff33] rounded-3xl shadow-2xl shadow-[#0bffff22] overflow-hidden">
+        
+        <!-- هدر -->
+        <div class="p-8 border-b border-[#0bffff33]">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center shadow-lg shadow-[#0bffff66]">
+                    <span class="text-3xl">⚖️</span>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-black text-white">تحلیل مقایسه‌ای</h2>
+                    <p class="text-[#0bffffaa] mt-1">مزایا در مقابل معایب</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- محتوا -->
+        <div class="p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- مزایا -->
+                <div class="relative">
+                    <!-- بدنه کارت -->
+                    <div class="bg-gradient-to-br from-[#0dcc9d22] to-[#0dcc9d11] backdrop-blur-sm border border-[#0dcc9d44] rounded-2xl p-6">
+                        <!-- هدر -->
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 bg-gradient-to-br from-[#0dcc9d] to-[#2de4b7] rounded-lg flex items-center justify-center">
+                                <span class="text-lg"><i class="bi bi-check"></i></span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">مزایا</h3>
+                        </div>
+                        
+                        <!-- لیست مزایا -->
+                        <div class="space-y-4">
+                            <div class="bg-gradient-to-r from-[#0dcc9d11] to-transparent border-r-4 border-[#0dcc9d] rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-[#0dcc9d] to-[#2de4b7] rounded-lg flex items-center justify-center">
+                                        <span class="text-xs"><i class="bi bi-check"></i></span>
+                                    </div>
+                                    <h4 class="font-bold text-white">کاهش ریسک امنیتی</h4>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-r from-[#0dcc9d11] to-transparent border-r-4 border-[#0dcc9d] rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-[#0dcc9d] to-[#2de4b7] rounded-lg flex items-center justify-center">
+                                        <span class="text-xs"><i class="bi bi-check"></i></span>
+                                    </div>
+                                    <h4 class="font-bold text-white">طراحی مدرن</h4>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-r from-[#0dcc9d11] to-transparent border-r-4 border-[#0dcc9d] rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-[#0dcc9d] to-[#2de4b7] rounded-lg flex items-center justify-center">
+                                        <span class="text-xs"><i class="bi bi-check"></i></span>
+                                    </div>
+                                    <h4 class="font-bold text-white">کاهش زمان لانچ پروژه</h4>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-r from-[#0dcc9d11] to-transparent border-r-4 border-[#0dcc9d] rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-[#0dcc9d] to-[#2de4b7] rounded-lg flex items-center justify-center">
+                                        <span class="text-xs"><i class="bi bi-check"></i></span>
+                                    </div>
+                                    <h4 class="font-bold text-white">امکانات و معماری خاص</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- افکت نور -->
+                    <div class="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-bl from-[#0dcc9d33] to-transparent rounded-full blur-xl opacity-50"></div>
+                </div>
+                
+                <!-- معایب -->
+                <div class="relative">
+                    <!-- بدنه کارت -->
+                    <div class="bg-gradient-to-br from-[#ff6b6b22] to-[#ff6b6b11] backdrop-blur-sm border border-[#ff6b6b44] rounded-2xl p-6">
+                        <!-- هدر -->
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 bg-gradient-to-br from-[#ff6b6b] to-[#ff8e8e] rounded-lg flex items-center justify-center">
+                                <span class="text-lg"><i class="bi bi-x"></i></span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">معایب</h3>
+                        </div>
+                        
+                        <!-- لیست معایب -->
+                        <div class="space-y-4">
+                            <div class="bg-gradient-to-r from-[#ff6b6b11] to-transparent border-r-4 border-[#ff6b6b] rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-[#ff6b6b] to-[#ff8e8e] rounded-lg flex items-center justify-center">
+                                        <span class="text-xs"><i class="bi bi-x"></i></span>
+                                    </div>
+                                    <h4 class="font-bold text-white">هیچ ویژگی مبتنی بر هوش مصنوعی گنجانده نشده است</h4>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-r from-[#ff6b6b11] to-transparent border-r-4 border-[#ff6b6b] rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-[#ff6b6b] to-[#ff8e8e] rounded-lg flex items-center justify-center">
+                                        <span class="text-xs"><i class="bi bi-x"></i></span>
+                                    </div>
+                                    <h4 class="font-bold text-white">پیچیدگی</h4>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-r from-[#ff6b6b11] to-transparent border-r-4 border-[#ff6b6b] rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-[#ff6b6b] to-[#ff8e8e] rounded-lg flex items-center justify-center">
+                                        <span class="text-xs"><i class="bi bi-x"></i></span>
+                                    </div>
+                                    <h4 class="font-bold text-white">وابستگی</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- افکت نور -->
+                    <div class="absolute -bottom-4 -left-4 w-24 h-24 bg-gradient-to-tr from-[#ff6b6b33] to-transparent rounded-full blur-xl opacity-50"></div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- خلاصه -->
+        <div class="p-8 border-t border-[#0bffff33]">
+            <div class="bg-gradient-to-r from-[#0bffff11] to-transparent border border-[#0bffff33] rounded-xl p-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-xl flex items-center justify-center">
+                        <span class="text-xl">📈</span>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-black text-white mb-2">نتیجه‌گیری</h4>
+                        <p class="text-[#f5f7f9cc] text-sm">
+                            با وجود برخی چالش‌ها، نقاط قوت و فرصت‌های این پروژه بسیار بیشتر از نقاط ضعف و تهدیدها است. 
+                            تمرکز بر بهبود تجربه کاربری و کاهش پیچیدگی می‌تواند این پروژه را به یک پلتفرم پیشرو تبدیل کند.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+<section class="max-w-5xl mx-auto px-6 py-12 md:py-16">
+    <div class="text-center mb-10">
+        <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
+            سؤالات متداول درباره پروژه Alastra
+        </h2>
+        <p class="text-[#f5f7f9aa] max-w-2xl mx-auto">
+            این بخش برای توضیح دقیق ماهیت پروژه، کاربرد آن و هدف از ارائه این دمو طراحی شده است.
+        </p>
+    </div>
+
+    <div class="space-y-6">
+        <details class="group bg-gradient-to-br from-[#06244188] to-[#0b142188] border border-[#0bffff33] rounded-2xl p-6">
+            <summary class="cursor-pointer text-lg font-bold text-white">
+                مارکت پلیس آماده چیست؟
+            </summary>
+            <p class="mt-4 text-[#f5f7f9cc] leading-relaxed">
+                مارکت پلیس آماده یک پلتفرم از پیش توسعه‌داده‌شده است که امکان راه‌اندازی سریع یک وب‌سایت چندفروشندگی را بدون نیاز به توسعه از صفر فراهم می‌کند. این نوع مارکت پلیس شامل امکانات پایه و پیشرفته مورد نیاز استارتاپ‌ها و کسب‌وکارهاست و زمان ورود به بازار را به‌شدت کاهش می‌دهد.
+            </p>
+        </details>
+
+        <details class="group bg-gradient-to-br from-[#06244188] to-[#0b142188] border border-[#0bffff33] rounded-2xl p-6">
+            <summary class="cursor-pointer text-lg font-bold text-white">
+                Alastra برای چه نوع شرکت هایی مناسب است
+            </summary>
+            <p class="mt-4 text-[#f5f7f9cc] leading-relaxed">
+                - شرکت های طراحی سایت <br>
+                - شرکت های نرم افزاری متوسط و بزرگ <br>
+                - تیم هایی که مارکتپلیس میگیرند <br>                
+            </p>
+        </details>
+
+        
+    </div>
+</section>
+<script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+        "@type": "Question",
+        "name": "پروژه Alastra چیست؟",
+        "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Alastra یک وب سایت فروشگاهی آنلاین و مارکتپلیس است که به صورت دمو ارائه شده تا کاربران قبل از خرید، طراحی و امکانات آن را بررسی کنند."
+        }
+        },
+    ]
+    }
+</script>
+
+
+
+
+
+
+<section class="max-w-5xl mx-auto px-6 py-14">
+  <article class="prose prose-invert max-w-none">
+    <h2>پروژه Semi Premium چیست؟ </h2>
+    <p>
+      پروژه‌های Semi Premium به وب سایت‌هایی گفته می‌شود که از نظر طراحی،
+      ساختار و تجربه کاربری در سطحی بالاتر از نمونه‌های معمولی قرار دارند،
+      اما هنوز برای استارتاپ‌ها و کسب‌وکارهای نوپا مقرون‌به‌صرفه هستند.
+    </p>
+  </article>
+</section>
+
+
+
+
+<!--  -->
+<footer class="bg-[#062441] mt-16 py-8 border-t border-gray-800">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row justify-between items-center">
+      <div class="mb-4 md:mb-0">
+        <div class="text-2xl font-bold text-cyan-300">Alastra</div>
+      </div>
+      <div class="flex space-x-6 rtl:space-x-reverse">
+        {% for i in Conactions %}
+        <a href="{{ i.url }}" class="text-gray-400 hover:text-white" rel="nofollow noopener">
+          <i class="{{ i.icon }} text-xl"></i>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    <p>
+        محی الدین محمدیان
+    </p>
+    <div class="text-center text-gray-500 text-sm mt-6">
+      © 2024 Alastra. تمامی حقوق محفوظ است.
+    </div>
+  </div>
+</footer>
+</body>
+</html>

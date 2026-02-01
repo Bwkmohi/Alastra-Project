@@ -1,0 +1,145 @@
+
+{% if brands %}
+<div class="bg-gray-900 py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <h2 class="text-center text-lg/8 font-semibold text-white">یزند ها</h2>
+    <div class="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5">
+      {% for i in brands %}
+        {% if i.image %}
+            <img width="158" height="48" src="{{ i.image.url }}" alt="Transistor" class="col-span-2 max-h-12 w-full object-contain lg:col-span-1" />
+          {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if sot %}
+<section class="w-full bg-gradient-to-r from-[#0b1421] via-[#062441] to-[#0b1421] py-8 flex justify-center">
+  <a href="{% if sot.url %}{{ sot.url }}{% endif %}" rel="nofollow noopener">
+    <div class="max-w-md w-full flex items-center justify-between bg-[#0b142166] backdrop-blur-md rounded-3xl shadow-lg px-6 py-4 hover:shadow-cyan-500/50 transition-shadow duration-500 cursor-pointer">
+      <img src="{% if sot.image %}{{ sot.image.url }}{% endif %}" alt="نماد اعتماد" class="h-14 w-auto drop-shadow-md" />
+      <div class="flex flex-col justify-center ml-4">
+        <h3 class="text-[#0bffffee] font-extrabold text-lg leading-tight select-none">نماد اعتماد الکترونیکی</h3>
+        <p class="text-[#0bffffcc] text-sm font-medium select-none">{% if sot.title %}{{ sot.title }}{% else %}امنیت خرید شما، اولویت ماست{% endif %}</p>
+      </div>
+      <div class="ml-auto">
+        <svg class="h-8 w-8 text-[#0bffffee] animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+    </div>
+  </a>
+</section>
+{% endif %}
+
+
+
+<footer class="bg-[#0b1421] text-white py-10 mt-20" dir="rtl">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-6">
+      
+      <!-- برند -->
+      <div class="w-full">
+        <h2 class="text-5xl font-bold mb-4">{% if site_info.persian_site_title %}{{ site_info.persian_site_title }}{% else %}فروشگاه علا{% endif %}</h2>
+        <p class="text-gray-300 text-sm">
+        {% if site_info.description %}{{ site_info.description }}{% else %}بهترین مرجع خرید لپ‌تاپ، قطعات و تجهیزات دیجیتال با ضمانت اصالت کالا.{% endif %}
+        </p>
+      </div>
+      
+      <!-- لینک‌ها -->
+      <div class="w-full">
+        <h3 class="text-lg font-semibold mb-3">دسترسی سریع</h3>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="{% url 'index' %}" class="hover:text-white flex items-center gap-2"><i class="bi bi-house-door"></i> خانه</a></li>
+            <li><a href="{% url 'products_list' %}" class="hover:text-white flex items-center gap-2"><i class="bi bi-box"></i> محصولات</a></li>
+            <li><a href="{% url 'cart:cart' %}" class="hover:text-white flex items-center gap-2"><i class="bi bi-cart-fill"></i> سبد خرید</a></li>
+            <li><a href="{% url 'sellers:become_seller' %}" class="hover:text-white flex items-center gap-2"><i class="bi bi-people-fill"></i> فروشنده شوید</a></li>
+            {% if request.user.is_authenticated %}
+              <li><a href="{% url 'acc:pro' %}" class="hover:text-white flex items-center gap-2"><i class="bi bi-person-circle"></i> پروفایل</a></li>
+              <li><a href="{% url 'watchlist:watch_list' %}" class="hover:text-white flex items-center gap-2"><i class="bi bi-eye-fill"></i> واچ لیست</a></li>
+              <li><a href="{% url 'walet' %}" class="hover:text-white flex items-center gap-2"><i class="bi bi-wallet2"></i> کیف پول</a></li>
+              <li><a href="{% url 'mess:send_tiket' %}" class="hover:text-white flex items-center gap-2"><i class="bi bi-ticket-detailed-fill"></i> گزارش</a></li>
+              <li><a href="{% url 'res:list_reservations' %}" class="hover:text-white flex items-center gap-2"><i class="bi bi-file-earmark-text-fill"></i> لیست سفارشات</a></li>
+            {% endif %}
+          </ul>
+      </div>
+  
+      <!-- خدمات -->
+      <div class="w-full">
+        <h3 class="text-lg font-semibold mb-3">خدمات مشتری</h3>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="#" class="hover:text-white flex items-center gap-2"><i class="bi bi-question-circle"></i> سوالات متداول</a></li>
+          <li><a href="#" class="hover:text-white flex items-center gap-2"><i class="bi bi-arrow-repeat"></i> بازگشت کالا</a></li>
+          <li><a href="#" class="hover:text-white flex items-center gap-2"><i class="bi bi-box-arrow-in-right"></i> پیگیری سفارش</a></li>
+          <li><a href="#" class="hover:text-white flex items-center gap-2"><i class="bi bi-shield-check"></i> تضمین کیفیت</a></li>
+          <li><a href="#" class="hover:text-white flex items-center gap-2"><i class="bi bi-shield-lock"></i> تضمین امنیت</a></li>
+          <li><a href="{% url 'supp:chat_view' %}" class="hover:text-white flex items-center gap-2"><i class="bi bi-headset"></i> پشتیبانی</a></li>
+        </ul>
+      </div>
+  
+      <!-- شبکه‌های اجتماعی -->
+      <div class="w-full">
+        <h3 class="text-lg font-semibold mb-3">ما را دنبال کنید</h3>
+        <div class="flex gap-4 mt-2 text-2xl">
+          {% if site_info.instagram_url %} 
+            <a href="{{ site_info.instagram_url }}" class="hover:text-[#0bffffcc]" rel="nofollow noopener"><i class="bi bi-instagram"></i></a>
+          {% endif %}
+          {% if site_info.telegram_url %}
+            <a href="{{ site_info.telegram_url }}" class="hover:text-[#0bffffcc]" rel="nofollow noopener"><i class="bi bi-telegram"></i></a>
+          {% endif %}
+          {% if site_info.whatsapp_url %}
+            <a href="{{ site_info.whatsapp_url }}" class="hover:text-[#0bffffcc]" rel="nofollow noopener"><i class="bi bi-whatsapp"></i></a>
+          {% endif %}
+          {% if site_info.twitter_url %}
+            <a href="{{ site_info.twitter_url }}" class="hover:text-[#0bffffcc]" rel="nofollow noopener">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
+                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
+              </svg>
+            </a>
+          {% endif %}
+          {% if site_info.linkdn_url %}
+            <a href="{{ site_info.linkdn_url }}" class="hover:text-[#0bffffcc]" rel="nofollow noopener"><i class="bi bi-linkedin"></i></a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  
+    <div class="text-center text-gray-500 text-sm mt-10 border-t border-gray-700 pt-4">
+      © 2025 {% if site_info.site_title %} {{ site_info.site_title }} {% else %}Alastra{% endif %} - تمامی حقوق محفوظ است.
+    </div>
+</footer>
+
+</body>
+</html>
+
+
+
+
+<!-- <footer class="bg-gradient-to-r from-[#0b1421] via-[#062441] to-[#0b1421] text-[#0bffffcc] font-serif py-10 px-6">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    
+    <div class="flex flex-col items-center bg-[#0b142144] border border-[0.2px] border-[#0bffffcc] rounded-2xl p-6 shadow-lg hover:shadow-cyan-500/40 transition-shadow duration-300 cursor-default">
+      <i class="bi bi-geo-alt text-3xl mb-4 text-[#0bffffee] drop-shadow-md"></i>
+      <p class="text-sm leading-relaxed text-center">آدرس: مراوه‌تپه، خیابان قویدل، روبروی مخابرات</p>
+    </div>
+
+    <div class="flex flex-col items-center bg-[#0b142144] border border-[0.2px] border-[#0bffffcc] rounded-2xl p-6 shadow-lg hover:shadow-cyan-500/40 transition-shadow duration-300 cursor-default">
+      <i class="bi bi-telephone text-3xl mb-4 text-[#0bffffee] drop-shadow-md"></i>
+      <p class="text-sm leading-relaxed text-center">تماس با ما: 017-00000</p>
+    </div>
+
+    <div class="flex flex-col items-center bg-[#0b142144] border border-[0.2px] border-[#0bffffcc] rounded-2xl p-6 shadow-lg hover:shadow-cyan-500/40 transition-shadow duration-300 cursor-default">
+      <i class="bi bi-envelope text-3xl mb-4 text-[#0bffffee] drop-shadow-md"></i>
+      <p class="text-sm leading-relaxed text-center">ایمیل: {% if site_info.email %}{{ site_info.email }}{% endif %}</p>
+    </div>
+
+    <div class="flex flex-col items-center bg-[#0b142144] border border-[0.2px] border-[#0bffffcc] rounded-2xl p-6 shadow-lg hover:shadow-cyan-500/40 transition-shadow duration-300 cursor-default">
+      <i class="bi bi-clock text-3xl mb-4 text-[#0bffffee] drop-shadow-md"></i>
+      <p class="text-sm leading-relaxed text-center">ساعات باز: 11:00 AM</p>
+    </div>
+
+ 
+
+  </div>
+</footer> -->
+

@@ -1,0 +1,185 @@
+{% extends 'shop_manage_order/base.html' %}
+{% block shop_ord %}
+
+<title>
+    لیست ارشیو سفارشات
+</title>
+
+<style>
+  /* سبک تایتل */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0bffffee;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* انیمیشن متحرک برای تایتل */
+.section-title::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, #062441, #0bffffcc);
+    animation: lineMove 2s ease-in-out infinite;
+}
+
+/* انیمیشن حرکت خط پایین تایتل */
+@keyframes lineMove {
+    0% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+    50% {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    100% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+}
+
+/* افکت هاله برای تایتل */
+.section-title:hover {
+    color: #fff;
+    text-shadow: 0 0 15px rgba(11, 255, 255, 0.8);
+    animation: glowEffect 1.5s ease-in-out infinite alternate;
+}
+
+/* افکت هاله برای تایتل */
+@keyframes glowEffect {
+    0% {
+        text-shadow: 0 0 10px rgba(11, 255, 255, 0.6), 0 0 20px rgba(11, 255, 255, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(11, 255, 255, 0.9), 0 0 30px rgba(11, 255, 255, 0.8);
+    }
+}
+
+</style>
+
+
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:p-5">
+ 
+  <a href="{% url 'ord:archive_list' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-layout-text-sidebar text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست آرشیو سفارش</p>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+  <a href="{% url 'ord:orders_list' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-bag text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست سفارشات</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_paid_reservs }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+  <a href="{% url 'ord:list_filtered_orders' shop_id 'sended' %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-bag-check text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">سفارشات ارسال شده</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_send_reservs }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+  <a href="{% url 'ord:list_filtered_orders' shop_id 'unsended' %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-bag-dash text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">ارسال نشده</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_unsend_reservs }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+  <a href="{% url 'ord:list_filtered_orders' shop_id 'canceled' %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-bag-x text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لغو ارسال شده</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_canceled_reservs }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+  <a href="{% url 'ord:list_filtered_orders' shop_id 'today' %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-calendar2-week text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">سفارشات امروز</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_today_reservs }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+</div>
+
+
+   
+ 
+
+
+<h2 class="section-title sm:text-4xl text-3xl font-bold mb-10 text-center">لیست ارشیو سفارشات</h2>
+
+
+
+<ul class="space-y-4">
+  {% for archive in archives %}
+    <li class="bg-[#0b1421] border border-[#0bffff44] rounded-2xl shadow-xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center hover:shadow-[#0bffffcc]/50 transition-all duration-300 relative">
+      
+      <div class="space-y-1">
+        <p class="text-[#b0bfd1] font-bold">سال: <span class="text-[#0bffffcc]">{{ archive.year }}</span></p>
+        <p class="text-[#b0bfd1] font-bold">ماه: <span class="text-[#0bffffcc]">{{ archive.month }}</span></p>
+        <p class="text-[#b0bfd1] font-bold">تعداد سفارش‌ها: <span class="text-white">{{ archive.count }}</span></p>
+      </div>
+
+<div class="relative mt-3 md:mt-0">
+  <button onclick="toggleArchiveButtons('buttons-{{ forloop.counter }}')"
+    class="px-5 py-2 bg-[#0bffff44] hover:bg-[#0bffffcc] text-[#062441] font-bold rounded-xl shadow-md hover:shadow-[#0bffffcc]/60 transition-all">
+    مشاهده
+  </button>
+
+  <div id="buttons-{{ forloop.counter }}" 
+       class="hidden absolute 
+              top-full right-0 
+              md:top-0 md:left-full md:right-auto 
+              mt-2 md:mt-0
+              bg-[#0b1421]/90 p-4 rounded-2xl shadow-2xl border border-[#0bffff44] 
+              w-48 max-w-xs
+              flex flex-col space-y-2
+              z-20">
+    <a href="{% url 'ord:order_archive_year' shop_id archive.year %}" 
+       class="block px-4 py-2 bg-[#0bffff44] hover:bg-[#0bffffcc] text-[#062441] font-bold rounded-xl shadow-md whitespace-nowrap overflow-hidden text-ellipsis">
+      {{ archive.year }}
+    </a>
+    <a href="{% url 'ord:order_archive_month' shop_id archive.year archive.month %}" 
+       class="block px-4 py-2 bg-[#0bffff44] hover:bg-[#0bffffcc] text-[#062441] font-bold rounded-xl shadow-md whitespace-nowrap overflow-hidden text-ellipsis">
+      {{ archive.year }}/{{ archive.month }}
+    </a>
+  </div>
+</div>
+
+<script>
+  function toggleArchiveButtons(id) {
+    const el = document.getElementById(id);
+    if (el.classList.contains('hidden')) {
+      // اول همه دراپ‌داون‌ها رو ببند
+      document.querySelectorAll('[id^="buttons-"]').forEach(div => {
+        div.classList.add('hidden');
+      });
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+    }
+  }
+
+  // اختیاری: کلیک بیرون دراپ‌داون همه رو می‌بنده
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('div.relative')) {
+      document.querySelectorAll('[id^="buttons-"]').forEach(div => {
+        div.classList.add('hidden');
+      });
+    }
+  });
+</script>
+
+    </li>
+  {% empty %}
+    <p class="text-center text-[#0b1421] font-semibold">هیچ آرشیوی موجود نیست.</p>
+  {% endfor %}
+</ul>
+{% endblock %}

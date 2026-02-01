@@ -1,0 +1,27 @@
+{% extends 'report_shop\base.html' %}
+{% block report_content %}
+
+<title>
+  گزارش فروشگاه 
+</title>
+
+<form action="" method="POST" class="max-w-3xl mx-auto my-10 sm:p-8 p-4 shadow-2xl bg-gradient-to-br from-[#0bffff33] via-transparent to-transparent blur-xs rounded-sm" dir="rtl">
+  {% csrf_token %}
+
+  <label for="category_id" class="block mb-2 font-semibold">دسته‌بندی:</label>
+  <select name="category_id" id="category_id" required
+    class="w-full px-4 py-3 rounded-xl border-2 border-[#0bffffcc] bg-[#071927dd] placeholder-[#84a9bb] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]">
+    <option value="">انتخاب دسته بندی</option>
+    {% for i in category %}
+      <option value="{{ i.id }}">{{ i.name }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="text" class="block mb-2 font-semibold">متن:</label>
+  <textarea name="text" id="text" rows="4" required
+    class="w-full px-4 py-3 my-4 rounded-xl border-2 border-[#0bffffcc] bg-[#071927dd] placeholder-[#84a9bb] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"></textarea>
+    <button type="submit" class="w-full py-3 rounded-xl bg-[#0bffffcc] text-[#0b1421] font-bold hover:bg-[#0bffffaa] transition duration-300">
+     ارسال گزارش
+    </button>
+</form>
+{% endblock %}

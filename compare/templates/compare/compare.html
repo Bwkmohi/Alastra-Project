@@ -1,0 +1,1169 @@
+{% extends "compare/base.html" %}
+    {% block com_content %}
+    {% load %}
+    {% load custom_filters %}
+<title>
+      لیست مقایسه
+</title>
+
+<style>
+  .gradient-bg {
+      background: linear-gradient(135deg, #062441, #0bffffcc);
+      animation: gradientShift 2s ease infinite alternate;
+      background-size: 400% 400%; /* حرکت روان رنگ‌ها */
+  }
+
+  @keyframes gradientShift {
+      0% { background: linear-gradient(135deg, #062441, #0bffffcc); }
+      50% { background: linear-gradient(135deg, #062441, #0bffffaa); }
+      100% { background: linear-gradient(135deg, #062441, #0bffff77); }
+  }
+</style> 
+<header class="gradient-bg text-center py-12">
+    <h1 class="text-4xl font-bold">مقایسه محصولات</h1>
+    <p class="text-lg mt-2">{{ super_category.short_des }}</p>
+</header>
+
+ 
+ 
+ 
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
+        :root {
+            --primary: #0bffff;
+            --primary-dark: #062a45;
+            --secondary: #041b2d;
+            --accent: #ff4757;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #0a0f1a 0%, #0a1828 50%, #041b2d 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .glass-effect {
+            background: rgba(4, 27, 45, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(11, 255, 255, 0.2);
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(11, 255, 255, 0.5);
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 10px rgba(11, 255, 255, 0.8);
+        }
+        
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(145deg, rgba(4, 27, 45, 0.9) 0%, rgba(6, 42, 69, 0.9) 100%);
+            border: 1px solid rgba(11, 255, 255, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(11, 255, 255, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .product-card:hover::before {
+            opacity: 1;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(11, 255, 255, 0.3);
+            border-color: rgba(11, 255, 255, 0.5);
+        }
+        
+        .feature-item {
+            transition: all 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            background: rgba(11, 255, 255, 0.08);
+            transform: translateX(-5px);
+        }
+        
+        .compare-btn {
+            background: linear-gradient(135deg, #0bffffcc 0%, #0bffffee 50%, #0bffffcc 100%);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .compare-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: right 0.6s;
+        }
+        
+        .compare-btn:hover::before {
+            right: 100%;
+        }
+        
+        .compare-btn:hover {
+            box-shadow: 0 0 25px rgba(11, 255, 255, 0.8);
+            transform: translateY(-3px);
+        }
+        
+        .filter-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filter-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        .filter-btn.active::after {
+            width: 100%;
+        }
+        
+        .comparison-table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.2s;
+        }
+        
+        .comparison-table tr:last-child th, .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .price-tag {
+            background: linear-gradient(135deg, #0bffffcc 0%, #0bffffee 100%);
+            color: #062441;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255, 71, 87, 0.4);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0bffff, #0bffffee);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .spec-badge {
+            display: inline-block;
+            background: rgba(11, 255, 255, 0.1);
+            border: 1px solid rgba(11, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 3px 10px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        .tech-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(11, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .swiper {
+            width: 100%;
+            padding: 20px 0 40px;
+        }
+        
+        .swiper-slide {
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .swiper-pagination-bullet {
+            background: rgba(11, 255, 255, 0.5);
+            opacity: 0.5;
+            width: 10px;
+            height: 10px;
+            transition: all 0.3s;
+        }
+        
+        .swiper-pagination-bullet-active {
+            background: var(--primary);
+            opacity: 1;
+            transform: scale(1.2);
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, rgba(4, 27, 45, 0.7) 0%, rgba(6, 42, 69, 0.7) 100%);
+            border: 1px solid rgba(11, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(11, 255, 255, 0.5);
+            box-shadow: 0 10px 20px rgba(11, 255, 255, 0.2);
+        }
+        
+        .ai-recommendation {
+            background: linear-gradient(135deg, rgba(4, 27, 45, 0.9) 0%, rgba(6, 42, 69, 0.9) 100%);
+            border-left: 4px solid var(--primary);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .flip-card {
+            perspective: 1000px;
+            height: 280px;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .flip-card-front {
+            background: linear-gradient(135deg, rgba(4, 27, 45, 0.9) 0%, rgba(6, 42, 69, 0.9) 100%);
+            border: 1px solid rgba(11, 255, 255, 0.2);
+        }
+        
+        .flip-card-back {
+            background: linear-gradient(135deg, rgba(6, 42, 69, 0.9) 0%, rgba(4, 27, 45, 0.9) 100%);
+            border: 1px solid rgba(11, 255, 255, 0.3);
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+ 
+
+
+    <!-- بخش کارت‌های مقایسه -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-bold mb-8 text-[#0bffff] flex items-center gap-3">
+                <i class="fas fa-balance-scale-left"></i>
+                محصولات انتخاب شده برای مقایسه
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {% for i in compare %}
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="flex justify-center mb-4">
+                                <img src="{{ i.image }}" alt="{{ i.name }}" class="h-24 object-contain">
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">{{ i.name }}</h3>
+                            <p class="text-gray-400 text-sm mb-4">{{ i.description }}</p>
+                            <div class="price-tag inline-block px-4 py-2 rounded-full font-bold">{{ i.price }} تومان</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 class="text-xl font-bold mb-4 text-[#0bffff]">مشخصات فنی</h3>
+                            <ul class="text-sm text-right space-y-2">
+                                {% for d in i.details %}
+                                <li>{{ d.key }}: {{ d.value }}</li>
+                                {% endfor %}
+                            </ul>
+                            <a href="{% url 'com:remove_from_compare' i.compare_id %}" class="mt-6 w-full py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold transition duration-300">
+                                حذف از مقایسه
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div> 
+        </div>
+    </section>
+ 
+
+
+
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <div class="glass-effect rounded-2xl p-6 shadow-lg overflow-x-auto">
+                <h2 class="text-2xl font-bold mb-6 text-[#0bffff] flex items-center gap-3">
+                    <i class="fas fa-table"></i>
+                    جدول مقایسه پیشرفته
+                </h2>
+                <div class="min-w-max">
+                <table class="comparison-table w-full">
+                    <thead>
+                    <tr>
+                        <th class="p-4 text-right font-bold text-[#0bffff] bg-[#062441] rounded-tr-xl">ویژگی‌ها</th>
+                        {% for product in compare %}
+                        <th class="p-4 text-center font-bold bg-[#062441] {% if forloop.last %}rounded-tl-xl{% endif %}">
+                        <div class="flex flex-col items-center">
+                            <img src="{{ product.image }}" alt="{{ product.name }}" class="h-16 mb-2">
+                            <span>{{ product.name }}</span>
+                        </div>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                          {% for detail in compare.0.details %}
+                                <tr class="feature-item">
+                                    <td class="p-4 font-semibold">{{ detail.key }}</td>
+                                    {% for product in compare %}
+                                        <td class="p-4 text-center">
+                                            
+                                            {{ detail.value }}
+
+
+                                            <!--  -->
+                                            {% if product.details %}
+                                                {% with detail_value=product.details.key %}
+                                                {% if detail_value %}
+                                                    {{ detail_value }}
+                                                {% else %}
+                                                -
+                                                {% endif %}
+                                                {% endwith %}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="10" class="p-6 text-center text-gray-400">محصولی برای مقایسه وجود ندارد.</td>
+                                </tr>
+                            {% endfor %}
+                        
+
+
+
+                        <tr class="feature-item">
+                        <td class="p-4 font-semibold">برند</td>
+                        {% for product in compare %}
+                        <td class="p-4 text-center">{{ product.brand }}</td>
+                        {% endfor %}
+                        </tr>
+
+                        <tr class="feature-item">
+                        <td class="p-4 font-semibold">رنگ</td>
+                        {% for product in compare %}
+                        <td class="p-4 text-center">{{ product.color }}</td>
+                        {% endfor %}
+                        </tr>
+
+                        <tr class="feature-item">
+                        <td class="p-4 font-semibold">قیمت</td>
+                        {% for product in compare %}
+                        <td class="p-4 text-center font-bold text-[#0bffff]">{{ product.price }}</td>
+                        {% endfor %}
+                        </tr>
+                    
+
+                    
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+<div class="container py-5">
+    <h1 class="mb-4 text-white">مقایسه محصولات</h1>
+    
+    {% if len == 0 %}
+    <div class="alert alert-info text-center bg-blue-900/30 border-blue-700 text-blue-200">
+        <p class="mb-3">هیچ محصولی برای مقایسه وجود ندارد.</p>
+        <a href="" class="btn bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white px-6 py-2 rounded-lg font-bold transition-all duration-300">
+            مشاهده محصولات
+        </a>
+    </div>
+    {% else %}
+    
+    <!-- اطلاعات کلی محصولات -->
+    <div class="compare-container">
+        <div class="compare-header">
+            <div class="compare-sidebar">
+                <div class="compare-sidebar-item">
+                    <i class="fas fa-image ml-2 text-blue-400"></i>
+                    تصویر
+                </div>
+                <div class="compare-sidebar-item">
+                    <i class="fas fa-cube ml-2 text-blue-400"></i>
+                    نام محصول
+                </div>
+                <div class="compare-sidebar-item">
+                    <i class="fas fa-tag ml-2 text-blue-400"></i>
+                    برند
+                </div>
+                <div class="compare-sidebar-item">
+                    <i class="fas fa-palette ml-2 text-blue-400"></i>
+                    رنگ
+                </div>
+                <div class="compare-sidebar-item">
+                    <i class="fas fa-tags ml-2 text-blue-400"></i>
+                    قیمت
+                </div>
+                <div class="compare-sidebar-item">
+                    <i class="fas fa-star ml-2 text-blue-400"></i>
+                    امتیاز
+                </div>
+                <div class="compare-sidebar-item">
+                    <i class="fas fa-file-alt ml-2 text-blue-400"></i>
+                    توضیحات
+                </div>
+                {% for product in compare %}
+                    {% for detail in product.details %}
+                        {% if forloop.first %}
+                        <div class="compare-sidebar-item">
+                            <i class="fas fa-cog ml-2 text-blue-400"></i>
+                            {{ detail.key }}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                <div class="compare-sidebar-item border-b-0">
+                    <i class="fas fa-bolt ml-2 text-blue-400"></i>
+                    اقدامات
+                </div>
+            </div>
+            
+            <div class="compare-products">
+                {% for product in compare %}
+                <div class="compare-product-card group hover:bg-gray-800/50 transition-all duration-300">
+                    <!-- دکمه حذف از مقایسه -->
+                    <div class="compare-remove">
+                        <form action="" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-full p-2 transition-all duration-300 shadow-lg hover:shadow-red-500/30">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- تصویر محصول -->
+                    <div class="compare-item">
+                        {% if product.image %}
+                        <div class="relative overflow-hidden rounded-xl bg-gray-700/50 p-3">
+                            <img src="{{ product.image }}" alt="{{ product.name }}" 
+                                 class="img-fluid compare-image transform group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/50 to-transparent rounded-xl"></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- نام محصول -->
+                    <div class="compare-item">
+                        <h5 class="product-name">
+                            <a href="" class="hover:text-blue-400 transition-colors duration-300">
+                                <i class="fas fa-cube ml-2 text-blue-400 text-sm"></i>
+                                {{ product.name }}
+                            </a>
+                        </h5>
+                    </div>
+                    
+                    <!-- برند -->
+                    <div class="compare-item">
+                        <span class="product-brand bg-gradient-to-r from-blue-900/30 to-blue-800/20 px-3 py-1 rounded-full text-sm">
+                            <i class="fas fa-tag ml-2 text-blue-400"></i>
+                            {{ product.brand }}
+                        </span>
+                    </div>
+                    
+                    <!-- رنگ -->
+                    <div class="compare-item">
+                        <span class="product-color inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-purple-900/30 to-purple-800/20 text-sm">
+                            <i class="fas fa-palette ml-2 text-purple-400"></i>
+                            {{ product.color }}
+                        </span>
+                    </div>
+                    
+                    <!-- قیمت -->
+                    <div class="compare-item">
+                        <span class="product-price bg-gradient-to-r from-green-900/30 to-green-800/20 px-4 py-2 rounded-lg font-bold text-lg text-green-400">
+                            <i class="fas fa-tags ml-2"></i>
+                            {{ product.price }}
+                        </span>
+                    </div>
+                    
+                    <!-- امتیاز -->
+                    <div class="compare-item">
+                        <div class="product-rating">
+                            {% with ''|center:5 as range %}
+                            {% for i in range %}
+                                {% if forloop.counter <= product.rating %}
+                                <i class="fas fa-star text-yellow-400 animate-pulse"></i>
+                                {% else %}
+                                <i class="far fa-star text-gray-600"></i>
+                                {% endif %}
+                            {% endfor %}
+                            {% endwith %}
+                            <small class="text-gray-400 bg-gray-800/50 px-2 py-1 rounded-full text-xs">({{ product.rating }})</small>
+                        </div>
+                    </div>
+                    
+                    <!-- توضیحات کوتاه -->
+                    <div class="compare-item">
+                        <p class="product-description text-sm text-gray-300 bg-gray-800/30 p-3 rounded-lg leading-relaxed">
+                            <i class="fas fa-quote-right ml-2 text-blue-400"></i>
+                            {{ product.description|truncatewords:20 }}
+                        </p>
+                    </div>
+                    
+                    <!-- جزئیات فنی -->
+                    {% for detail in product.details %}
+                    <div class="compare-item">
+                        <span class="product-detail bg-gradient-to-r from-gray-800/30 to-gray-700/20 px-3 py-2 rounded-lg text-sm">
+                            {{ detail.value }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- دکمه‌های اقدام -->
+                    <div class="compare-actions mt-3">
+                        <a href="" 
+                           class="btn bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white px-4 py-2 rounded-lg font-bold text-sm transition-all duration-300 shadow-lg hover:shadow-blue-500/30 flex items-center">
+                            <i class="fas fa-eye ml-2"></i>
+                            مشاهده جزئیات
+                        </a>
+                        <button class="btn add-to-cart bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-sm transition-all duration-300 shadow-lg hover:shadow-green-500/30 flex items-center" 
+                                data-product-id="{{ product.id }}">
+                            <i class="fas fa-shopping-cart ml-2"></i>
+                            افزودن به سبد
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- اسکریپت برای نمایش افقی -->
+    <div class="mt-6 flex justify-center gap-3">
+        <button id="scroll-left" class="btn bg-gradient-to-r from-blue-700 to-cyan-600 hover:from-blue-800 hover:to-cyan-700 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-cyan-500/30">
+            <i class="fas fa-chevron-right"></i>
+            محصول قبلی
+        </button>
+        <button id="scroll-right" class="btn bg-gradient-to-r from-cyan-600 to-blue-700 hover:from-cyan-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-blue-500/30">
+            محصول بعدی
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+    
+    {% endif %}
+</div>
+
+<style>
+.compare-container {
+    overflow-x: auto;
+    border: 2px solid #1e3a8a;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #1f2937, #111827);
+    box-shadow: 0 10px 30px rgba(0, 191, 255, 0.1);
+    scrollbar-width: thin;
+    scrollbar-color: #3b82f6 #1f2937;
+}
+
+.compare-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.compare-container::-webkit-scrollbar-track {
+    background: #1f2937;
+    border-radius: 10px;
+}
+
+.compare-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #3b82f6, #06b6d4);
+    border-radius: 10px;
+}
+
+.compare-header {
+    display: flex;
+    min-width: 800px;
+}
+
+.compare-sidebar {
+    width: 220px;
+    background: linear-gradient(180deg, #1e293b, #0f172a);
+    border-right: 2px solid #1e3a8a;
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+}
+
+.compare-sidebar-item {
+    padding: 16px 12px;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+    font-weight: bold;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    color: #e5e7eb;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: rgba(30, 41, 59, 0.5);
+}
+
+.compare-sidebar-item:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #93c5fd;
+    padding-right: 18px;
+}
+
+.compare-sidebar-item:last-child {
+    border-bottom: none;
+}
+
+.compare-products {
+    display: flex;
+    flex: 1;
+}
+
+.compare-product-card {
+    min-width: 280px;
+    max-width: 320px;
+    border-right: 1px solid rgba(0, 128, 255, 0.4);
+    position: relative;
+    padding: 20px;
+    background: rgba(31, 41, 55, 0.7);
+    transition: all 0.3s ease;
+}
+
+.compare-product-card:hover {
+    background: rgba(55, 65, 81, 0.8);
+    transform: translateY(-2px);
+}
+
+.compare-product-card:last-child {
+    border-right: none;
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+}
+
+.compare-remove {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 2;
+}
+
+.compare-remove button {
+    transition: all 0.3s ease;
+}
+
+.compare-remove button:hover {
+    transform: scale(1.1) rotate(90deg);
+}
+
+.compare-item {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.compare-item:last-child {
+    border-bottom: none;
+}
+
+.compare-image {
+    max-height: 160px;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.product-name {
+    font-size: 1.05rem;
+    margin-bottom: 0;
+    color: #f3f4f6;
+}
+
+.product-name a {
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.product-name a:hover {
+    color: #60a5fa !important;
+    transform: translateX(-2px);
+}
+
+.product-price {
+    font-weight: bold;
+    color: #10b981;
+    font-size: 1.2rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.product-rating {
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.compare-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.compare-actions .btn {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.compare-actions .btn:hover {
+    transform: translateY(-3px);
+}
+
+/* استایل برای موبایل */
+@media (max-width: 768px) {
+    .compare-sidebar {
+        width: 180px;
+    }
+    
+    .compare-sidebar-item {
+        padding: 12px 8px;
+        font-size: 0.8rem;
+        height: 55px;
+    }
+    
+    .compare-product-card {
+        min-width: 240px;
+        padding: 15px;
+    }
+    
+    .compare-item {
+        padding: 10px 0;
+        min-height: 55px;
+    }
+    
+    .compare-image {
+        max-height: 120px;
+    }
+    
+    .compare-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .compare-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container py-5">
+    <h1 class="mb-4">مقایسه محصولات</h1>
+    
+    {% if len == 0 %}
+    <div class="alert alert-info text-center">
+        <p>هیچ محصولی برای مقایسه وجود ندارد.</p>
+        <a href="{% url 'products:list' %}" class="btn btn-primary">مشاهده محصولات</a>
+    </div>
+    {% else %}
+    
+    <!-- اطلاعات کلی محصولات -->
+    <div class="compare-container">
+        <div class="compare-header">
+            <div class="compare-sidebar">
+                <div class="compare-sidebar-item">تصویر</div>
+                <div class="compare-sidebar-item">نام محصول</div>
+                <div class="compare-sidebar-item">برند</div>
+                <div class="compare-sidebar-item">رنگ</div>
+                <div class="compare-sidebar-item">قیمت</div>
+                <div class="compare-sidebar-item">امتیاز</div>
+                <div class="compare-sidebar-item">توضیحات</div>
+                {% for product in compare %}
+                    {% for detail in product.details %}
+                        {% if forloop.first %}
+                        <div class="compare-sidebar-item">{{ detail.key }}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            
+            <div class="compare-products">
+                {% for product in compare %}
+                <div class="compare-product-card">
+                    <!-- دکمه حذف از مقایسه -->
+                    <div class="compare-remove">
+                        <form action="" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- تصویر محصول -->
+                    <div class="compare-item">
+                        {% if product.image %}
+                        <img src="{{ product.image }}" alt="{{ product.name }}" 
+                             class="img-fluid compare-image">
+                        {% endif %}
+                    </div>
+                    
+                    <!-- نام محصول -->
+                    <div class="compare-item">
+                        <h5 class="product-name">
+                            <a href="">
+                                {{ product.name }}
+                            </a>
+                        </h5>
+                    </div>
+                    
+                    <!-- برند -->
+                    <div class="compare-item">
+                        <span class="product-brand">{{ product.brand }}</span>
+                    </div>
+                    
+                    <!-- رنگ -->
+                    <div class="compare-item">
+                        <span class="product-color">{{ product.color }}</span>
+                    </div>
+                    
+                    <!-- قیمت -->
+                    <div class="compare-item">
+                        <span class="product-price">{{ product.price }} تومان</span>
+                    </div>
+                    
+                    <!-- امتیاز -->
+                    <div class="compare-item">
+                        <div class="product-rating">
+                            {% with ''|center:5 as range %}
+                            {% for i in range %}
+                                {% if forloop.counter <= product.rating %}
+                                <i class="fas fa-star text-warning"></i>
+                                {% else %}
+                                <i class="far fa-star text-muted"></i>
+                                {% endif %}
+                            {% endfor %}
+                            {% endwith %}
+                            <small class="text-muted">({{ product.rating }})</small>
+                        </div>
+                    </div>
+                    
+                    <!-- توضیحات کوتاه -->
+                    <div class="compare-item">
+                        <p class="product-description small">{{ product.description|truncatewords:30 }}</p>
+                    </div>
+                    
+                    <!-- جزئیات فنی -->
+                    {% for detail in product.details %}
+                    <div class="compare-item">
+                        <span class="product-detail">{{ detail.value }}</span>
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- دکمه‌های اقدام -->
+                    <div class="compare-actions mt-3">
+                        <a href="" 
+                           class="btn btn-outline-primary btn-sm">
+                            مشاهده جزئیات
+                        </a>
+                        <button class="btn btn-primary btn-sm add-to-cart" 
+                                data-product-id="{{ product.id }}">
+                            افزودن به سبد خرید
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- اسکریپت برای نمایش افقی -->
+    <div class="mt-4">
+        <button id="scroll-left" class="btn btn-outline-secondary">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <button id="scroll-right" class="btn btn-outline-secondary">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+    
+    {% endif %}
+</div>
+
+<style>
+.compare-container {
+    overflow-x: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: rgb(63, 63, 63);
+}
+
+.compare-header {
+    display: flex;
+    min-width: 800px;
+}
+
+.compare-sidebar {
+    width: 200px;
+    background: #353535;
+    border-right: 1px solid #dee2e6;
+    position: sticky;
+    left: 0;
+    z-index: 10;
+}
+
+.compare-sidebar-item {
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: bold;
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.compare-products {
+    display: flex;
+    flex: 1;
+}
+
+.compare-product-card {
+    min-width: 250px;
+    max-width: 300px;
+    border-right: 1px solid #0080ff;
+    position: relative;
+    padding: 15px;
+}
+
+.compare-product-card:last-child {
+    border-right: none;
+}
+
+.compare-remove {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+}
+
+.compare-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #ff0000;
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.compare-image {
+    max-height: 150px;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
+}
+
+.product-name {
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+.product-price {
+    font-weight: bold;
+    color: #dc3545;
+    font-size: 1.1rem;
+}
+
+.product-rating {
+    font-size: 0.9rem;
+}
+
+.compare-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* استایل برای موبایل */
+@media (max-width: 768px) {
+    .compare-sidebar {
+        width: 150px;
+    }
+    
+    .compare-sidebar-item {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+    
+    .compare-product-card {
+        min-width: 200px;
+        padding: 10px;
+    }
+    
+    .compare-item {
+        padding: 8px 0;
+    }
+}
+</style>
+
+<script>
+$(document).ready(function() {
+    // اسکرول افقی
+    $('#scroll-left').click(function() {
+        $('.compare-container').animate({
+            scrollLeft: '-=300'
+        }, 300);
+    });
+    
+    $('#scroll-right').click(function() {
+        $('.compare-container').animate({
+            scrollLeft: '+=300'
+        }, 300);
+    });
+    
+    // افزودن به سبد خرید
+    $('.add-to-cart').click(function() {
+        const productId = $(this).data('product-id');
+        // کد افزودن به سبد خرید
+        $.ajax({
+            url: '',
+            method: 'POST',
+            data: {
+                'product_id': productId,
+                'quantity': 1,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                alert('محصول به سبد خرید اضافه شد');
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

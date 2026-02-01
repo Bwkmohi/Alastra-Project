@@ -1,0 +1,464 @@
+{% extends 'story/base.html' %}
+{% block shop_storys %}
+
+<title>
+    استوری های فروشگاه
+</title>
+
+<style>
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0bffffee;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, #062441, #0bffffcc);
+    animation: lineMove 2s ease-in-out infinite;
+}
+
+@keyframes lineMove {
+    0% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+    50% {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    100% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+}
+
+/* افکت هاله برای تایتل */
+.section-title:hover {
+    color: #fff;
+    text-shadow: 0 0 15px rgba(11, 255, 255, 0.8);
+    animation: glowEffect 1.5s ease-in-out infinite alternate;
+}
+
+/* افکت هاله برای تایتل */
+@keyframes glowEffect {
+    0% {
+        text-shadow: 0 0 10px rgba(11, 255, 255, 0.6), 0 0 20px rgba(11, 255, 255, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(11, 255, 255, 0.9), 0 0 30px rgba(11, 255, 255, 0.8);
+    }
+}
+
+</style>
+ 
+<style>
+ 
+.story-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;   
+  padding: 10px;
+}
+
+.story-item {
+  min-width: 120px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.story-item:hover {
+  transform: scale(1.1);
+}
+ 
+@keyframes modalShow {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#customStoryModal {
+  animation: modalShow 0.5s ease-out;
+} 
+
+#customStoryModal {
+  background-color: rgba(11, 20, 33, 0.9);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+}
+
+#customStoryModal img,
+#customStoryModal video {
+  border-radius: 12px;
+  max-width: 90%;
+  max-height: 80vh;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+}
+
+#customStoryModal .controls button {
+  background-color: #0b1421;
+  color: #0bffff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  transition: background 0.3s ease;
+}
+
+#customStoryModal .controls button:hover {
+  background-color: #0bffff;
+  color: #0b1421;
+}
+ 
+#customCloseModalBtn {
+  color: #0bffff;
+  font-size: 24px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+#prevStoryBtn, #nextStoryBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#prevStoryBtn:hover, #nextStoryBtn:hover {
+  color: #0bffffee; 
+}
+
+#prevStoryBtn i, #nextStoryBtn i {
+  font-size: 2rem; 
+  transition: color 0.3s ease;
+}
+@keyframes progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+</style>
+ 
+<div class="grid sm:grid-cols-3 grid-cols-2 gap-2 sm:gap-3 p-5">
+  <a href="#" id="openModalBtn" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-play-btn text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-md sm:text-lg text-white group-hover:text-[#b0ffd1]">افزودن استوری</p>
+    <button class="mt-4 text-sm sm:text-lg bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">افزودن ویدیو</button>
+  </a>
+  <a href="{% url 'story:list_story' shop_id %}"  class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-collection-play-fill text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-md sm:text-lg text-white group-hover:text-[#b0ffd1]">لیست استوری ها</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_story }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-sm sm:text-lg text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">لیست ویدیو ها</button>
+  </a>
+  <form action="" method="get">
+    <input type="text" hidden class="hidden" name="status" value="deactive" id="">
+    <a href="#" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+      <i class="bi bi-collection-play-fill text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+      <p class="font-bold text-md sm:text-lg text-white group-hover:text-[#b0ffd1]">تاریخچه استوری</p>
+      <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_story_history }}</span>
+      <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] text-sm sm:text-lg font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">لیست ویدیو ها</button>
+    </a>
+  </form>
+</div>
+
+<div id="storyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 px-4">
+  <div class="bg-[#0b1421] rounded-lg shadow-md max-w-3xl w-full mx-auto p-6 relative">
+
+    <!-- دکمه بستن -->
+    <button id="closeModalBtn" class="absolute top-3 left-3 text-[#0bffffcc] hover:text-[#0bffffee] text-2xl font-bold">&times;</button>
+
+    <h1 class="text-xl font-bold mb-4 text-center text-white">آپلود استوری</h1>
+
+    <form method="POST" action="{% url 'story:add_story' shop_id %}" enctype="multipart/form-data" class="space-y-4" dir="rtl">
+      {% csrf_token %}
+
+      <!-- بخش آپلود فایل -->
+      <label for="file-upload" class="cursor-pointer border-2 border-dashed border-[#0bffffcc] rounded-lg flex flex-col items-center justify-center p-6 text-[#0bffffee] hover:border-[#0bffffee] hover:text-white transition">
+        <i class="bi bi-folder-plus text-xl"></i>
+        <span>تصویر یا ویدئو</span>
+        <input id="file-upload" name="file" type="file" accept="image/*,video/*" required class="hidden" onchange="previewFile(event)">
+      </label>
+
+      <!-- پیش نمایش فایل انتخاب شده -->
+      <div id="preview" class="mt-4 w-full h-64 bg-[#0b1421] rounded-lg overflow-hidden flex items-center justify-center text-[#0bffffcc]">
+        هیچ فایلی انتخاب نشده
+      </div>
+
+      <button type="submit" class="w-full bg-[#0bffffcc] hover:bg-[#0bffffee] text-[#0b1421] py-2 rounded font-semibold flex items-center justify-center gap-2">
+        <i class="bi bi-plus-circle-dotted"></i>
+        <span>آپلود</span>
+      </button>
+    </form>
+  </div>
+</div>
+ 
+<div id="customStoryModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 px-4">
+  <div class="bg-[#0b1421] rounded-lg shadow-md max-w-3xl w-full mx-auto p-6 relative">
+    
+    <button id="customCloseModalBtn" class="absolute top-3 left-3 text-[#0bffffcc] hover:text-[#0bffffee] text-2xl font-bold">&times;</button>
+    
+    <div id="customStoryContent" class="flex justify-center items-center bg-gradient-to-b from-[#0b1421] to-[#062441] text-white p-4 relative">
+    </div>
+
+    <div class="absolute top-1/2 transform -translate-y-1/2 left-2 z-10">
+      <button id="prevStoryBtn" class="text-[#0bffffcc] hover:text-white transition text-2xl">
+        -<
+      </button>
+    </div>
+
+    <div class="absolute top-1/2 transform -translate-y-1/2 right-2 z-10">
+      <button id="nextStoryBtn" class="text-[#0bffffcc] hover:text-white transition text-2xl">
+        ->
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] p-4 md:p-6">
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- هدر صفحه -->
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 md:mb-8">
+            <div class="flex items-center gap-3 md:gap-4">
+                <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-xl md:rounded-2xl flex items-center justify-center">
+                    <i class="bi bi-play-circle text-lg md:text-2xl text-[#062441]"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-4xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                        استوری‌های فروشگاه
+                    </h1>
+                    <p class="text-[#0bffffaa] mt-1 md:mt-2 text-sm md:text-base">مدیریت و مشاهده استوری‌های فروشگاه</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- لیست استوری‌ها -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl md:rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm p-4 md:p-6">
+            
+            <!-- هدر -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+                <h3 class="text-lg md:text-xl font-black text-white flex items-center gap-2 md:gap-3">
+                    <i class="bi bi-collection-play text-[#0bffff]"></i>
+                    استوری‌های فعال
+                </h3>
+                
+                <div class="flex items-center gap-2 md:gap-4">
+                    <div class="relative">
+                        <input type="text" placeholder="جستجو در استوری‌ها..." 
+                               class="bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-3 md:px-4 py-2 pr-8 md:pr-10 text-white placeholder-[#0bffff66] focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all text-sm md:text-base w-full md:w-64">
+                        <i class="bi bi-search absolute left-2 md:left-3 top-1/2 transform -translate-y-1/2 text-[#0bffffaa] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex rtl:space-x-reverse overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-[#0bffff88]">
+              {% for i in story %}
+            <div 
+              class="min-w-[120px] transition-colors duration-300 p-3 rounded-xl shadow-xl flex flex-col items-center justify-center text-center cursor-pointer" 
+              data-index="{{ forloop.counter0 }}"
+              data-type="{% if i.image %}image{% elif i.video %}video{% endif %}"
+              data-src="{% if i.image %}{{ i.image.url }}{% elif i.video %}{{ i.video.url }}{% endif %}"
+            >
+          {% if i.image %}
+            <img src="{{ i.image.url }}" alt="Story" 
+                class="w-20 h-20 rounded-full border-2 border-[#0bffffcc] mb-2 shadow-md hover:scale-110 transition-transform" />
+                <div class="grid grid-cols-2 gap-2">
+                  <p class="text-sm font-semibold mt-2">{{ forloop.counter }}</p>
+                  <a href="{% url 'story:remove_story' shop_id i.id %}" class="text-sm mt-2"><i class="bi bi-trash"></i></a>
+                </div>
+          {% elif i.video %}
+            <video 
+              src="{{ i.video.url }}" 
+
+              class="w-20 h-20 rounded-full border-2 border-[#0bffffcc] mb-2 shadow-md hover:scale-110 transition-transform">
+            </video>
+              <div class="grid grid-cols-2 gap-2">
+                <p class="text-sm font-semibold mt-2">{{ forloop.counter }}</p>
+                <a href="{% url 'story:remove_story' shop_id i.id %}" class="text-sm mt-2"><i class="bi bi-trash"></i></a>
+              </div>
+          {% endif %}
+        </div>
+          {% empty %}
+          <center>
+            <p class="text-center">
+                هیچ  استوری موجود نیست!
+            </p>
+          </center>
+            {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // کدهای قبلی
+
+  const openModalBtn = document.getElementById('openModalBtn');
+  const storyModal = document.getElementById('storyModal');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+
+  openModalBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    storyModal.classList.remove('hidden');
+    storyModal.classList.add('flex');
+  });
+
+  closeModalBtn.addEventListener('click', () => {
+    storyModal.classList.add('hidden');
+    storyModal.classList.remove('flex');
+  });
+
+  storyModal.addEventListener('click', (e) => {
+    if (e.target === storyModal) {
+      storyModal.classList.add('hidden');
+      storyModal.classList.remove('flex');
+    }
+  });
+
+ 
+});
+
+
+
+
+function previewFile(event) {
+  const preview = document.getElementById('preview');
+  preview.innerHTML = ''; 
+
+  const file = event.target.files[0];
+  if (!file) {
+    preview.textContent = 'هیچ فایلی انتخاب نشده';
+    return;
+  }
+
+  const fileType = file.type;
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    if (fileType.startsWith('image/')) {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.alt = 'پیش نمایش تصویر';
+      img.className = 'max-h-64 object-contain rounded-lg mx-auto';
+      preview.appendChild(img);
+    } else if (fileType.startsWith('video/')) {
+      const video = document.createElement('video');
+      video.src = e.target.result;
+      video.controls = true;
+      video.autoplay = false;
+      video.className = 'max-h-64 rounded-lg mx-auto';
+      preview.appendChild(video);
+    } else {
+      preview.textContent = 'فرمت فایل پشتیبانی نمی‌شود!';
+    }
+  };
+
+  reader.readAsDataURL(file);
+}
+
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const stories = document.querySelectorAll('[data-index]'); 
+  const modal = document.getElementById('customStoryModal'); 
+  const storyContent = document.getElementById('customStoryContent'); 
+  const closeBtn = document.getElementById('customCloseModalBtn');  
+  const prevBtn = document.getElementById('prevStoryBtn');  
+  const nextBtn = document.getElementById('nextStoryBtn'); 
+
+  let currentIndex = 0; 
+  
+
+   
+  function loadStory(index) {
+     
+    if (index < 0) index = stories.length - 1;  
+    if (index >= stories.length) index = 0;    
+    currentIndex = index;   
+    const story = stories[index];
+    const type = story.dataset.type;
+    const src = story.dataset.src;
+
+    storyContent.innerHTML = '';  
+
+    if (type === 'image') {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = 'Story Image';
+      img.className = 'max-h-[70vh] max-w-full object-contain rounded-lg';
+      storyContent.appendChild(img);
+    } else if (type === 'video') {
+      const video = document.createElement('video');
+      video.src = src;
+      
+      video.controls = true;
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = true;
+      video.className = 'max-h-[70vh] max-w-full rounded-lg';
+      storyContent.appendChild(video);
+    }
+  }
+
+  function openModal(index) {
+    loadStory(index);  
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    storyContent.innerHTML = '';  
+  }
+
+  stories.forEach(story => {
+    story.addEventListener('click', () => {
+      const idx = parseInt(story.dataset.index);
+      openModal(idx);  
+    });
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+
+  modal.addEventListener('click', e => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  prevBtn.addEventListener('click', () => {
+    loadStory(currentIndex - 1);  
+  });
+
+  // رفتن به استوری بعدی
+  nextBtn.addEventListener('click', () => {
+    loadStory(currentIndex + 1);  
+  });
+});
+</script>
+{% endblock %}

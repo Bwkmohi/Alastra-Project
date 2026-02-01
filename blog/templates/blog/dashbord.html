@@ -1,0 +1,524 @@
+{% extends 'blog/base.html' %}
+{% block blog_con %}
+<title>
+    داشبورد
+</title>
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] p-6">
+    
+    <!-- هدر داشبورد -->
+    <div class="max-w-7xl mx-auto mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center">
+                    <span class="text-2xl text-[#062441] font-black"><i class="bi bi-person-lines-fill"></i></span>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                        داشبورد نویسنده
+                    </h1>
+                    <p class="text-[#0bffffaa] mt-2">{{ author.user_authentication.user.get_full_name }}</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <a href="{% url 'notf:notifications' %}" class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] border border-[#0bffff33] text-[#0bffff] px-6 py-3 rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300">
+                    🔔 نوتیفیکیشن‌ها
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- آمار کلی -->
+    <div class="max-w-7xl mx-auto mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <!-- کارت آمار ۱ -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[#0bffffaa] text-sm">تعداد بلاگ‌ها</p>
+                        <p class="text-3xl font-black text-white mt-2 group-hover:text-[#0bffff] transition-colors">{{ posts_count }}</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-xl flex items-center justify-center group-hover:from-[#0bffff] group-hover:to-[#0bffffee] transition-all duration-500">
+                        <span class="text-2xl text-[#0bffff] group-hover:text-[#062441] transition-colors"><i class="bi bi-journal"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- کارت آمار ۲ -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[#0bffffaa] text-sm">بازدید کل</p>
+                        <p class="text-3xl font-black text-white mt-2 group-hover:text-[#0bffff] transition-colors">{{ total_views }}</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-xl flex items-center justify-center group-hover:from-[#0bffff] group-hover:to-[#0bffffee] transition-all duration-500">
+                        <span class="text-2xl text-[#0bffff] group-hover:text-[#062441] transition-colors"><i class="bi bi-eye"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- کارت آمار ۳ -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[#0bffffaa] text-sm">پست‌های انتشار شده</p>
+                        <p class="text-3xl font-black text-white mt-2 group-hover:text-[#0bffff] transition-colors">{{ published_posts_count }}</p>
+                        <p class="text-[#0bffff66] text-xs mt-1"><i class="bi bi-clipboard"></i>انتشار شده</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-xl flex items-center justify-center group-hover:from-[#0bffff] group-hover:to-[#0bffffee] transition-all duration-500">
+                        <span class="text-2xl text-[#0bffff] group-hover:text-[#062441] transition-colors"><i class="bi bi-clipboard"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- کارت آمار ۴ -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[#0bffffaa] text-sm">پست‌های پیش‌نویس</p>
+                        <p class="text-3xl font-black text-white mt-2 group-hover:text-[#0bffff] transition-colors">{{ draft_posts_count }}</p>
+                        <p class="text-[#0bffff66] text-xs mt-1"><i class="bi bi-clipboard"></i> در انتظار انتشار</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-xl flex items-center justify-center group-hover:from-[#0bffff] group-hover:to-[#0bffffee] transition-all duration-500">
+                        <span class="text-2xl text-[#0bffff] group-hover:text-[#062441] transition-colors"><i class="bi bi-clipboard"></i></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- محتوای اصلی -->
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- محتوای اصلی -->
+            <div class="lg:flex-1 space-y-8">
+                
+                <!-- نمودار فعالیت -->
+                <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-black text-white flex items-center gap-2">
+                            <span class="w-2 h-6 bg-gradient-to-b from-[#0bffff] to-[#0bffffee] rounded-full"></span>
+                            فعالیت‌های اخیر
+                        </h3>
+                        <select class="bg-[#0b1421aa] border border-[#0bffff44] rounded-lg px-3 py-2 text-white text-sm focus:border-[#0bffff] outline-none">
+                            <option>هفته جاری</option>
+                            <option>ماه جاری</option>
+                            <option>سال جاری</option>
+                        </select>
+                    </div>
+
+                    
+                    <!-- نمودار ساده -->
+                    <div class="h-64 bg-[#0b142133] rounded-xl border border-[#0bffff22] flex items-end justify-between p-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 bg-gradient-to-t from-[#0bffff] to-[#0bffffee] rounded-t-lg h-32"></div>
+                            <span class="text-[#0bffffaa] text-xs mt-2">شنبه</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 bg-gradient-to-t from-[#0bffff] to-[#0bffffee] rounded-t-lg h-48"></div>
+                            <span class="text-[#0bffffaa] text-xs mt-2">یکشنبه</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 bg-gradient-to-t from-[#0bffff] to-[#0bffffee] rounded-t-lg h-40"></div>
+                            <span class="text-[#0bffffaa] text-xs mt-2">دوشنبه</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 bg-gradient-to-t from-[#0bffff] to-[#0bffffee] rounded-t-lg h-56"></div>
+                            <span class="text-[#0bffffaa] text-xs mt-2">سه‌شنبه</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 bg-gradient-to-t from-[#0bffff] to-[#0bffffee] rounded-t-lg h-36"></div>
+                            <span class="text-[#0bffffaa] text-xs mt-2">چهارشنبه</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- آخرین بلاگ‌ها -->
+                <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-black text-white flex items-center gap-2">
+                            <span class="w-2 h-6 bg-gradient-to-b from-[#0bffff] to-[#0bffffee] rounded-full"></span>
+                            بلاگ های من
+                        </h3>
+                        
+                        <form method="GET" action="{% url 'blog:filter' %}" id="filterForm" class="m-0">
+                            <select name="filter" 
+                                    onchange="document.getElementById('filterForm').submit()"
+                                    class="bg-[#0b1421aa] border border-[#0bffff44] text-[#0bffff] rounded-xl px-4 py-2 text-sm focus:border-[#0bffff] focus:shadow-[0_0_10px_rgba(11,255,255,0.3)] outline-none transition-all duration-300 cursor-pointer">
+                                <option value="all" {% if request.GET.filter == 'all' or not request.GET.filter %}selected{% endif %}>همه بلاگ‌ها</option>
+                                <option value="published" {% if request.GET.filter == 'published' %}selected{% endif %}>منتشر شده</option>
+                                <option value="draft" {% if request.GET.filter == 'draft' %}selected{% endif %}>پیش‌نویس</option>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-1 gap-8 ">
+                        {% for i in blogs %}
+                        <div class="group bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-lg border border-[#0bffff33] shadow-lg shadow-[#0bffff11] backdrop-blur-sm overflow-hidden transition-all duration-500 hover:border-[#0bffff] hover:shadow-[0_0_40px_rgba(11,255,255,0.2)] hover:scale-[1.02]">
+                            <!-- تصویر -->
+                            <div class="h-48 bg-gradient-to-br from-[#0bffff33] to-[#0bffffee] relative overflow-hidden">
+                                <div class="absolute inset-0 ">
+                                    <img src="{% if i.image %}{{ i.image.url }}{% endif %}" class="w-full h-full" alt="">
+                                </div>
+                                <div class="absolute top-4 left-4">
+                                    <span class="bg-[#0b1421aa] text-[#0bffff] px-3 py-1 rounded-full text-sm font-medium border border-[#0bffff33] backdrop-blur-sm">
+                                        {{ i.category.name }}
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-4 right-4 flex items-center gap-2 text-[#0bffffaa] text-sm">
+                                    <span>⏱ {{ i.time_red }} دقیقه</span>
+                                </div>
+                            </div>
+
+                            <!-- محتوا -->
+                            <div class="p-6">
+                                <h3 class="text-xl font-black text-white mb-3 line-clamp-2 group-hover:text-[#0bffff] transition-colors duration-300">
+                                    {{ i.title }}
+                                </h3>
+                                <p class="text-[#0bffffaa] text-sm mb-4 line-clamp-3">
+                                    {{ i.short_des }}
+                                </p>
+
+                                <!-- اطلاعات نویسنده و تاریخ -->
+                                <div class="flex items-center justify-between pt-4 border-t border-[#0bffff33]">
+                                    <div class="flex items-center gap-3">
+                                        <div class="">
+                                            {% if i.author.profile %}
+                                                <img src="{{ i.author.profile.url }}" class="rounded-full w-10 h-10 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-full" alt="{{ i.author.full_name }}">
+                                                {% else %}
+                                                <i class="bi bi-person-lines-fill"></i>
+                                            {% endif %} 
+                                        </div>
+                                        <div>
+                                            <p class="text-white text-sm font-medium">{{ i.author.full_name }}</p>
+                                            <p class="text-[#0bffffaa] text-xs">{{ i.created }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <a href="{% url 'blog:blog_edit' i.id %}" class="w-8 h-8 bg-[#0b1421aa] hover:bg-[#0bffff33] text-[#0bffffaa] hover:text-[#0bffff] rounded-lg flex items-center justify-center border border-[#0bffff33] transition-all duration-300 hover:scale-110">
+                                            <i class="bi bi-pen"></i>
+                                        </a>
+                                        <a href="{% url 'blog:blog_detail' i.id %}" class="w-8 h-8 bg-[#0b1421aa] hover:bg-[#0bffff33] text-[#0bffffaa] hover:text-[#0bffff] rounded-lg flex items-center justify-center border border-[#0bffff33] transition-all duration-300 hover:scale-110">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="{% url 'blog:delete_blog' i.id %}" class="w-8 h-8 bg-[#0b1421aa] hover:bg-[#ff555533] text-[#0bffffaa] hover:text-[#ff5555] rounded-lg flex items-center justify-center border border-[#0bffff33] transition-all duration-300 hover:scale-110">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-center">
+                            هیچ بلاگی یافت نشد!
+                        </p>
+                        {% endfor %}
+                    </div>
+                    <!-- Pagination -->
+                    <div class="flex justify-center items-center gap-4 mt-16">
+                        <button class="w-12 h-12 bg-gradient-to-bl from-[#06244188] to-[#0b142188] border border-[#0bffff33] text-[#0bffffaa] rounded-xl flex items-center justify-center hover:border-[#0bffff] hover:text-[#0bffff] transition-all duration-300">
+                            ←
+                        </button>
+                        
+                        <div class="flex items-center gap-2">
+                            <button class="w-12 h-12 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] text-[#062441] font-black rounded-xl shadow-lg">
+                                1
+                            </button>
+                            <button class="w-12 h-12 bg-gradient-to-bl from-[#06244188] to-[#0b142188] border border-[#0bffff33] text-[#0bffffaa] rounded-xl hover:border-[#0bffff] hover:text-[#0bffff] transition-all duration-300">
+                                2
+                            </button>
+                            <button class="w-12 h-12 bg-gradient-to-bl from-[#06244188] to-[#0b142188] border border-[#0bffff33] text-[#0bffffaa] rounded-xl hover:border-[#0bffff] hover:text-[#0bffff] transition-all duration-300">
+                                3
+                            </button>
+                        </div>
+
+                        <button class="w-12 h-12 bg-gradient-to-bl from-[#06244188] to-[#0b142188] border border-[#0bffff33] text-[#0bffffaa] rounded-xl flex items-center justify-center hover:border-[#0bffff] hover:text-[#0bffff] transition-all duration-300">
+                            →
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-black text-white flex items-center gap-2">
+                            <span class="w-2 h-6 bg-gradient-to-b from-[#0bffff] to-[#0bffffee] rounded-full"></span>
+                            آخرین بلاگ‌ها
+                        </h3>
+                        <button class="text-[#0bffffaa] hover:text-[#0bffff] text-sm transition-colors">
+                            مشاهده همه
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        {% for i in latest_posts %}
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] transition-all duration-300 group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center group-hover:from-[#0bffff] group-hover:to-[#0bffffee] transition-all duration-500">
+                                    <span class="text-lg text-[#0bffff] group-hover:text-[#062441]"><i class="bi bi-journals"></i></span>
+                                </div>
+                                <div>
+                                    <p class="text-white font-medium">{{ i.title }}</p>
+                                    <p class="text-[#0bffffaa] text-sm">{{ i.views }} بازدید  </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                {% if i.active %}
+                                    <span class="bg-[#0bffff33] text-[#0bffff] px-3 py-1 rounded-full text-xs border border-[#0bffff33]">
+                                        منتشر شده
+                                    </span>
+                                    <a href="{% url 'blog:blog_detail' i.id %}" class="w-8 h-8 bg-[#0b1421aa] hover:bg-[#0bffff33] text-[#0bffffaa] hover:text-[#0bffff] rounded-lg flex items-center justify-center border border-[#0bffff33] transition-all duration-300">
+                                        ↗ 
+                                    </a>
+                                {% else %}
+                                    <span class="bg-[#ff6b6b33] text-[#ff6b6b] px-3 py-1 rounded-full text-xs border border-[#ff6b6b33]">
+                                        پیش‌نویس
+                                    </span>
+                                    <a href="{% url 'blog:blog_edit' i.id %}" class="w-8 h-8 bg-[#0b1421aa] hover:bg-[#0bffff33] text-[#0bffffaa] hover:text-[#0bffff] rounded-lg flex items-center justify-center border border-[#0bffff33] transition-all duration-300">
+                                    <i class="bi bi-pen"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- سایدبار ثابت -->
+            <div class="lg:w-80 space-y-6">
+                <div class="sticky top-32 space-y-6">
+                    <!-- دکمه‌های سریع -->
+                    <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+                        <h3 class="text-lg font-black text-white mb-4 flex items-center gap-2">
+                            <span class="w-2 h-6 bg-gradient-to-b from-[#0bffff] to-[#0bffffee] rounded-full"></span>
+                            اقدامات سریع
+                        </h3>
+                        <div class="space-y-3">
+                            <a href="{% url 'blog:blog_add' %}" class="w-full bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] py-4 rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300 flex items-center justify-center gap-3 font-bold">
+                                <span>+</span>
+                                <span>بلاگ جدید</span>
+                            </a>
+                            <a href="" class="w-full bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] py-4 rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300 flex items-center justify-center gap-3 font-bold">
+                                <span>لیست بلاگ ها</span>
+                            </a>
+                            <button onclick="openEditModal()" class="w-full max-w-md mx-auto bg-gradient-to-r from-[#4ecdc433] to-[#4ecdc411] border border-[#4ecdc444] text-[#4ecdc4] py-4 rounded-xl hover:border-[#4ecdc4] hover:shadow-[0_0_20px_rgba(78,205,196,0.3)] transition-all duration-300 flex items-center justify-center gap-3 font-bold">
+                                <span><i class="bi bi-pen"></i></span>
+                                <span>ویرایش اطلاعات نویسنده</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- پست‌های محبوب -->
+                    <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+                        <h3 class="text-lg font-black text-white mb-4 flex items-center gap-2">
+                            <span class="w-2 h-6 bg-gradient-to-b from-[#0bffff] to-[#0bffffee] rounded-full"></span>
+                            پربازدید ترین پست ها
+                        </h3>
+                        <div class="space-y-4">
+                            {% for i in top_blog_posts %}
+                            <div class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133] hover:bg-[#0bffff11] transition-all duration-300 cursor-pointer group">
+                                <div class="w-10 h-10 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center group-hover:from-[#0bffff] group-hover:to-[#0bffffee] transition-all duration-500">
+                                    <span class="text-sm text-[#0bffff] group-hover:text-[#062441] font-bold">{{ loop.index }}</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-white text-sm font-medium line-clamp-1"><a href="{% url 'blog:blog_detail' i.id %}">{{ i.title }}</a></p>
+                                    <p class="text-[#0bffffaa] text-xs">{{ i.views }} بازدید</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+        
+
+
+
+
+
+
+ 
+
+<!-- مودال ویرایش اطلاعات -->
+<div id="editModal" class="fixed inset-0 z-50 hidden">
+    <!-- پس‌زمینه مات -->
+    <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm" onclick="closeEditModal()"></div>
+    
+    <!-- محتوای مودال -->
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm overflow-hidden m-4">
+            
+            <!-- هدر مودال -->
+            <div class="p-6 border-b border-[#0bffff33] bg-gradient-to-r from-[#0bffff11] to-transparent flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-[#4ecdc433] to-[#4ecdc455] rounded-2xl flex items-center justify-center">
+                        <i class="bi bi-pen text-xl text-[#4ecdc4]"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-white">ویرایش اطلاعات نویسنده</h2>
+                        <p class="text-[#0bffffaa] mt-1">اطلاعات خود را ویرایش کنید</p>
+                    </div>
+                </div>
+                <button onclick="closeEditModal()" class="w-10 h-10 bg-[#0b1421aa] hover:bg-[#ff6b6b33] text-[#0bffffaa] hover:text-[#ff6b6b] rounded-xl flex items-center justify-center border border-[#0bffff33] transition-all duration-300">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- بدنه مودال -->
+            <form action="{% url 'blog:author_edit' %}" enctype="multipart/form-data" method="POST" class="p-8 space-y-8">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="group">
+                        <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                            <i class="bi bi-at ml-2"></i>
+                            نام نویسندگی
+                        </label>
+                        <input type="text" name="full_name" required 
+                               class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] focus:scale-[1.02] outline-none"
+                               placeholder="نامی که در وبلاگ نمایش داده می‌شود"
+                               value="{{author.full_name}}">
+                    </div>
+                </div>
+
+                <!-- آپلود عکس پروفایل -->
+                <div class="group">
+                    <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                        <i class="bi bi-image ml-2"></i>
+                        عکس پروفایل
+                    </label>
+                    <div class="border-2 border-dashed border-[#0bffff44] rounded-2xl p-8 text-center hover:border-[#0bffff] transition-colors duration-300 cursor-pointer bg-[#0b142133]">
+                        <input type="file" name="profile" accept="image/*" 
+                               class="hidden" id="edit-profile-upload">
+                        <label for="edit-profile-upload" class="cursor-pointer block">
+                            <div class="text-[#0bffffaa] mb-4">
+                                <i class="bi bi-cloud-arrow-up text-4xl"></i>
+                            </div>
+                            <span class="text-[#0bffff] font-bold text-lg">آپلود عکس پروفایل جدید</span>
+                            <span class="text-[#0bffffaa] text-sm block mt-2">PNG, JPG, GIF - حداکثر ۵ مگابایت</span>
+                            <span class="text-[#0bffff66] text-xs block mt-1">سایز پیشنهادی: ۴۰۰x۴۰۰ پیکسل</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- بیوگرافی -->
+                <div class="group">
+                    <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                        <i class="bi bi-file-text ml-2"></i>
+                        بیوگرافی
+                        <span class="text-[#0bffff66] text-sm font-normal">(حداقل ۱۰۰ کاراکتر)</span>
+                    </label>
+                    <textarea name="bio" required rows="6"
+                              class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium resize-none transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] focus:scale-[1.01] outline-none"
+                              placeholder="درباره خود، تخصص‌ها و تجربیاتتان بنویسید...">.{{ author.biographi }}</textarea>
+                    <div class="flex justify-between items-center mt-2 text-[#0bffff66] text-sm">
+                        <span>این متن در پروفایل نویسنده نمایش داده می‌شود</span>
+                        <span id="edit-bio-counter">۰/۱۰۰</span>
+                    </div>
+                </div>
+
+                <!-- دکمه‌های اقدام -->
+                <div class="flex gap-4 pt-8 border-t border-[#0bffff33]">
+                    <button type="button" onclick="closeEditModal()" class="flex-1 py-4 bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] font-bold rounded-2xl hover:border-[#ff6b6b] hover:shadow-[0_0_20px_rgba(255,107,107,0.3)] transition-all duration-300">
+                        انصراف
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 py-4 bg-gradient-to-r from-[#4ecdc4] via-[#4ecdc4ee] to-[#4ecdc4] text-[#062441] font-black text-lg rounded-2xl shadow-2xl shadow-[#4ecdc466] hover:shadow-[0_0_40px_rgba(78,205,196,0.8)] hover:scale-[1.02] transition-all duration-500">
+                        <i class="bi bi-check-lg ml-2"></i>
+                        ذخیره تغییرات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// شمارنده بیوگرافی
+document.addEventListener('DOMContentLoaded', function() {
+    const bioTextarea = document.querySelector('textarea[name="biographi"]');
+    const bioCounter = document.getElementById('bio-counter');
+    
+    bioTextarea.addEventListener('input', function() {
+        const count = this.value.length;
+        bioCounter.textContent = `${count}/100`;
+        
+        if (count < 20) {
+            bioCounter.style.color = '#ff6b6b';
+        } else {
+            bioCounter.style.color = '#0bffff';
+        }
+    });
+    
+    // شمارنده بیوگرافی مودال
+    const editBioTextarea = document.querySelector('textarea[name="edit_biographi"]');
+    const editBioCounter = document.getElementById('edit-bio-counter');
+    
+    editBioTextarea.addEventListener('input', function() {
+        const count = this.value.length;
+        editBioCounter.textContent = `${count}/100`;
+        
+        if (count < 20) {
+            editBioCounter.style.color = '#ff6b6b';
+        } else {
+            editBioCounter.style.color = '#0bffff';
+        }
+    });
+    
+    // مدیریت آپلود عکس
+    const profileUpload = document.getElementById('profile-upload');
+    const uploadArea = profileUpload.parentElement;
+    
+    profileUpload.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            uploadArea.classList.remove('border-dashed');
+            uploadArea.classList.add('border-solid', 'border-[#0bffff]', 'bg-[#0bffff11]');
+            uploadArea.querySelector('.bi-cloud-arrow-up').classList.add('text-[#0bffff]');
+        }
+    });
+    
+    // مدیریت آپلود عکس مودال
+    const editProfileUpload = document.getElementById('edit-profile-upload');
+    const editUploadArea = editProfileUpload.parentElement;
+    
+    editProfileUpload.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            editUploadArea.classList.remove('border-dashed');
+            editUploadArea.classList.add('border-solid', 'border-[#0bffff]', 'bg-[#0bffff11]');
+            editUploadArea.querySelector('.bi-cloud-arrow-up').classList.add('text-[#0bffff]');
+        }
+    });
+});
+
+// توابع مدیریت مودال
+function openEditModal() {
+    const modal = document.getElementById('editModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول پس‌زمینه
+}
+
+function closeEditModal() {
+    const modal = document.getElementById('editModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto'; // فعال کردن مجدد اسکرول
+}
+
+
+// بستن مودال با کلید ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeEditModal();
+    }
+});
+</script>
+
+ 
+{% endblock %}

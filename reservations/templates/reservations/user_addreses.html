@@ -1,0 +1,319 @@
+{% extends 'reservations/base.html' %}
+{% block res_content %}
+<title>انتخاب ادرس</title>
+ <!-- <link rel="icon" href="{% if site_info.favicon %}{{ site_info.favicon.url }}{% endif %}"> -->
+
+   
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');        
+        .ring-animation {
+            animation: ringPulse 2s infinite;
+        }
+        
+        @keyframes ringPulse {
+            0% { box-shadow: 0 0 0 0 rgba(11, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(11, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(11, 255, 255, 0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-spin-slow {
+            animation: spin 3s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(11, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<div class="bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] min-h-screen p-4">
+    
+    <div class="max-w-6xl mx-auto">
+
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- ستون سمت راست - جزئیات پرداخت -->
+            <div class="md:col-span-1 space-y-6">
+
+                <!-- کارت کد تخفیف -->
+                <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm fade-in">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                            <span class="text-[#062441] font-bold"><i class="bi bi-gift"></i></span>
+                        </div>
+                        <h3 class="text-lg font-black text-white">کد تخفیف</h3>
+                    </div>
+                    
+                    <!-- <form action="{% url 'coupon_apply' %}" method="POST">
+                      {% csrf_token %}
+                        <div class="flex gap-3">
+                            <div class="flex-1 relative">
+                                <input type="text" placeholder="کد تخفیف..." 
+                                      class="w-full px-4 py-3 pr-12 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421aa] text-white font-bold placeholder-[#0bffff66] 
+                                              focus:outline-none focus:ring-4 focus:ring-[#0bffffcc] transition-all duration-500 ease-in-out ring-animation" 
+                                      name="code" />
+                                <input type="text" hidden class="hidden" name="url" value="{{ request.path }}">
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                                    <svg class="w-6 h-6 text-[#0bffffcc] animate-spin-slow" fill="none" stroke="currentColor" stroke-width="2"
+                                        viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <button class="px-6 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl transition-all duration-300 hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] flex items-center gap-2">
+                                <i class="bi bi-piggy-bank"></i>
+                            </button>
+                        </div>
+                    </form> -->
+
+<form action="{% url 'coupon_apply' %}" method="POST">
+    {% csrf_token %}
+    <div class="flex flex-col gap-4">
+        <!-- قسمت اول: وارد کردن کد دستی -->
+        <div class="flex gap-3">
+            <div class="flex-1 relative">
+                <input type="text" placeholder="کد تخفیف..." 
+                      class="w-full px-4 py-3 pr-12 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421aa] text-white font-bold placeholder-[#0bffff66] 
+                              focus:outline-none focus:ring-4 focus:ring-[#0bffffcc] transition-all duration-500 ease-in-out ring-animation" 
+                      name="code" id="coupon-code" />
+                <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                    <svg class="w-6 h-6 text-[#0bffffcc] animate-spin-slow" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>
+                </div>
+            </div>
+            <button type="submit" class="px-6 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl transition-all duration-300 hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] flex items-center gap-2">
+                <i class="bi bi-piggy-bank"></i>
+            </button>
+        </div>
+
+        <!-- قسمت دوم: انتخاب از کوپن‌های ذخیره شده -->
+        <div class="border border-[#0bffff44] rounded-xl p-4 bg-[#0b142155]">
+            <div class="flex items-center gap-2 mb-3">
+                <i class="bi bi-bookmark text-[#0bffff]"></i>
+                <h3 class="text-white font-bold text-lg">کوپن‌های ذخیره شده</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="saved-coupons-container">
+                {% if request.user.is_authenticated %}
+                    {% for coupon in saved_coupons %}
+                        <div class="coupon-item relative">
+                            <input type="radio" name="saved_coupon" value="{{ coupon.coupon.code }}" id="coupon-{{ coupon.id }}" 
+                                   class="hidden peer" data-coupon-code="{{ coupon.coupon.code }}">
+                            <label for="coupon-{{ coupon.id }}" 
+                                   class="block p-3 border-2 border-[#0bffff33] rounded-lg bg-gradient-to-r from-[#0bffff11] to-transparent text-white cursor-pointer transition-all duration-300 hover:border-[#0bffff66] hover:shadow-[0_0_10px_rgba(11,255,255,0.2)] peer-checked:border-[#0bffff] peer-checked:shadow-[0_0_15px_rgba(11,255,255,0.4)] peer-checked:bg-gradient-to-r from-[#0bffff22] to-transparent">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-bold text-[#0bffff]">{{ coupon.coupon.code }}</h4>
+                                        <p class="text-sm text-gray-300 mt-1">
+                                            {{ coupon.coupon.code }}
+                                        </p>
+                                        {% if coupon.valid_to %}
+                                            <p class="text-xs text-gray-400 mt-1">
+                                                اعتبار تا: {{ coupon.coupon.valid_to|date:"Y/m/d" }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" onclick="applySavedCoupon('{{ coupon.coupon.code }}')" 
+                                                class="px-3 py-1 bg-[#0bffff22] border border-[#0bffff44] text-[#0bffff] text-sm rounded-lg hover:bg-[#0bffff33] transition-all">
+                                            انتخاب
+                                        </button>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    {% empty %}
+                        <div class="col-span-2 text-center py-4 text-gray-400">
+                            <i class="bi bi-ticket-perforated text-2xl mb-2 block"></i>
+                            <p>کوپن ذخیره شده‌ای ندارید</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-span-2 text-center py-4 text-gray-400">
+                        <i class="bi bi-person-circle text-2xl mb-2 block"></i>
+                        <p>برای مشاهده کوپن‌های ذخیره شده <a href="{% url 'acc:login' %}" class="text-[#0bffff] underline">وارد شوید</a></p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <input type="hidden" name="url" value="{{ request.path }}">
+</form>
+
+<script>
+    // تابع برای اعمال کوپن ذخیره شده
+    function applySavedCoupon(couponCode) {
+        // پر کردن فیلد کد با کوپن انتخاب شده
+        document.getElementById('coupon-code').value = couponCode;
+        
+        // علامت‌گذاری رادیو باتن مربوطه
+        const radioBtn = document.querySelector(`input[data-coupon-code="${couponCode}"]`);
+        if (radioBtn) {
+            radioBtn.checked = true;
+        }
+        
+        // تغییر نوع کوپن به ذخیره شده
+        document.getElementById('coupon-type').value = 'saved';
+        
+        // نمایش پیام
+        showToast('کوپن انتخاب شد', 'success');
+        
+        // فوکوس روی دکمه ارسال
+        setTimeout(() => {
+            document.querySelector('button[type="submit"]').focus();
+        }, 300);
+    }
+    
+    // تابع برای نمایش پیام
+    function showToast(message, type = 'info') {
+        // ایجاد عنصر toast
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 animate-fade-in ${type === 'success' ? 'bg-green-900/80 text-green-100 border border-green-700' : 'bg-blue-900/80 text-blue-100 border border-blue-700'}`;
+        toast.innerHTML = `
+            <div class="flex items-center gap-2">
+                <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        // افزودن به صفحه
+        document.body.appendChild(toast);
+        
+        // حذف خودکار بعد از 3 ثانیه
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+    
+    // ردیابی تغییرات در فیلد کد دستی
+    document.getElementById('coupon-code').addEventListener('input', function() {
+        if (this.value.trim()) {
+            document.getElementById('coupon-type').value = 'manual';
+            // عدم انتخاب کوپن‌های ذخیره شده
+            document.querySelectorAll('input[name="saved_coupon"]').forEach(radio => {
+                radio.checked = false;
+            });
+        }
+    });
+</script>
+
+<style>
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+        animation: fade-in 0.3s ease-out;
+    }
+</style>
+                </div> 
+            </div>
+
+            <!-- ستون سمت چپ - اطلاعات ارسال -->
+            <div class="md:col-span-2 space-y-6">
+                <!-- کارت آدرس ارسال -->
+                <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm fade-in">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                                <span class="text-[#062441] font-bold"><i class="bi bi-geo-alt"></i></span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">ارسال به آدرس انتخاب‌شده</h3>
+                        </div>
+                        
+                        <a href="#" class="px-5 py-2 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl transition-all duration-300 hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] flex items-center gap-2">
+                            <span>افزودن آدرس جدید</span>
+                            <i class="bi bi-plus text-lg"></i>
+                        </a>
+                    </div>
+                    
+                    <form action="" method="POST">
+                      {% csrf_token %}
+                        <select name="id" class="w-full p-4 rounded-xl border-2 border-[#0bffff44] bg-[#0b1421aa] text-white font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all appearance-none" required>
+                          <option value="" class="bg-[#0b1421]" disabled selected>آدرس خود را انتخاب کنید</option>
+                          {% for i in adresses %}
+                            <option value="{{ i.id }}" class="bg-[#0b1421]">{{ i.province.name }},{{ i.city }},{{ i.postaddress }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        <div class="mt-4 flex justify-end">
+                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl transition-all duration-300 hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)]">
+                                تأیید آدرس
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- کارت روش ارسال -->
+                <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                            <span class="text-[#062441] font-bold"><i class="bi bi-truck"></i></span>
+                        </div>
+                        <h3 class="text-xl font-black text-white">هزینه وکارمزد</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+                        {% for i in cost_fee %}
+                        <div class="bg-gradient-to-br from-[#0b142188] to-[#06244188] rounded-xl p-4 border-2 border-[#0bffff] glow-effect cursor-pointer transition-all duration-300 hover:scale-[1.02]">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-white font-bold">{{ i.title }}</h4>
+                            </div>
+                            <div class="flex justify-between items-center mt-3">
+                                <span class="text-white font-bold">هزینه: {{ i }} </span>
+                            </div>
+                        </div>
+                        {% empty %}
+                            <p class="text-center text-[#0bffff33]">
+                                چیزی یافت نشد!
+                            </p>
+                        {% endfor %}
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // افزودن انیمیشن به المان‌ها
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            fadeElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // انتخاب روش ارسال
+            const shippingMethods = document.querySelectorAll('.bg-gradient-to-br.from-\\[#0b142188\\].to-\\[#06244188\\]');
+            shippingMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    shippingMethods.forEach(m => {
+                        m.classList.remove('border-[#0bffff]', 'glow-effect');
+                        m.classList.add('border-[#0bffff44]');
+                    });
+                    this.classList.add('border-[#0bffff]', 'glow-effect');
+                    this.classList.remove('border-[#0bffff44]');
+                });
+            });
+        });
+    </script>
+</div>
+{% endblock %}

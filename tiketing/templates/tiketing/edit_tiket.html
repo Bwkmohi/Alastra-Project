@@ -1,0 +1,56 @@
+{% extends "tiketing/base.html" %}
+    {% block tiketing %}
+    <title>
+        ویرایش تیکت
+    </title>
+ 
+ 
+ <br><br><br>
+<form action="" method="POST" enctype="multipart/form-data" class="w-full max-w-3xl mx-auto sm:p-6 p-2 border-t-[0.4px] border-[#0bffff2c] rounded-t-3xl">
+    {% csrf_token %}
+  <div class="bg-gradient-to-t from-[#062441] via-[#0b1421] to-[#0b1421] text-white rounded-2xl shadow-xl rounded-sm shadow-xl sm:p-6 p-2 space-y-6">
+     
+    <div class="flex flex-row">
+      <div class="w-1/2 ml-2">
+        <label class="block mb-2 text-sm font-medium">دسته بندی</label>
+        <select name="category" required class="w-full px-4 py-3 rounded-xl border-2 border-[#0bffffcc] bg-[#071927dd] placeholder-[#84a9bb] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]">
+
+          {% if tiket.category %}
+          <option value="{{ tiket.category.id }}">{{ tiket.category }}</option>
+          {% else %}
+          <option value="">دسته بندی را انتخاب کنید</option>
+          {% for c in category %}          
+          <option value="{{ c.id }}">{{ c.title }}</option>
+          {% endfor %}
+          {% endif %}
+        </select>        
+      </div>
+      <input type="text" hidden name="id" value="{{ tiket.id }}" id="">
+
+      <div class="w-1/2 mr-2">
+         <label class="block mb-2 text-sm font-medium">عنوان</label>
+          <input type="text" name="title" value="{{ tiket.title }}" required class="w-full px-4 py-3 rounded-xl border-2 border-[#0bffffcc] bg-[#071927dd] placeholder-[#84a9bb] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]" placeholder="عنوان تیکت را وارد کنید">        
+      </div>
+    </div>
+ 
+    <div>
+      <label class="block mb-2 text-sm font-medium">متن پیام</label>
+      <input type="text" name="text" value="{{ tiket.text }}" required class="w-full px-4 py-3 h-24 rounded-xl border-2 border-[#0bffffcc] bg-[#071927dd] placeholder-[#84a9bb] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]" placeholder="عنوان تیکت را وارد کنید">        
+    </div>
+ 
+    <div>
+      <label class="block mb-2 text-sm font-medium"><a href="{% if tiket.image %}{{ tiket.image.url }}{% endif %}"  class="text-blue-500">{% if tiket.image %}{{ tiket.image.url }}{% endif %}</a></label>
+      <input type="file" name="image" value="{% if tiket.image %}{{ tiket.image.url }}{% endif %}" class="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-2 file:text-sm file:font-semibold file:bg-[#0b1421] file:border file:border-[#0bffffcc] file:text-white hover:file:bg-[#0d4370]">
+    </div>
+ 
+    <div class="flex justify-end pt-4">
+      <button type="submit" class="w-full py-3 rounded-xl bg-[#0bffffcc] text-[#0b1421] font-bold hover:bg-[#0bffffaa] transition duration-300">
+        ارسال اطلاعات
+      </button>
+    </div>
+  </div>
+</form>
+
+     
+{% endblock %}
+    

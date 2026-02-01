@@ -1,0 +1,202 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="فروشگاه تخصصی لپ‌تاپ و کامپیوتر با تخفیف‌های شگفت‌انگیز | {% if site_info.site_title %} {{ site_info.site_title }} {% else %}Alastra{% endif %}">
+    <meta name="keywords" content="خرید لپ تاپ, کامپیوتر, {% if site_info.site_title %} {{ site_info.site_title }} {% else %}Alastra{% endif %}, فروشگاه آنلاین, لوازم جانبی لپ‌تاپ">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="robots" content="index, follow">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="manifest" href="{% static 'core/js/manifest.json' %}">
+
+      <link rel="icon" href="{% if site_info.favicon %}{{ site_info.favicon.url }}?v=2{% endif %}">
+      <link rel="icon" href="/core/static/alastra.ico">
+
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                primary: '#062441',
+                secondary: '#0d4370',
+                text: '#0b1421'
+              },
+              fontFamily: {
+                serif: ['serif']
+              }
+            }
+          }
+        }
+        
+      </script>
+      <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0b1421] text-[#F5F7F9] font-serif" dir="rtl">
+
+<div id="notification" class="fixed top-32 left-1/2 -translate-x-1/2 max-w-lg w-[90vw] rounded-xl shadow-lg
+    bg-gradient-to-r from-[#062441cc] via-[#0b1421dd] to-[#062441cc]
+    text-[#0bffffcc]
+    font-extrabold
+    px-8 py-6
+    z-50
+    opacity-0 pointer-events-none
+    transform -translate-y-12 scale-95
+    transition-all duration-500 ease-out
+    flex items-center space-x-4 rtl:space-x-reverse
+    backdrop-blur-sm
+    border border-[#0bffff44]
+  ">
+    <svg id="notification-icon" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 18a6 6 0 100-12 6 6 0 000 12z" />
+    </svg>
+    <p id="notification-message" class="flex-1 text-right leading-tight text-sm md:text-base"></p>
+    <button id="notification-close" aria-label="بستن" class="text-[#0bffffcc] hover:text-[#0bffffee] transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+</div>
+ 
+ 
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;  /* IE و Edge */
+      scrollbar-width: none;     /* Firefox */
+    }
+    body {
+      padding-top: 5rem; /* برای جا دادن header ثابت */
+    }
+    * {
+      user-select: none;
+    }
+    html {
+      touch-action: manipulation;
+    }
+ 
+  @keyframes shines {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+ 
+  @keyframes shines {
+    0% {
+      background-position: 200% center;
+    }
+    100% {
+      background-position: -200% center;
+    }
+  }
+
+  @keyframes slideDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slideDown {
+    animation: slideDown 0.25s ease forwards;
+  }
+</style>
+
+<header id="main-header" class="fixed top-2 right-0 left-0 z-50 bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0b1421] shadow-2xl" dir="rtl">
+  <div class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+    <div class="flex items-center space-x-3 rtl:space-x-reverse">
+    {% if site_info.web_header %}
+      <img src="{{ site_info.web_header.url }}" class="{% if site_info.web_header_style_class %}{{ site_info.web_header_style_class }}{% endif %}" alt="{% if site_info.site_title %} {{ site_info.site_title }} {% endif %}">
+    {% else %}
+      <div
+        class="font-extrabold italic text-3xl tracking-wider select-none cursor-pointer bg-gradient-to-r from-[#0b1421] via-[#0bffffcc] to-[#b0bfd1] bg-clip-text text-transparent drop-shadow-lg"
+        style="background-size: 200% auto; animation: shines 5s linear infinite;">
+         {% if site_info.site_title %} {{ site_info.site_title }} {% else %}Alastra{% endif %}
+      </div>
+    {% endif %}
+    </div>
+
+
+    <nav class="hidden lg:flex space-x-12 rtl:space-x-reverse text-white font-semibold tracking-wide text-lg select-none">
+      <a href="{% url 'index' %}" class="relative group hover:text-[#0bffffcc] transition-colors duration-300">
+        خانه
+        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0bffffcc] scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+      </a>
+      <a href="{% url 'products_list' %}" class="relative group hover:text-[#0bffffcc] transition-colors duration-300">
+        محصولات
+        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0bffffcc] scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+      </a>
+      <a href="{% url 'category_view' %}" class="relative group hover:text-[#0bffffcc] transition-colors duration-300">
+        دسته بندی ها
+        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0bffffcc] scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+      </a>
+
+    
+      <div class="relative inline-block">
+        <button
+          id="toggleBtn"
+          aria-haspopup="true"
+          aria-expanded="false"
+          class="relative flex items-center gap-1 hover:text-[#0bffffcc] transition-colors duration-300 focus:outline-none"
+          aria-controls="extra-menu"
+        >
+          مشاهده بیشتر
+          <svg class="w-4 h-4 mt-1 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div
+          id="extra-menu"
+          class="hidden absolute right-0 mt-2 w-48 bg-[#0b1421] border border-[#0bffffcc] rounded-md shadow-lg z-50"
+          role="menu"
+          aria-labelledby="toggleBtn"
+        >
+          <a href="{% url 'best_shops' %}" class="block px-6 py-3 text-white hover:bg-[#0bffffcc]/20 transition-colors duration-200" role="menuitem">فروشگاه‌ها</a>
+          <a href="{% url 'blog:list_blogs' %}" class="block px-6 py-3 text-white hover:bg-[#0bffffcc]/20 transition-colors duration-200" role="menuitem">وبلاگ ها</a>
+        </div>
+      </div>
+
+      <a href="#" class="relative group hover:text-[#0bffffcc] transition-colors duration-300">
+        درباره ما
+        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0bffffcc] scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+      </a>
+
+
+    </nav>
+      <button id="real-open-search-modal" class="relative group hover:text-[#0bffffcc] transition-colors duration-300">
+       <i class="bi bi-search text-2xl text-[#0bffffcc]"></i>
+      </button>
+
+    <div class="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
+      {% if not user %}
+      <a
+        href="{% url 'acc:login' %}"
+        class="bg-[#0b1421] text-center hover:bg-[#062441] text-white px-5 py-2 rounded-lg shadow-lg font-semibold transition-colors duration-300"
+      >
+        ورود
+      </a>
+      <a
+        href="{% url 'acc:sign' %}"
+        class="bg-[#0bffffcc] text-center hover:bg-[#0bffffee] text-[#062441] px-5 py-2 rounded-lg shadow-lg font-semibold transition-colors duration-300"
+      >
+        ثبت‌نام
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+</body>
+</html>

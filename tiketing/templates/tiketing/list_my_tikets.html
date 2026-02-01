@@ -1,0 +1,229 @@
+{% extends "tiketing/base.html" %}
+    {% block tiketing %}
+<title>تیکت های من</title>
+
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] p-4 md:p-6">
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- هدر صفحه -->
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 md:mb-8">
+            <div class="flex items-center gap-3 md:gap-4">
+                <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-xl md:rounded-2xl flex items-center justify-center">
+                    <i class="bi bi-headset text-lg md:text-2xl text-[#062441]"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-4xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                        تیکت‌های من
+                    </h1>
+                    <p class="text-[#0bffffaa] mt-1 md:mt-2 text-sm md:text-base">مدیریت و پیگیری تیکت‌های پشتیبانی</p>
+                </div>
+            </div>
+            
+            <a href="{% url 'mess:send_tiket' %}" class="bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] text-[#062441] font-black px-4 md:px-6 py-2 md:py-3 rounded-xl shadow-2xl shadow-[#0bffff66] hover:shadow-[0_0_30px_rgba(11,255,255,0.8)] transition-all duration-300 text-sm md:text-base w-full md:w-auto text-center">
+                <i class="bi bi-plus-lg ml-1 md:ml-2"></i>
+                تیکت جدید
+            </a>
+        </div>
+
+        <!-- لیست تیکت‌ها -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl md:rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm overflow-hidden">
+            
+            <!-- هدر جدول -->
+            <div class="p-4 md:p-6 border-b border-[#0bffff33]">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <h3 class="text-lg md:text-xl font-black text-white flex items-center gap-2 md:gap-3">
+                        <i class="bi bi-list-ul text-[#0bffff]"></i>
+                        لیست تیکت‌ها
+                    </h3>
+                    <div class="flex items-center gap-2 md:gap-4 w-full md:w-auto">
+                        <form method="GET" class="mb-6">
+                          <label for="filter_tiket" class="text-white mr-2">فیلتر:</label>
+                          <select name="filter_tiket" id="filter_tiket" onchange="this.form.submit()" class="p-2 rounded text-black">
+                            <option value="" {% if not filter_tiket %}selected{% endif %}>همه تیکت‌ها</option>
+                            <option value="responsed" {% if filter_tiket == 'True' %}selected{% endif %}>پاسخ داده شده‌ها</option>
+                            <option value="not_responsed" {% if filter_tiket == 'False' %}selected{% endif %}>پاسخ داده نشده‌ها</option>
+                          </select>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- محتوای تیکت‌ها -->
+            <div class="p-4 md:p-6 space-y-4">
+                {% for ticket in tikets %}
+                <div class="group bg-gradient-to-r from-[#0b142133] to-[#06244133] rounded-2xl p-4 md:p-6 border {% if ticket.responsed %}border-[#4ecdc433] hover:border-[#4ecdc4]{% else %}border-[#0bffff33] hover:border-[#0bffff]{% endif %} hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br {% if ticket.responsed %}from-[#4ecdc433] to-[#4ecdc411]{% else %}from-[#0bffff33] to-[#0bffff11]{% endif %} rounded-xl flex items-center justify-center">
+                                <i class="bi {% if ticket.responsed %}bi-check-circle text-[#4ecdc4]{% else %}bi-clock text-[#0bffff]{% endif %} text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base md:text-lg font-black text-white group-hover:{% if ticket.responsed %}text-[#4ecdc4]{% else %}text-[#0bffff]{% endif %} transition-colors">
+                                    {{ ticket.title }}
+                                </h4>
+                                <p class="text-[#0bffffaa] text-xs md:text-sm mt-1">
+                                    دسته: {{ ticket.category.name }}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- وضعیت تیکت -->
+                        <div class="flex items-center gap-2">
+                            {% if ticket.responsed %}
+                            <span class="bg-[#4ecdc433] text-[#4ecdc4] px-2 md:px-3 py-1 rounded-full text-xs border border-[#4ecdc433]">
+                                <i class="bi bi-check-lg ml-1"></i>
+                                پاسخ داده شده
+                            </span>
+                            {% else %}
+                            <span class="bg-[#0bffff33] text-[#0bffff] px-2 md:px-3 py-1 rounded-full text-xs border border-[#0bffff33]">
+                                <i class="bi bi-clock ml-1"></i>
+                                در انتظار پاسخ
+                            </span>
+                            {% endif %}
+                            <span class="text-[#0bffffaa] text-xs md:text-sm">
+                                {{ ticket.time|date:"Y/m/d" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- متن تیکت -->
+                    <div class="mb-4 md:mb-6">
+                        <p class="text-[#0bffffaa] text-sm md:text-base leading-relaxed">
+                            {{ ticket.text_ }}
+                        </p>
+                        
+                        {% if ticket.responsed_tiket.first.response_text %}
+                        <p class="border-t border-[#0bffff33] mt-4 mb-3 px-4">
+                            پاسخ :
+                        </p>
+                        <p class="text-[#0bffffaa] text-sm md:text-base leading-relaxed px-4">
+                            {{ ticket.responsed_tiket.first.response_text }}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- دکمه‌های اقدام -->
+                    <div class="flex flex-wrap items-center gap-2 md:gap-3 pt-4 border-t border-[#0bffff33]">
+                        <button class="open-modal-btn" data-id="{{ i.id }}" class="flex-1 min-w-[100px] text-center py-2 px-2 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-eye ml-1 md:ml-2"></i>
+                            مشاهده
+                        </button>
+                        
+                        <!-- ویرایش -->
+                        <a href="{% url 'mess:edit_tiket' ticket.id %}" class="flex-1 min-w-[100px] text-center py-2 px-2 bg-gradient-to-r from-[#4ecdc433] to-[#4ecdc411] border border-[#4ecdc444] text-[#4ecdc4] rounded-xl hover:border-[#4ecdc4] hover:shadow-[0_0_15px_rgba(78,205,196,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-pencil ml-1 md:ml-2"></i>
+                            ویرایش
+                        </a>
+                        
+                        <!-- حذف -->
+                        <button onclick="document.getElementById('deleteModal-{{ ticket.id }}').classList.remove('hidden')" 
+                                class="flex-1 min-w-[100px] text-center py-2 px-2 bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] rounded-xl hover:border-[#ff6b6b] hover:shadow-[0_0_15px_rgba(255,107,107,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-trash ml-1 md:ml-2"></i>
+                            حذف
+                        </button>
+                    </div>
+                </div>
+
+                <div id="modal-{{ ticket.id }}" class="modal hidden">
+                  <div class="modal-content text-black">
+                    <span class="close-btn" data-id="{{ ticket.id }}">&times;</span>
+
+                    <h2>جزئیات تیکت</h2>
+
+                    <p><strong>نام کاربر:</strong> {{ ticket.user.first_name }} {{ ticket.user.last_name }}</p>
+                    <p><strong>موضوع:</strong> {{ ticket.title }}</p>
+                    <p><strong>دسته‌بندی:</strong> {{ ticket.category.title }}</p>
+                    <p><strong>متن تیکت:</strong></p>
+                    <p class="whitespace-pre-line border p-3 rounded bg-gray-100">{{ ticket.text }}</p>
+                    <p><strong>وضعیت پاسخ:</strong> 
+                      {% if ticket.responsed %}
+                        پاسخ داده شده
+                      {% else %}
+                        پاسخ داده نشده
+                      {% endif %}
+                    </p>
+                    <p><strong>زمان ارسال:</strong> {{ ticket.time }}</p>
+                  </div>
+                </div>
+
+                <div id="deleteModal-{{ ticket.id }}" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 hidden">
+                    <div class="bg-[#0b1421] rounded-lg shadow-lg w-full max-w-md p-4 md:p-6">
+                        <h2 class="text-lg md:text-xl font-semibold text-white mb-3 md:mb-4">حذف تیکت</h2>
+                        <p class="text-white mb-4 md:mb-6 text-sm md:text-base">آیا مطمئن هستید که می‌خواهید تیکت "{{ ticket.title }}" را حذف کنید؟</p>
+                        <div class="flex justify-end gap-3 md:gap-4">
+                            <button onclick="document.getElementById('deleteModal-{{ ticket.id }}').classList.add('hidden')"
+                                class="bg-gray-200 hover:bg-gray-300 text-black px-3 md:px-4 py-2 rounded text-sm md:text-base">انصراف</button>
+                            
+                            <form method="POST" action="{% url 'mess:remove_tiket' ticket.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 md:px-4 py-2 rounded text-sm md:text-base">
+                                    حذف تیکت
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                
+                <div class="text-center py-8 md:py-12">
+                    <div class="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="bi bi-headset text-[#0bffff] text-2xl md:text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-white mb-2">هنوز تیکتی ایجاد نکرده‌اید</h3>
+                    <p class="text-[#0bffffaa] max-w-md mx-auto mb-6 text-sm md:text-base">
+                        برای ایجاد تیکت جدید روی دکمه زیر کلیک کنید
+                    </p>
+                    <a href="{% url 'mess:send_tiket' %}" class="bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441] px-6 py-3 rounded-xl font-black hover:shadow-[0_0_30px_rgba(11,255,255,0.5)] transition-all duration-300 inline-flex items-center gap-2 text-sm md:text-base">
+                        <i class="bi bi-plus-lg"></i>
+                        ایجاد اولین تیکت
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  // دکمه‌های باز کردن مودال
+  const openModalButtons = document.querySelectorAll('.open-modal-btn');
+  
+  openModalButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const modalId = button.getAttribute('data-id');
+      const modal = document.getElementById('modal-' + modalId);
+      if (modal) {
+        modal.classList.add('show'); // افزودن کلاس show برای باز کردن مودال
+      }
+    });
+  });
+
+  // دکمه‌های بستن مودال
+  const closeModalButtons = document.querySelectorAll('.close-btn');
+  
+  closeModalButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const modalId = button.getAttribute('data-id');
+      const modal = document.getElementById('modal-' + modalId);
+      if (modal) {
+        modal.classList.remove('show'); // حذف کلاس show برای بستن مودال
+      }
+    });
+  });
+
+  // بستن مودال اگر کاربر بیرون از مودال کلیک کرد
+  window.addEventListener('click', function(event) {
+    const modals = document.querySelectorAll('.modal.show');
+    modals.forEach(modal => {
+      if (event.target === modal) {
+        modal.classList.remove('show'); // اگر روی زمینه مودال کلیک بشه، مودال بسته میشه
+      }
+    });
+  });
+});
+
+</script>
+{% endblock %}

@@ -1,0 +1,205 @@
+{% extends "accaunts/base.html" %}
+
+    {% block account_content %}
+<title>
+    ثبت نام | {% if site_info.site_title %} {{ site_info.site_title }} {% else %}Alastra{% endif %}
+</title>
+ 
+ 
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <div class="bg-gradient-to-br from-[#0b1421] to-[#062441] border border-[#0bffff33] rounded-2xl p-8 shadow-2xl shadow-[#0bffff33]">
+             
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="bi bi-shield-check text-2xl text-[#062441]"></i>
+                </div>
+                <h2 class="text-2xl font-black text-white mb-2">تایید ایمیل</h2>
+                <p class="text-[#0bffffaa] text-sm">
+                    کد تأیید به ایمیل شما ارسال شد
+                </p>
+                <p class="text-[#0bffff] text-sm font-bold mt-1">
+                    لطفا کد ۶ رقمی را وارد کنید
+                </p>
+            </div>
+ 
+            {% if messages %}
+                <div class="mb-6">
+                    {% for message in messages %}
+                        <div class="p-3 rounded-xl text-sm text-center {% if message.tags == 'error' %}bg-red-500/20 text-red-400 border border-red-500/50{% else %}bg-green-500/20 text-green-400 border border-green-500/50{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+ 
+            <form method="POST" action="{% url 'acc:verify_email' %}">
+                {% csrf_token %}
+                 
+                <div class="flex justify-center gap-3 mb-6" dir="ltr">
+                    <input type="text" name="code" maxlength="6" 
+                           class="w-full h-12 bg-[#0b1421aa] border-2 border-[#0bffff44] text-white text-center text-xl font-bold rounded-xl focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.5)] transition-all duration-300 outline-none"
+                           placeholder="------"
+                           autocomplete="off"
+                           required>
+                </div>
+ 
+                <div class="text-center mb-6">
+                    <p class="text-[#0bffffaa] text-sm">
+                        کد ۶ رقمی را در فیلد بالا وارد کنید
+                    </p>
+                </div>
+
+                <div class="text-center mb-6">
+                    <p class="text-[#0bffffaa] text-sm mb-3">
+                        کد منقضی می‌شود در: 
+                        <span id="countdown" class="text-[#0bffff] font-bold">10:00</span>
+                    </p>
+                    <button type="button" id="resend-btn" class="text-[#0bffffaa] text-sm hover:text-[#0bffff] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        ارسال مجدد کد
+                    </button>
+                </div>
+
+                <button type="submit" 
+                        class="w-full bg-gradient-to-br from-[#0bffff] to-[#0bffffee] text-[#062441] font-bold py-4 rounded-2xl shadow-lg shadow-[#0bffff66] hover:shadow-[0_0_25px_rgba(11,255,255,0.8)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
+                    <span>تایید و ادامه</span>
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+            </form>
+
+            <div class="text-center mt-6">
+                <a href="{% url 'acc:sign' %}" class="text-[#0bffffaa] text-sm hover:text-[#0bffff] transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="bi bi-arrow-right"></i>
+                    <span>بازگشت به صفحه ثبت نام</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const otpInput = document.querySelector('input[name="code"]');
+    
+    otpInput.focus();
+    
+    otpInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        
+        if (this.value.length > 6) {
+            this.value = this.value.slice(0, 6);
+        }
+    });
+    
+    // ارسال خودکار وقتی ۶ رقم کامل شد
+    otpInput.addEventListener('input', function(e) {
+        if (this.value.length === 6) {
+            this.form.submit();
+        }
+    });
+    
+    otpInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab' || 
+            e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            return;
+        }
+        
+        if (!/^[0-9]$/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+});
+
+const otpInput = document.querySelector('input[name="code"]');
+otpInput.addEventListener('focus', function() {
+    this.style.borderColor = '#0bffff';
+    this.style.boxShadow = '0 0 15px rgba(11, 255, 255, 0.5)';
+});
+
+otpInput.addEventListener('blur', function() {
+    this.style.borderColor = 'rgba(11, 255, 255, 0.3)';
+    this.style.boxShadow = 'none';
+});
+</script>
+
+<style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="text"] {
+    -moz-appearance: textfield;
+    letter-spacing: 8px;
+    font-family: 'Courier New', monospace;
+}
+
+input[name="code"] {
+    transition: all 0.3s ease;
+}
+
+.messages {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+ 
+
+
+<script>
+let timeLeft = 600; // 10 دقیقه
+const countdownElement = document.getElementById('countdown');
+const resendBtn = document.getElementById('resend-btn');
+
+function updateCountdown() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    if (timeLeft > 0) {
+        timeLeft--;
+        setTimeout(updateCountdown, 1000);
+    } else {
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'ارسال مجدد کد';
+    }
+}
+
+
+updateCountdown();
+
+resendBtn.addEventListener('click', function() {
+    if (!this.disabled) {
+        fetch("{% url 'acc:send_otp_to_email' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                timeLeft = 600;
+                resendBtn.disabled = true;
+                updateCountdown();
+                
+                alert('کد جدید ارسال شد');
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}
+    

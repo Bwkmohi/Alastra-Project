@@ -1,0 +1,253 @@
+{% extends 'coupon2/base.html' %}
+
+{% block coupon_con %}
+  
+
+    <title>مدیریت کوپن‌ها</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        
+        .coupon-card {
+            transition: all 0.3s ease;
+        }
+        
+        .coupon-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .modal-content {
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @media (max-width: 640px) {
+            .coupon-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .coupon-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .coupon-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+
+<body class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] text-white p-4 md:p-6">
+    
+    <div class="max-w-6xl mx-auto">
+        <!-- هدر صفحه -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <h1 class="text-2xl md:text-3xl font-black text-white flex items-center gap-3">
+                <span class="w-3 h-8 bg-gradient-to-b from-[#0bffff] to-[#0bffffee] rounded-full"></span>
+                کوپن‌های من
+            </h1>
+            
+            <button 
+                onclick="openAddCouponModal()"
+                class="bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441] px-4 py-3 md:px-6 md:py-3 rounded-xl font-black hover:shadow-[0_0_30px_rgba(11,255,255,0.5)] transition-all duration-300 flex items-center gap-2 w-full sm:w-auto justify-center"
+            >
+                <i class="bi bi-plus-lg"></i>
+                افزودن کوپن جدید
+            </button>
+        </div>
+
+        <!-- لیست کوپن‌ها -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-4 md:p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 class="text-xl font-black text-white flex items-center gap-2">
+                    <span class="w-2 h-6 bg-gradient-to-b from-[#0bffff] to-[#0bffffee] rounded-full"></span>
+                    لیست کوپن‌ها
+                </h2>
+                
+                <div class="flex flex-wrap gap-2">
+                    <button class="bg-[#0b142133] text-[#0bffffaa] hover:text-[#0bffff] px-3 py-2 rounded-lg text-sm border border-[#0bffff33] transition-all duration-300">
+                        همه
+                    </button>
+                </div>
+            </div>
+
+            {% if coupons %}
+                <div class="coupon-grid grid gap-4">
+                    {% for i in coupons %}
+                        <div class="coupon-card bg-[#0b142133] rounded-xl p-4 md:p-6 border border-[#0bffff22] hover:border-[#0bffff] transition-all duration-300">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                <div class="flex items-center gap-3 md:gap-4">
+                                    <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-xl flex items-center justify-center">
+                                        <i class="bi bi-gift text-[#0bffff] text-xl md:text-2xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-black text-white break-all">{{ i.coupon.code }}</h3>
+                                        <div class="flex flex-wrap gap-2 mt-2">
+                                            {% if i.coupon.is_valid == False %}
+                                                <span class="bg-[#ff6b6b33] text-[#ff6b6b] px-2 py-1 rounded-full text-xs border border-[#ff6b6b33]">
+                                                    <i class="bi bi-clock ml-1"></i>
+                                                    منقضی شده
+                                                </span>
+                                            {% else %}
+                                                <span class="bg-[#0bffff33] text-[#0bffff] px-2 py-1 rounded-full text-xs border border-[#0bffff33]">
+                                                    <i class="bi bi-clock ml-1"></i>
+                                                    انقضا: {{ i.coupon.valid_to }} 
+                                                </span>
+                                            {% endif %}
+                                            {% if i.coupon.active %}
+                                                <span class="bg-[#4ecdc433] text-[#4ecdc4] px-2 py-1 rounded-full text-xs border border-[#4ecdc433]">
+                                                    فعال
+                                                </span>
+                                            {% else %}
+                                                <span class="bg-[#ff6b6b33] text-[#ff6b6b] px-2 py-1 rounded-full text-xs border border-[#ff6b6b33]">
+                                                    غیرفعال
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 justify-end md:justify-start">
+                                    <button class="w-8 h-8 md:w-10 md:h-10 bg-[#0b1421aa] hover:bg-[#ff6b6b33] text-[#0bffffaa] hover:text-[#ff6b6b] rounded-lg flex items-center justify-center border border-[#0bffff33] transition-all duration-300 hover:scale-110" onclick="deleteCoupon('{{ i.id }}')">
+                                        <i class="bi bi-trash text-sm md:text-base"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- جزئیات بیشتر در موبایل -->
+                            <div class="mt-4 pt-4 border-t border-[#0bffff22] md:hidden">
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="text-[#0bffffaa]">تاریخ افزودن:</div>
+                                    <div class="text-white text-left">{{ i.created_at|date:"Y/m/d" }}</div>
+                                    
+                                    <div class="text-[#0bffffaa]">میزان تخفیف:</div>
+                                    <div class="text-white text-left">
+                                        {% if i.coupon.discount_type == 'percent' %}
+                                            {{ i.coupon.discount_value }}%
+                                        {% else %}
+                                            {{ i.coupon.discount_value }} تومان
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- حالت خالی -->
+                <div class="text-center py-12">
+                    <div class="w-24 h-24 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="bi bi-gift text-[#0bffff] text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-white mb-2">هنوز کوپنی اضافه نکرده‌اید</h3>
+                    <p class="text-[#0bffffaa] max-w-md mx-auto mb-6">
+                        با افزودن کوپن‌های تخفیف، در خریدهای خود صرفه‌جویی کنید
+                    </p>
+                    <button 
+                        onclick="openAddCouponModal()"
+                        class="bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441] px-6 py-3 rounded-xl font-black hover:shadow-[0_0_30px_rgba(11,255,255,0.5)] transition-all duration-300 inline-flex items-center gap-2"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+                        افزودن اولین کوپن
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- مودال افزودن کوپن -->
+    <div id="addCouponModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4 hidden">
+        <div class="modal-content bg-gradient-to-bl from-[#062441] to-[#0b1421] rounded-2xl p-6 md:p-8 border border-[#0bffff33] shadow-2xl shadow-[#0bffff33] w-full max-w-2xl mx-auto max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black text-[#0bffff]">افزودن کوپن جدید</h3>
+                <button onclick="closeAddCouponModal()" class="w-8 h-8 bg-[#0b1421aa] hover:bg-[#ff6b6b33] text-[#0bffffaa] hover:text-[#ff6b6b] rounded-lg flex items-center justify-center border border-[#0bffff33] transition-all duration-300">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            
+            <form method="POST" action="{% url 'save_coupon' %}" class="space-y-4" id="addCouponForm">
+                {% csrf_token %}
+                <div>
+                    <label class="text-[#0bffffaa] text-sm font-medium block mb-2">کد کوپن</label>
+                    <input 
+                        type="text" 
+                        name="code"
+                        required
+                        class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] focus:border-[#0bffff] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none transition-all duration-300 text-sm md:text-base"
+                        placeholder="مثال: SUMMER25"
+                    >
+                    <p class="text-xs text-[#0bffff66] mt-2">کد کوپن را دقیقاً به همان شکلی که دریافت کرده‌اید وارد کنید</p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                    <button 
+                        type="submit"
+                        class="flex-1 bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441] py-3 rounded-xl font-black text-center hover:shadow-[0_0_20px_rgba(11,255,255,0.5)] transition-all duration-300"
+                    >
+                        ذخیره کوپن
+                    </button>
+                    <button 
+                        type="button"
+                        onclick="closeAddCouponModal()"
+                        class="flex-1 bg-[#0b1421aa] border border-[#0bffff44] text-[#0bffff] py-3 rounded-xl font-black text-center hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300"
+                    >
+                        انصراف
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // مدیریت مودال
+        function openAddCouponModal() {
+            document.getElementById('addCouponModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAddCouponModal() {
+            document.getElementById('addCouponModal').classList.add('hidden');
+            document.getElementById('addCouponForm').reset();
+            document.body.style.overflow = '';
+        }
+
+        // بستن مودال با کلیک خارج
+        document.getElementById('addCouponModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddCouponModal();
+            }
+        });
+        
+        // بستن مودال با کلید ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAddCouponModal();
+            }
+        });
+        
+        // تابع حذف کوپن
+        function deleteCoupon(couponId) {
+            if (confirm('آیا از حذف این کوپن اطمینان دارید؟')) {
+                // در اینجا کد ارسال درخواست حذف به سرور قرار می‌گیرد
+                window.location.href = "{% url 'remove_coupon' 0 %}".replace('0', couponId);
+            }
+        }
+        
+        // فیلتر کوپن‌ها
+        function filterCoupons(filterType) {
+            // در اینجا کد فیلتر کردن کوپن‌ها قرار می‌گیرد
+            console.log('فیلتر اعمال شد:', filterType);
+        }
+    </script>
+</body>
+
+{% endblock coupon_con %}

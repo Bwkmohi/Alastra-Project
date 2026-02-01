@@ -1,0 +1,130 @@
+{% extends 'shop/base.html' %}
+
+
+
+{% block content_sh %}
+{% load custom_tags %}
+
+ <title> | {% if site_info.site_title %}{{ site_info.site_title }}{% else %}Alastra{% endif %} |  بهترین فروشگاه ها</title>
+<section class="bg-gradient-to-bl from-[#06244188] to-[#0b142188]">
+    <main class="container mx-auto py-8">
+        <!-- بخش هیرو -->
+        <section class="text-center mb-12">
+            <h2 class="text-4xl font-bold mb-4 text-cyan-400 drop-shadow-[0_0_10px_rgba(11,255,255,0.8)]">
+                کشف بهترین فروشگاه‌ها
+            </h2>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                با برترین فروشگاه‌های دیجیتال آشنا شوید و از محصولات باکیفیت آن‌ها خرید کنید
+            </p>
+        </section>
+        
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+            {% for shop in shops %}
+            <div class="group relative rounded-2xl p-5 bg-gradient-to-t from-[#0b1421] to-[#062441] border border-cyan-500/15 transition-all duration-400 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_15px_30px_rgba(11,255,255,0.3)] hover:border-cyan-500/50 overflow-hidden">
+                <!-- افکت پس‌زمینه -->
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400"></div>
+                
+                <div class="relative flex flex-col items-center text-center mb-4">
+                    <div class="relative mb-3">
+                        <!-- لوگوی فروشگاه -->
+                        {% if shop.logo %}
+                            <a href="{% url 'sellers:shop_public_page' shop.id %}">
+                                <img src="{{ shop.logo.url }}" alt="{{ shop.name_shop }}" class="w-20 h-20 rounded-full object-cover border-3 border-cyan-500/30 transition-all duration-300 group-hover:border-cyan-500/70 group-hover:scale-110">
+                            </a>
+                        {% else %}
+                            <div class="w-20 h-20 rounded-full bg-[#0bffffee] flex items-center justify-center border-3 border-cyan-500/30 transition-all duration-300 group-hover:border-cyan-500/70 group-hover:scale-110">
+                                <i class="bi bi-shop text-white text-2xl"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- نشان تایید -->
+                        <div class="absolute bottom-1 left-1 bg-[#0bffffee] text-[#062441] rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                            <i class="bi bi-check-lg"></i>
+                        </div>
+                        
+                        <!-- نشان آنلاین -->
+                        <div class="absolute bottom-1 right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#062441]"></div>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold">
+                        <a href="{% url 'sellers:shop_public_page' shop.id %}" class="hover:text-[#0bffff66] transition-colors">
+                            {{ shop.name_shop }}
+                        </a>
+                    </h3>
+                    <p class="text-gray-400 text-sm mt-1">{{ shop.description }}</p>
+                </div>
+                
+                <!-- رتبه‌بندی -->
+                <div class="flex justify-center items-center mb-4">
+                    <div class="flex text-yellow-400">
+                        {% for star in shop.full_stars %}
+                            <i class="bi bi-star-fill"></i>
+                        {% endfor %}
+                        
+                        {% if shop.half_star %}
+                            <i class="bi bi-star-half"></i>
+                        {% endif %}
+                        
+                        {% for star in shop.empty_stars %}
+                            <i class="bi bi-star"></i>
+                        {% endfor %}
+                    </div>
+                    <span class="text-white mr-2">{{ shop.shop_rate }}</span>
+                    <span class="text-gray-500">({{ shop.count_followers }} دنبال‌کننده)</span>
+                </div>
+                
+                <!-- آمار -->
+                <div class="grid grid-cols-3 gap-4 text-center mb-5">
+                    <div class="transition-all duration-300 hover:-translate-y-1 hover:text-cyan-400">
+                        <div class="text-lg font-bold">{{ shop.count_followers }}</div>
+                        <div class="text-gray-400 text-xs">دنبال‌کننده</div>
+                    </div>
+                    <div class="transition-all duration-300 hover:-translate-y-1 hover:text-cyan-400">
+                        <div class="text-lg font-bold">{{ shop.shop_products_count }}</div>
+                        <div class="text-gray-400 text-xs">محصول</div>
+                    </div>
+                    <div class="transition-all duration-300 hover:-translate-y-1 hover:text-cyan-400">
+                        <div class="text-lg font-bold">{{ shop.shop_rate|floatformat:0 }}٪</div>
+                        <div class="text-gray-400 text-xs">رضایت</div>
+                    </div>
+                </div>
+                
+                <!-- دکمه فالو/آنفالو -->
+                <div class="relative flex justify-center gap-4 z-10">
+                    <form action="{% url 'follow:follow' %}" method="POST" class="w-full">
+                        {% csrf_token %}
+                        <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                        <input type="hidden" name="shop_id" value="{{ shop.id }}">
+                        
+                        {% if shop.is_following %}
+                            <!-- دکمه آنفالو -->
+                            <button type="submit"
+                                class="relative w-full bg-[#0b1421] border border-cyan-500/80 text-cyan-400 py-3 rounded-xl font-bold hover:bg-cyan-500/10 hover:border-cyan-500 transition-all duration-300 cursor-pointer overflow-hidden group/btn">
+                                <!-- افکت شاین -->
+                                <span class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover/btn:translate-x-full transition-transform duration-600"></span>
+                                
+                                <i class="bi bi-dash-circle ml-2"></i>
+                                انفالو
+                            </button>
+                        {% else %}
+                            <!-- دکمه فالو -->
+                            <button type="submit"
+                                class="relative w-full bg-[#0bffffcc] text-[#0b1421] py-3 rounded-xl font-bold hover:shadow-[0_0_20px_rgba(11,255,255,0.8)] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer overflow-hidden group/btn">
+                                <!-- افکت شاین -->
+                                <span class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/60 to-transparent group-hover/btn:translate-x-full transition-transform duration-600"></span>
+                                
+                                <i class="bi bi-plus-circle ml-2"></i>
+                                فالو
+                            </button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+    </main>
+</section>
+
+
+ 
+{% endblock %} 

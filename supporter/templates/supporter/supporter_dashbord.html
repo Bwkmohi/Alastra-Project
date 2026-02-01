@@ -1,0 +1,240 @@
+{% extends 'supporter/base.html' %}
+
+{% block supp_content %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد پشتیبان</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .stats-card {
+            background: linear-gradient(135deg, #062441, #0b1421);
+            border: 1px solid #0bffff33;
+        }
+        .gradient-primary {
+            background: linear-gradient(135deg, #0bffffcc, #00e6e6cc);
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #071827;
+            border-radius: 10px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #0bffffcc;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#0b1421] min-h-screen text-white">
+    
+    <!-- هدر -->
+    <header class="bg-gradient-to-r from-[#062441] to-[#0b1421] border-b border-[#0bffff33] py-4 px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 gradient-primary rounded-full flex items-center justify-center">
+                    <i class="bi bi-headset text-2xl text-[#0b1421]"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-[#0bffffcc]">داشبورد پشتیبان</h1>
+                    <p class="text-[#b0bfd1] text-sm">مدیریت و نظارت بر فعالیت‌های پشتیبانی</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <p class="text-[#0bffffcc] font-bold">{{ supporter.user.user.get_full_name }}</p>
+                </div>
+                <div class="w-10 h-10 bg-[#0bffff33] rounded-full flex items-center justify-center">
+                    <i class="bi bi-person-gear text-[#0bffffcc]"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- محتوای اصلی -->
+    <main class="max-w-7xl mx-auto py-6 px-4">
+        <!-- آمار کلی -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- کارت پیام‌ها -->
+            <div class="stats-card rounded-2xl p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-[#b0bfd1] text-sm">پیام‌های پاسخ داده شده</p>
+                        <h3 class="text-3xl font-bold text-[#0bffffcc]">{{ count_messages }}</h3>
+                    </div>
+                    <div class="w-12 h-12 gradient-primary rounded-full flex items-center justify-center">
+                        <i class="bi bi-chat-dots text-2xl text-[#0b1421]"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- کارت چت‌ها -->
+            <div class="stats-card rounded-2xl p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-[#b0bfd1] text-sm">چت‌های پشتیبانی شده</p>
+                        <h3 class="text-3xl font-bold text-[#0bffffcc]">{{ chats }}</h3>
+                    </div>
+                    <div class="w-12 h-12 gradient-primary rounded-full flex items-center justify-center">
+                        <i class="bi bi-people text-2xl text-[#0b1421]"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- کارت تیکت‌ها -->
+            <div class="stats-card rounded-2xl p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-[#b0bfd1] text-sm">تیکت‌های مدیریت شده</p>
+                        <h3 class="text-3xl font-bold text-[#0bffffcc]">{{ response_tickets }}</h3>
+                    </div>
+                    <div class="w-12 h-12 gradient-primary rounded-full flex items-center justify-center">
+                        <i class="bi bi-ticket-perforated text-2xl text-[#0b1421]"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- کارت میانگین امتیاز -->
+            <div class="stats-card rounded-2xl p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-[#b0bfd1] text-sm">میانگین امتیاز</p>
+                        <h3 class="text-3xl font-bold text-[#0bffffcc]">{{ supporter_avg|floatformat:1 }}</h3>
+                    </div>
+                    <div class="w-12 h-12 gradient-primary rounded-full flex items-center justify-center">
+                        <i class="bi bi-star-fill text-2xl text-[#0b1421]"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- ۵ تیکت آخر پاسخ داده شده -->
+            <div class="stats-card rounded-2xl p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-[#0bffffcc] flex items-center gap-2">
+                        <i class="bi bi-ticket-perforated"></i>
+                        ۵ تیکت آخر پاسخ داده شده
+                    </h2>
+                    <a href="#" class="text-[#0bffffcc] text-sm hover:text-[#0bffff] transition-colors">
+                        مشاهده همه
+                    </a>
+                </div>
+
+                <div class="space-y-4 max-h-96 overflow-y-auto scrollbar-thin">
+                    {% for ticket in last_tickets %}
+                    <div class="bg-[#071827] rounded-xl p-4 border border-[#0bffff33] hover:border-[#0bffffcc] transition-all duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-[#b0bfd1]">#{{ ticket.id }}</span>
+                            </div>
+                            <span class="text-xs text-[#b0bfd1]">{{ ticket.time|date:"Y/m/d" }}</span>
+                        </div>
+                        
+                        <h4 class="font-bold text-white mb-2 line-clamp-1">{{ ticket.response_for_user.title }}</h4>
+                        <p class="text-[#b0bfd1] text-sm line-clamp-2 mb-3">{{ ticket.response_for_user.text_ }}</p>
+                        
+                        <div class="flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-4 text-[#b0bfd1]">
+                                <span>{{ ticket.response_for_user.user.get_full_name }}</span>
+                            </div>
+                            <span class="text-[#0bffffcc]">پاسخ داده شده</span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-8 text-[#b0bfd1]">
+                        <i class="bi bi-inbox text-4xl mb-2 opacity-50"></i>
+                        <p>هیچ تیکتی یافت نشد</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- ۵ چت کاربری پشتیبانی شده -->
+            <div class="stats-card rounded-2xl p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-[#0bffffcc] flex items-center gap-2">
+                        <i class="bi bi-chat-dots"></i>
+                        ۵ چت کاربری پشتیبانی شده
+                    </h2>
+                    <a href="#" class="text-[#0bffffcc] text-sm hover:text-[#0bffff] transition-colors">
+                        مشاهده همه
+                    </a>
+                </div>
+
+                <div class="space-y-4 max-h-96 overflow-y-auto scrollbar-thin">
+                    {% for chat in last_chats %}
+                    <a href="{% url 'supp:response_page' chat.id %}">
+                        <div class="bg-[#071827] rounded-xl p-4 border border-[#0bffff33] hover:border-[#0bffffcc] transition-all duration-300">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full"></div>
+                                    <span class="text-xs text-[#b0bfd1]">جلسه #{{ chat.id }}</span>
+                                </div>
+                                <span class="text-xs text-[#b0bfd1]">{{ chat.created|date:"H:i" }}</span>
+                            </div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-8 h-8 bg-[#0bffff33] rounded-full flex items-center justify-center">
+                                    <i class="bi bi-person text-[#0bffffcc] text-sm"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    {% empty %}
+                    <div class="text-center py-8 text-[#b0bfd1]">
+                        <i class="bi bi-chat-square-dots text-4xl mb-2 opacity-50"></i>
+                        <p>هیچ چتی یافت نشد</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+        <div class="w-full text-center">
+            <a href="{% url 'supp:list_questions' %}"
+                class="bg-[#0bffffcc] mx-2 text-center w-full text-[#0b1421] py-3 px-6 rounded-lg font-bold shadow-md hover:bg-[#0bffff] transition"
+            >
+                پشتیبانی
+                <i class="bi bi-headset ml-2"></i>
+            </a>
+            <a href="{% url 'list_tikets' %}"
+                class="bg-[#0bffffcc] mx-2 text-center w-full text-[#0b1421] py-3 px-6 rounded-lg font-bold shadow-md hover:bg-[#0bffff] transition"
+            >
+                تیکت ها 
+                <i class="bi bi-ticket-perforated ml-2"></i>
+                
+            </a>
+        </div>
+    <script>
+        // آپدیت زمان واقعی
+        function updateRealTimeStats() {
+            // اینجا می‌توانید با AJAX اطلاعات real-time دریافت کنید
+            console.log('آپدیت آمار...');
+        }
+
+        // آپدیت هر 30 ثانیه
+        setInterval(updateRealTimeStats, 30000);
+
+        // انیمیشن کارت‌ها
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.stats-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `opacity 0.6s ease, transform 0.6s ease ${index * 0.1}s`;
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

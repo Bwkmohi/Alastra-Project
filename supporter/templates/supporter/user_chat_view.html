@@ -1,0 +1,278 @@
+{% extends 'supporter/base.html' %}
+{% block supp_content %}
+<title>پشتیبانی آنلاین</title>
+<style>
+    .chat-container {
+        height: 70vh;
+    }
+    .message-user {
+        background: linear-gradient(135deg, #0bffffcc, #00e6e6cc);
+        color: #0b1421;
+    }
+    .message-support {
+        background: linear-gradient(135deg, #062441, #0b1421);
+        color: white;
+    }
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: #071827;
+        border-radius: 10px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #0bffffcc;
+        border-radius: 10px;
+    }
+    .typing-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+    }
+    .typing-dot {
+        width: 6px;
+        height: 6px;
+        background: #0bffffcc;
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes typing {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1); }
+    }
+</style>
+
+<section class="bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#0b1421] min-h-screen text-white">
+    
+    <!-- هدر -->
+    <header class="bg-gradient-to-r from-[#062441] to-[#0b1421] border-b border-[#0bffff33] py-4 px-6">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-[#0bffffcc] rounded-full flex items-center justify-center">
+                    <i class="bi bi-headset text-2xl text-[#0b1421]"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-[#0bffffcc]">پشتیبانی آنلاین</h1>
+                    <p class="text-[#b0bfd1] text-sm">پاسخگویی 24 ساعته</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- <div class="text-right">
+                    <p class="text-[#b0bfd1] text-sm">آخرین بازدید: به تازگی </p>
+                </div>
+                <div class="w-10 h-10 bg-[#0bffff33] rounded-full"></div> -->
+            </div>
+        </div>
+    </header>
+
+    <!-- بخش اصلی چت -->
+    <main class="max-w-6xl mx-auto py-6 px-4">
+        <div class="bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#071827] rounded-2xl shadow-2xl border border-[#0bffff33] overflow-hidden">
+            
+            <!-- هدر چت -->
+            <div class="bg-gradient-to-r from-[#062441] to-[#0b1421] border-b border-[#0bffff33] p-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-[#0bffffcc] rounded-full flex items-center justify-center">
+                            <i class="bi bi-person-check text-[#0b1421]"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#0bffffcc]">پشتیبانی</h3>
+                            <div class="flex items-center gap-2 text-sm">
+                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span class="text-[#b0bfd1]">آنلاین</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="text-[#0bffffcc] hover:text-[#b0bfd1] transition-colors">
+                        <i class="bi bi-x-lg text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- تاریخ -->
+            <div class="text-center py-3">
+            </div>
+
+            <!-- محتوای چت -->
+            <div id="chat-box" class="chat-container overflow-y-auto p-4 space-y-4 scrollbar-thin">
+                <!-- پیام‌ها از طریق جاوا اسکریپت اضافه می‌شوند -->
+            </div>
+
+            <!-- فرم ارسال پیام -->
+            <form id="chat-form" method="POST" class="border-t border-[#0bffff33] p-4 bg-gradient-to-r from-[#062441] to-[#0b1421]" autocomplete="off">
+                {% csrf_token %}
+                <div class="flex items-center gap-3">
+                    <!-- فیلد تایپ -->
+                    <div class="flex-1 relative">
+                        <input 
+                            type="text" 
+                            name="content"
+                            id="content"
+                            placeholder="پیام خود را بنویسید..."
+                            class="w-full bg-[#071827] border border-[#0bffff33] rounded-2xl py-3 px-4 text-white placeholder-[#b0bfd1] focus:outline-none focus:border-[#0bffffcc] focus:ring-2 focus:ring-[#0bffff33] transition-all"
+                            required
+                            autocomplete="off"
+                        >
+                    </div>
+                    <input type="hidden" name="ch_id" id="ch_id" value="{{ ch_id }}" />
+                    
+                    <!-- دکمه ارسال -->
+                    <button 
+                        type="submit"
+                        class="w-12 h-12 bg-[#0bffffcc] rounded-full flex items-center justify-center text-[#0b1421] hover:bg-[#0bffff] hover:scale-105 active:scale-95 transition-all shadow-lg"
+                        aria-label="ارسال پیام"
+                    >
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('chat-form');
+            const chatBox = document.getElementById('chat-box');
+
+            // بارگذاری اولیه پیام‌ها
+            loadMessages();
+
+            // ارسال فرم
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch("{% url 'supp:send_message' %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        alert('خطا در ارسال پیام');
+                        return;
+                    }
+
+                    form.reset();
+
+                } catch (error) {
+                    alert('خطا در ارتباط با سرور');
+                    console.error(error);
+                }
+            });
+
+            // اسکرول به پایین چت
+            function scrollToBottom() {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            // بارگذاری پیام‌ها
+            function loadMessages() {
+                fetch(`/messages/{{ ch_id }}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        chatBox.innerHTML = ''; // پاک کردن قبلی‌ها
+
+                        data.messages.forEach(msg => {
+                            const div = document.createElement('div');
+                            
+                            if (msg.user_message) {
+                                // پیام کاربر - سمت چپ
+                                div.className = 'flex gap-3';
+                                div.innerHTML = `
+                                    <div class="w-8 h-8 bg-[#4ecdc4] rounded-full flex-shrink-0 flex items-center justify-center">
+                                        <i class="bi bi-person text-[#0b1421] text-sm"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="message-user rounded-2xl rounded-tr-none p-4 max-w-md shadow-lg">
+                                            <p class="text-xs text-gray-400 mb-1 text-right">${new Date(msg.created).toLocaleTimeString()}</p>
+                                            <p>${msg.content}</p>
+                                        </div>
+                                    </div>
+                                `;
+                            } else if (msg.supporter_message) {
+                                // پیام پشتیبان - سمت راست
+                                div.className = 'flex gap-3 justify-end';
+                                div.innerHTML = `
+                                    <div class="flex-1 flex justify-end">
+                                        <div class="message-support rounded-2xl rounded-tl-none p-4 max-w-md shadow-lg">
+                                            <p class="text-xs text-gray-400 mb-1 text-right">${new Date(msg.created).toLocaleTimeString()}</p>
+                                            <p>${msg.content}</p>
+                                        </div>
+                                    </div>
+                                    <div class="w-8 h-8 bg-[#0bffffcc] rounded-full flex-shrink-0 flex items-center justify-center">
+                                        <i class="bi bi-headset text-[#0b1421] text-sm"></i>
+                                    </div>
+                                `;
+                            }
+                            
+                            chatBox.appendChild(div);
+                        });
+
+                        // اسکرول به آخر
+                        scrollToBottom();
+                    })
+                    .catch(err => console.error('خطا در گرفتن پیام‌ها:', err));
+            }
+
+            // دریافت پیام‌های جدید
+            function fetchNewMessages() {
+                fetch(`/supporter/ajax-unseen-messages/{{ ch_id }}`)  
+                    .then(response => response.json())
+                    .then(data => {
+                        data.messages.forEach(msg => {
+                            if (!document.getElementById(`msg-${msg.id}`)) {
+                                const div = document.createElement('div');
+                                div.id = `msg-${msg.id}`;
+                                
+                                if (msg.user_message) {
+                                    // پیام کاربر - سمت چپ
+                                    div.className = 'flex gap-3';
+                                    div.innerHTML = `
+                                        <div class="w-8 h-8 bg-[#4ecdc4] rounded-full flex-shrink-0 flex items-center justify-center">
+                                            <i class="bi bi-person text-[#0b1421] text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="message-user rounded-2xl rounded-tr-none p-4 max-w-md shadow-lg">
+                                                <p class="text-xs text-gray-400 mb-1 text-right">${new Date(msg.created).toLocaleTimeString()}</p>
+                                                <p>${msg.content}</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                } else if (msg.supporter_message) {
+                                    // پیام پشتیبان - سمت راست
+                                    div.className = 'flex gap-3 justify-end';
+                                    div.innerHTML = `
+                                        <div class="flex-1 flex justify-end">
+                                            <div class="message-support rounded-2xl rounded-tl-none p-4 max-w-md shadow-lg">
+                                                <p class="text-xs text-gray-400 mb-1 text-right">${new Date(msg.created).toLocaleTimeString()}</p>
+                                                <p>${msg.content}</p>
+                                            </div>
+                                        </div>
+                                        <div class="w-8 h-8 bg-[#0bffffcc] rounded-full flex-shrink-0 flex items-center justify-center">
+                                            <i class="bi bi-headset text-[#0b1421] text-sm"></i>
+                                        </div>
+                                    `;
+                                }
+
+                                chatBox.appendChild(div);
+                                scrollToBottom();
+                            }
+                        });
+                    })
+                    .catch(err => console.error('Error fetching messages:', err));
+            }
+
+            // اجرای اولیه و بعد هر چند ثانیه
+            setInterval(fetchNewMessages, 2000);
+        });
+    </script>
+</section>
+{% endblock %}

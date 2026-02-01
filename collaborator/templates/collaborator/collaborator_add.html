@@ -1,0 +1,434 @@
+
+{% extends 'sellers/base_admin.html' %}
+
+
+{% block seller_con %}
+
+<title>
+  افزودن همکار
+</title>
+
+<style>
+  * {
+    user-select: none;
+  }
+</style>
+
+
+ 
+<div class="grid grid-cols-2 gap-2 sm:p-5">
+ 
+  <a href="{% url 'coll:collaborator_add' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-person-plus-fill text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">افزودن همکار</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ responses_count }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition text-sm sm:text-md">افزودن همکار</button>
+  </a>
+  
+
+  <a href="{% url 'coll:collaborators_list' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-people text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست همکاران</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_collaborators }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition text-sm sm:text-md">لیست همکاران</button>
+  </a>
+</div>
+
+
+ 
+ 
+  <style>
+  /* سبک تایتل */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0bffffee;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* انیمیشن متحرک برای تایتل */
+.section-title::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, #062441, #0bffffcc);
+    animation: lineMove 2s ease-in-out infinite;
+}
+
+/* انیمیشن حرکت خط پایین تایتل */
+@keyframes lineMove {
+    0% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+    50% {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    100% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+}
+
+/* افکت هاله برای تایتل */
+.section-title:hover {
+    color: #fff;
+    text-shadow: 0 0 15px rgba(11, 255, 255, 0.8);
+    animation: glowEffect 1.5s ease-in-out infinite alternate;
+}
+
+/* افکت هاله برای تایتل */
+@keyframes glowEffect {
+    0% {
+        text-shadow: 0 0 10px rgba(11, 255, 255, 0.6), 0 0 20px rgba(11, 255, 255, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(11, 255, 255, 0.9), 0 0 30px rgba(11, 255, 255, 0.8);
+    }
+}
+
+</style>
+  
+
+
+
+
+<div class="w-full max-w-4xl mx-auto bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] shadow-2xl rounded-2xl sm:p-10 p-1 backdrop-blur">
+  <h2 class="section-title sm:text-4xl text-3xl font-bold mb-10 text-center">لیست همکاران</h2>
+
+  <form method="POST" action="{% url 'coll:collaborator_add' shop_id %}">
+    {% csrf_token %}
+    <label class="block mb-2 font-semibold text-[#0bffffcc]">نام کاربری</label>
+    <input type="text" name="username" placeholder="نام کاربری همکار مورد نظر" required
+           class="w-full px-4 py-3 mb-3 rounded-xl border-2 border-[#0bffffcc] bg-[#071927dd] placeholder-[#84a9bb] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]" />
+
+    <label class="block mb-2 font-semibold text-[#0bffffcc]">شناسه کاربر</label>
+    <input type="text" name="userid" placeholder="شناسه کاربری همکار مورد نظر" required
+           class="w-full px-4 py-3 mb-3 rounded-xl border-2 border-[#0bffffcc] bg-[#071927dd] placeholder-[#84a9bb] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]" />
+    <!-- دسترسی محصولات -->
+    <fieldset class="mb-8 border border-[#b0bfd1] rounded-2xl p-6 shadow-lg bg-gradient-to-br from-[#0b1421]/60 to-[#062441]/60">
+      <legend class="px-6 py-2 bg-[#0bffffcc] text-white rounded-lg shadow-md font-semibold text-md sm:text-xl">
+        دسترسی محصولات
+      </legend>
+      <div class="grid grid-cols-2 gap-6 mt-5 ">
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_add_product">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md text-xs sm:text-md">
+            افزودن محصول
+          </span>
+        </label>
+
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_see_products">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+             مشاهده محصولات
+          </span>
+        </label>
+
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_edit_product">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            ویرایش محصول
+          </span>
+        </label>
+
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_delete_product">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            حذف محصول
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <!-- دسترسی پیام ها -->
+  <fieldset class="mb-8 border border-[#b0bfd1] rounded-2xl p-6 shadow-lg bg-gradient-to-br from-[#0b1421]/60 to-[#062441]/60">
+      <legend class="px-6 py-2 bg-[#0bffffcc] text-white rounded-lg shadow-md text-xl font-semibold text-md sm:text-xl">
+        دسترسی پیام‌ها (دیدگاه‌ها و سوالات)
+      </legend>
+      <div class="grid grid-cols-2 gap-6 mt-5 ">
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_see_comments_and_questions">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            مشاهده دیدگاه‌ها و سوالات
+          </span>
+        </label>
+
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_response_questions">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            پاسخ دادن به سوالات
+          </span>
+        </label>
+
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_remove_comments">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            حذف دیدگاه‌ها
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <!-- دسترسی کوپن‌ها -->
+    <fieldset class="mb-8 border border-[#b0bfd1] rounded-2xl p-6 shadow-lg bg-gradient-to-br from-[#0b1421]/60 to-[#062441]/60">
+      <legend class="px-6 py-2 bg-[#0bffffcc] text-white rounded-lg shadow-md text-xl font-semibold text-md sm:text-xl">
+        دسترسی کوپن‌ها
+      </legend>
+      <div class="grid grid-cols-2 gap-6 mt-5 ">
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_see_coupons">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            مشاهده کوپن‌ها
+          </span>
+        </label>
+
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_edit_coupon">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            ویرایش کوپن
+          </span>
+        </label>
+
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_add_coupon">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            افزودن کوپن
+          </span>
+        </label>
+
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_remove_coupon">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            حذف کوپن
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <!-- دسترسی سفارشات -->
+    <fieldset class="mb-8 border border-[#b0bfd1] rounded-2xl p-6 shadow-lg bg-gradient-to-br from-[#0b1421]/60 to-[#062441]/60">
+      <legend class="px-6 py-2 bg-[#0bffffcc] text-white rounded-lg shadow-md text-xl font-semibold text-md sm:text-xl">
+        دسترسی سفارشات
+      </legend>
+      <div class="grid grid-cols-2 gap-6 mt-5 ">
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_see_orders">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            مشاهده سفارشات
+          </span>
+        </label>
+
+        <label class="inline-flex items-center cursor-pointer group">
+          <input type="checkbox" class="sr-only peer" name="can_edit_orders">
+          <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                      peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                      after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                      after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                      peer-checked:after:translate-x-7"></div>
+          <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+            ویرایش سفارشات
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+<!-- دسترسی همکار -->
+<fieldset class="mb-8 border border-[#b0bfd1] rounded-2xl p-6 shadow-lg bg-gradient-to-br from-[#0b1421]/60 to-[#062441]/60">
+  <legend class="px-6 py-2 bg-[#0bffffcc] text-white rounded-lg shadow-md text-xl font-semibold text-md sm:text-xl">
+    دسترسی همکار
+  </legend>
+
+  <div class="grid grid-cols-2 gap-6 mt-5 ">
+
+    <label class="inline-flex items-center cursor-pointer group">
+      <input type="checkbox" class="sr-only peer" name="can_add_collaborators">
+      <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                  peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                  after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                  after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                  peer-checked:after:translate-x-7"></div>
+      <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+        افزودن همکار
+      </span>
+    </label>
+
+    <label class="inline-flex items-center cursor-pointer group">
+      <input type="checkbox" class="sr-only peer" name="can_see_collaborators">
+      <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                  peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                  after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                  after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                  peer-checked:after:translate-x-7"></div>
+      <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+        مشاهده همکاران
+      </span>
+    </label>
+
+    <label class="inline-flex items-center cursor-pointer group">
+      <input type="checkbox" class="sr-only peer" name="can_edit_collaborators">
+      <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                  peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                  after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                  after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                  peer-checked:after:translate-x-7"></div>
+      <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+        ویرایش همکار
+      </span>
+    </label>
+
+    <label class="inline-flex items-center cursor-pointer group">
+      <input type="checkbox" class="sr-only peer" name="can_remove_collaborators">
+      <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                  peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                  after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                  after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                  peer-checked:after:translate-x-7"></div>
+      <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+        حذف همکار
+      </span>
+    </label>
+
+  </div>
+</fieldset>
+
+<!-- دسترسی گالری محصولات -->
+<fieldset class="mb-8 border border-[#b0bfd1] rounded-2xl p-6 shadow-lg bg-gradient-to-br from-[#0b1421]/60 to-[#062441]/60">
+  <legend class="px-6 py-2 bg-[#0bffffcc] text-white rounded-lg shadow-md text-xl font-semibold text-md sm:text-xl">
+    دسترسی گالری محصولات
+  </legend>
+
+  <div class="mt-5 flex items-center">
+    <label class="inline-flex items-center cursor-pointer group">
+      <input type="checkbox" class="sr-only peer" name="gallery_all_permissions">
+      <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                  peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                  after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                  after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                  peer-checked:after:translate-x-7"></div>
+      <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+        تمام دسترسی‌های گالری محصولات
+      </span>
+    </label>
+  </div>
+</fieldset>
+
+<!-- دسترسی استوری -->
+<fieldset class="mb-8 border border-[#b0bfd1] rounded-2xl p-6 shadow-lg bg-gradient-to-br from-[#0b1421]/60 to-[#062441]/60">
+  <legend class="px-6 py-2 bg-[#0bffffcc] text-white rounded-lg shadow-md text-xl font-semibold text-md sm:text-xl">
+    دسترسی استوری
+  </legend>
+
+  <div class="mt-5 flex items-center">
+    <label class="inline-flex items-center cursor-pointer group">
+      <input type="checkbox" class="sr-only peer" name="story_all_permissions">
+      <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                  peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                  after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                  after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                  peer-checked:after:translate-x-7"></div>
+      <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+        تمام دسترسی‌های استوری
+      </span>
+    </label>
+  </div>
+</fieldset>
+
+<!-- دسترسی ویدیو محصول -->
+<fieldset class="mb-8 border border-[#b0bfd1] rounded-2xl p-6 shadow-lg bg-gradient-to-br from-[#0b1421]/60 to-[#062441]/60">
+  <legend class="px-6 py-2 bg-[#0bffffcc] text-white rounded-lg shadow-md text-xl font-semibold text-md sm:text-xl">
+    دسترسی ویدیو محصول
+  </legend>
+
+  <div class="mt-5 flex items-center">
+    <label class="inline-flex items-center cursor-pointer group">
+      <input type="checkbox" class="sr-only peer" name="product_video_permissions">
+      <div class="relative w-14 h-7 bg-[#0b1421] rounded-full peer-focus:ring-4 peer-focus:ring-[#0bffffcc]/50 
+                  peer-checked:bg-gradient-to-r peer-checked:from-[#062441] peer-checked:to-[#0bffffcc] 
+                  after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white 
+                  after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-lg 
+                  peer-checked:after:translate-x-7"></div>
+      <span class="ms-3 text-base font-bold text-[#ffffff] group-hover:text-[#0bffffcc] transition text-xs sm:text-md">
+        دسترسی ویدیو محصول
+      </span>
+    </label>
+  </div>
+</fieldset>
+    <div class="flex justify-center mt-10">
+      <button type="submit" class="px-8 py-3 bg-[#0bffffcc] rounded-xl font-bold text-[#0b1421] shadow-lg hover:brightness-110 transition">
+        افزودن
+      </button>
+    </div>
+</form>
+</div>
+
+
+{% endblock seller_con %}

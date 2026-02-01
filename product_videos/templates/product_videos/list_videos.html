@@ -1,0 +1,327 @@
+{% extends "product_videos/base.html" %}
+    {% block p_video %}
+    
+
+<title>
+  لیست ویدیو
+</title>
+
+<div class="grid grid-cols-2 gap-2 sm:p-5">
+  <a href="#Add_video" id="open-add-video-modal"  class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-play-btn text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">افزودن ویدیو</p>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 text-sm sm:text-md rounded hover:bg-[#0bffffee] transition">افزودن ویدیو</button>
+  </a>
+  <a href="" id="open-add-video-modal"  class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-collection-play-fill text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست ویدیو ها</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ video_count }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 text-sm sm:text-md rounded hover:bg-[#0bffffee] transition">لیست ویدیو ها</button>
+  </a>
+</div>
+ 
+
+ <style>
+  /* سبک تایتل */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0bffffee;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* انیمیشن متحرک برای تایتل */
+.section-title::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, #062441, #0bffffcc);
+    animation: lineMove 2s ease-in-out infinite;
+}
+
+/* انیمیشن حرکت خط پایین تایتل */
+@keyframes lineMove {
+    0% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+    50% {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    100% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+}
+
+/* افکت هاله برای تایتل */
+.section-title:hover {
+    color: #fff;
+    text-shadow: 0 0 15px rgba(11, 255, 255, 0.8);
+    animation: glowEffect 1.5s ease-in-out infinite alternate;
+}
+
+/* افکت هاله برای تایتل */
+@keyframes glowEffect {
+    0% {
+        text-shadow: 0 0 10px rgba(11, 255, 255, 0.6), 0 0 20px rgba(11, 255, 255, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(11, 255, 255, 0.9), 0 0 30px rgba(11, 255, 255, 0.8);
+    }
+}
+
+</style>
+
+
+<div id="add-video-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
+  <div class="bg-[#0b1421] p-6 rounded-2xl w-full max-w-3xl relative">
+    <button id="close-add-video-modal" class="absolute top-4 left-4 text-white text-2xl font-bold">&times;</button>
+    
+    <form action="{% url 'pvideo:add_video' shop_id %}" method="POST" enctype="multipart/form-data" dir="rtl" class="space-y-6 text-white">
+      {% csrf_token %}
+ 
+      <div class="w-full border-2 border-[#0bffffcc] rounded-xl p-4 bg-[#0b1421]">
+        <label class="block mb-2 font-bold text-[#b0bfd1]">آپلود ویدیو محصول</label>
+        <input 
+          type="file"
+          required
+          name="video_file"
+          class="w-full text-sm text-white file:bg-[#0bffffcc] file:text-[#0b1421] file:rounded-lg file:px-4 file:py-2 file:border-0 hover:file:bg-[#0bffff]" />
+      </div>
+ 
+      <input type="text" name="title" placeholder="عنوان" required maxlength="30"
+        class="w-full px-4 py-3 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] text-white font-bold placeholder-[#b0bfd1]
+        focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]" />
+ 
+      <div class="grid grid-cols-1 gap-4">
+        <label for="">شامل محصولات:</label>
+          <select required name="product_ids" multiple class="rounded-xl p-3 h-16 bg-[#0b1421] border-2 border-[#0bffffcc] focus:ring-4 focus:ring-[#0bffffcc]">
+            
+            {% for i in products %}
+              <option value="{{ i.id }}">{{ i.name }}</option>
+            {% endfor %}
+          </select>
+      </div>
+
+      <button type="submit" class="w-full mt-6 py-3 bg-[#0bffffcc] text-[#0b1421] font-bold rounded-xl hover:bg-[#0bffff] transition duration-300">
+        افزودن ویدیو
+      </button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] p-4 md:p-6">
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- هدر صفحه -->
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 md:mb-8">
+            <div class="flex items-center gap-3 md:gap-4">
+                <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-xl md:rounded-2xl flex items-center justify-center">
+                    <i class="bi bi-play-circle text-lg md:text-2xl text-[#062441]"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-4xl section-title font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                         ویدیو محصولات
+                    </h1>
+                    <p class="text-[#0bffffaa] mt-1 md:mt-2 text-sm md:text-base">مدیریت و مشاهده ویدیو ها</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- لیست استوری‌ها -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl md:rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm p-4 md:p-6">
+            
+            <!-- هدر -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+                <h3 class="text-lg md:text-xl font-black text-white flex items-center gap-2 md:gap-3">
+                    <i class="bi bi-collection-play text-[#0bffff]"></i>
+                    لیست ویدیو محصولات
+                </h3>
+            </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+     {% for video in videos %}
+      <div class="group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#062441] border border-[#0bffffcc] py-10 rounded-md shadow-xl p-5 flex items-center justify-between hover:scale-[1.02] transition-transform duration-300">
+
+        <!-- پیشنمایش ویدیو -->
+        <div class="w-32 h-20 flex-shrink-0 rounded-md overflow-hidden shadow-md relative">
+          <video src="{{ video.video_file.url }}" alt="{{ video.title }}" class="w-full h-full object-cover"></video>
+          <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <a href="{{ video.video_file.url }}">
+              <i class="bi bi-play-circle text-[#0bffffcc] text-3xl"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- عنوان و توضیح -->
+        <div class="flex-1 mx-4">
+          <h2 class="sm:text-md text-sm md:text-lg font-bold text-[#ffff] mb-5">{{ video.title }}</h2>
+          <p>
+            {{ video.created_at.year }}
+          </p>
+        </div>
+
+        <!-- دکمه‌ها (پیش‌فرض پنهان هستند) -->
+        <div class="flex flex-col gap-3 opacity-0 -translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out delay-150">
+          <button data-video-id="{{ video.id }}" class="w-9 h-9 open-modal-btn flex items-center justify-center rounded-full bg-[#0bffffcc] hover:bg-[#0bffff44] text-black shadow-lg">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button onclick="openModal({{ video.id }})" class="w-9 h-9 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+
+    <div class="modal hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50" id="modal-{{ video.id }}">
+      <div class="bg-[#0b1421] p-6 rounded-2xl w-full max-w-3xl relative">
+        <button class="close-modal-btn absolute top-4 left-4 text-white text-2xl font-bold">&times;</button>
+        
+        <form action="{% url 'pvideo:edit_product_video' shop_id video.id %}" method="POST" enctype="multipart/form-data" dir="rtl" class="space-y-6 text-white">
+          {% csrf_token %}
+          
+          <!-- فرم ویرایش مثل قبلی که دادی -->
+          <div class="w-full rounded-xl p-4 bg-[#0b1421]">
+            <div class="flex flex-col w-full">
+              <div class="my-4">
+                <label class="block mb-2 font-bold text-[#b0bfd1]">ویرایش ویدیو محصول</label>
+                <input 
+                  type="file"
+                  name="video_file"
+                  class="w-full text-sm text-white file:bg-[#0bffffcc] file:text-[#0b1421] file:rounded-lg file:px-4 file:py-2 file:border-0 hover:file:bg-[#0bffff]" />
+              </div>
+              <div>
+                <video src="{{ video.video_file.url }}" class="w-full h-48 rounded-lg border border-[#0bffffcc]" controls></video>
+              </div>
+            </div>
+
+
+          <input type="text" name="title" value="{{ video.title }}" placeholder="عنوان" required maxlength="30"
+            class="w-full px-4 py-3 rounded-xl border-2 border-[#0bffffcc] bg-[#0b1421] text-white font-bold placeholder-[#b0bfd1]
+            focus:outline-none focus:ring-4 focus:ring-[#0bffffcc] mt-6" />
+
+          <div class="grid grid-cols-1 gap-4">
+              <label for="">شامل محصولات:</label>
+                <select required name="product_ids" multiple class="rounded-xl p-3 h-16 bg-[#0b1421] border-2 border-[#0bffffcc] focus:ring-4 focus:ring-[#0bffffcc]">
+                  
+                  {% for i in video.products.all %}
+                    <option value="{{ i.id }}" selected>{{ i.name }}</option>
+                  {% endfor %}
+                  {% for i in products %}
+                    <option value="{{ i.id }}">{{ i.name }}</option>
+                  {% endfor %}
+                </select>
+          </div>
+          </div>
+    
+          <button type="submit" class="w-full mt-6 py-3 bg-[#0bffffcc] text-[#0b1421] font-bold rounded-xl hover:bg-[#0bffff] transition duration-300">
+            ویرایش ویدیو
+          </button>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- مودال تایید حذف -->
+    <div id="confirmModal-{{ video.id }}" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+      <div class="bg-[#0b1421] rounded-lg shadow-lg w-11/12 max-w-md p-6">
+        <h2 class="text-xl font-semibold text-white mb-4">حذف</h2>
+        <p class="text-white mb-6">آیا مطمئن هستید که می‌خواهید این ویدیو را حذف کنید؟ این عملیات قابل بازگشت نیست.</p>
+        <div class="flex justify-end gap-4">
+          <button onclick="closeModal({{ video.id }})"
+                  class="bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded">انصراف</button>
+
+          <form id="deleteForm-{{ video.id }}" method="POST" action="{% url 'pvideo:remove_video' shop_id video.id %}">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+              بله، حذف کن
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+      <p class="text-center py-12 text-[#0bffffcc] font-semibold">هیچ ویدیویی ثبت نشده است.</p>
+    {% endfor %}
+
+  </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+  function openModal(id) {
+    const modal = document.getElementById(`confirmModal-${id}`);
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeModal(id) {
+    const modal = document.getElementById(`confirmModal-${id}`);
+    if (modal) modal.classList.add('hidden');
+  }
+</script>
+
+ <script>
+  document.querySelectorAll('.open-modal-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const videoId = button.getAttribute('data-video-id');
+      document.getElementById(`modal-${videoId}`).classList.remove('hidden');
+    });
+  });
+
+  document.querySelectorAll('.close-modal-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      button.closest('.modal').classList.add('hidden');
+    });
+  });
+
+  // بستن مدال با کلیک روی پس‌زمینه
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  });
+</script>
+
+ 
+<script>
+  const openBtn = document.getElementById('open-add-video-modal');
+  const modal = document.getElementById('add-video-modal');
+  const closeBtn = document.getElementById('close-add-video-modal');
+
+  openBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    modal.classList.remove('hidden');
+  });
+
+  closeBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
+
+  // بستن مدال با کلیک روی پس‌زمینه
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  });
+</script>
+{% endblock %}

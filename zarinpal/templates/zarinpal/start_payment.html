@@ -1,0 +1,12 @@
+{% extends 'zarinpal/base.html' %}
+{% block zarin_con %}
+
+<form action="" method="POST">
+    {% csrf_token %}
+    <input type="text" name="amount" id="">
+    <button type="submit">send</button>
+</form>
+
+
+
+{% endblock %}

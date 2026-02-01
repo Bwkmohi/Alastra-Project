@@ -1,0 +1,373 @@
+{% extends 'chat/base.html' %}
+{% block chat_content %}
+
+<title>
+    {{ receiver.get_full_name }}
+</title>
+
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d]">
+    <!-- محتوای هدر و چت شما بدون تغییر -->
+    <div class="border-b border-[#0bffff33] bg-gradient-to-b from-[#0b1421] to-[#0a1828]">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- اطلاعات کاربر -->
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        {% if receiver_profile.url %}
+                            <img src="{{ receiver_profile.url }}" class="w-14 h-14 rounded-2xl object-cover border-2 border-[#0bffff33] object-cover">
+                        {% else %}
+                        <i class="bi bi-person text-5xl w-14 h-14 rounded-2xl border-2 border-[#0bffff33]"></i>
+                        {% endif %}
+                        
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-[#0b1421]"></div>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-black text-white">
+                            {{ receiver.get_full_name }}
+                        </h2>
+                        <p class="text-[#0bffffaa] text-sm">اخرین بازدید به تازگی</p>
+                    </div>
+                </div>
+
+                <div class="relative inline-block">
+                    <button id="dropdownBtn" class="w-10 h-10 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] rounded-xl flex items-center justify-center hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] transition-all duration-300">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+
+                    <div id="dropdownMenu" class="absolute right-0 mt-2 w-44 bg-[#0bffff11] border border-[#0bffff44] rounded-lg shadow-lg hidden">
+                        <a href="{% url 'add_to_black_list' receiver.id %}" class="block w-full text-left px-4 py-2 text-[#0bffff] hover:bg-[#0bffff33] rounded-t-xl">مسدود کردن کاربر</a>
+                        {% if chat_home.fav == True or 'True' %}
+                            <a href="{% url 'remove_from_favorites' ch_id %}" class="block w-full text-left px-4 py-2 text-[#0bffff] hover:bg-[#0bffff33] rounded-b-xl">حذف از مورد علاقه‌ها</a>
+                        {% else %}
+                            <a href="{% url 'add_to_favorites' ch_id %}" class="block w-full text-left px-4 py-2 text-[#0bffff] hover:bg-[#0bffff33] rounded-b-xl">افزودن به مورد علاقه‌ها</a>
+                        {% endif %}
+                        <a href="{% url 'delete_chat_home' ch_id %}" class="block w-full text-left px-4 py-2 text-[#0bffff] hover:bg-[#0bffff33] rounded-b-xl">حذف مکالمه</a>
+                    </div>
+                </div>
+
+                <script>
+                    const dropdownBtn = document.getElementById('dropdownBtn');
+                    const dropdownMenu = document.getElementById('dropdownMenu');
+
+                    dropdownBtn.addEventListener('click', () => {
+                        dropdownMenu.classList.toggle('hidden');
+                    });
+
+                    // بستن منو وقتی بیرون کلیک می‌شود
+                    window.addEventListener('click', (e) => {
+                        if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.add('hidden');
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <!-- بدنه چت -->
+    <div class="max-w-4xl mx-auto h-[calc(100vh-140px)] flex flex-col">
+        <!-- لیست پیام‌ها -->
+        <div class="flex-1 overflow-y-auto space-y-4 px-4 py-4" id="messages">
+        <!-- messages list -->
+        </div>
+    </div>
+    
+    <!-- نوار ارسال پیام -->
+    <div class="border-t border-[#0bffff33] bg-gradient-to-t from-[#0b1421] to-transparent p-4">
+        <div class="max-w-4xl mx-auto">
+            <form id="chat-form" enctype="multipart/form-data" class="flex items-end gap-3" autocomplete="off">
+                {% csrf_token %}
+                <input type="hidden" name="reply_to" id="reply_to" />
+                <input type="hidden" name="ch_id" value="{{ ch_id }}" id="ch_id" />
+                <input type="hidden" name="receiver" id="receiver" value="{{ receiver_id }}" />
+                
+                <!-- دکمه‌های attachment -->
+                <div class="flex items-center gap-2">
+                    <input type="file" name="image" id="image" accept="image/*" class="hidden">
+                    <button type="button" class="w-10 h-10 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] rounded-xl flex items-center justify-center hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] transition-all duration-300">
+                        <i class="bi bi-image"></i>
+                    </button>
+                </div>
+
+                <!-- input پیام -->
+                <div class="flex-1">
+                    <div class="bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-4 py-3 focus-within:border-[#0bffff] focus-within:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300">
+                        <textarea 
+                            rows="1"
+                            name="content" id="content"
+                            placeholder="پیام خود را بنویسید..."
+                            class="w-full bg-transparent text-white placeholder-[#0bffff66] resize-none outline-none text-sm max-h-32"
+                            oninput="autoResize(this)"></textarea>
+                    </div>
+                </div>
+
+                <!-- دکمه ارسال -->
+                <button type="button" id="send-button" class="w-12 h-12 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] text-[#062441] rounded-2xl flex items-center justify-center shadow-lg shadow-[#0bffff66] hover:shadow-[0_0_25px_rgba(11,255,255,0.8)] hover:scale-105 transition-all duration-300">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+                
+                <div id="reply-info" class="px-4 py-2 text-sm text-gray-400"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* استایل‌های شما بدون تغییر */
+.overflow-y-auto::-webkit-scrollbar {
+    width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+    background: #0b1421;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #0bffff33;
+    border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #0bffff66;
+}
+
+@keyframes messageSlide {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.group {
+    animation: messageSlide 0.3s ease-out;
+}
+</style>
+
+
+<script>
+// تمام کدهای جاوااسکریپت در یک تگ اسکریپت
+document.addEventListener('DOMContentLoaded', function() {
+    // تعریف متغیرها
+    const chatForm = document.getElementById('chat-form');
+    const sendButton = document.getElementById('send-button');
+    const contentInput = document.getElementById('content');
+    const messagesDiv = document.getElementById('messages');
+    const replyInput = document.getElementById('reply_to');
+    const replyInfo = document.getElementById('reply-info');
+    const currentUserId = {{ request.user.id|default:"0" }};
+
+    // تابع autoResize
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // اسکرول به پایین
+    const chatContainer = document.querySelector('.overflow-y-auto');
+    if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // مدیریت ارسال پیام
+    sendButton.addEventListener('click', async function() {
+        const formData = new FormData(chatForm);
+        const content = contentInput.value.trim();
+        
+        if (!content) {
+            alert('لطفا پیامی بنویسید');
+            return;
+        }
+
+        console.log('در حال ارسال پیام با AJAX...');
+        
+        try {
+            const response = await fetch("{% url 'send_message' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('خطا در ارسال پیام');
+
+            const data = await response.json();
+            
+            if (data.status == 'success') {
+                // پاک کردن فیلدها
+                contentInput.value = '';
+                replyInput.value = '';
+                replyInfo.textContent = '';
+                
+                // ریست ارتفاع textarea
+                contentInput.style.height = 'auto';
+                
+                console.log('پیام با موفقیت ارسال شد');
+                
+                // ریفرش پیام‌ها
+                fetchUnseenMessages();
+                
+            } else {
+                // alert('خطا در ارسال پیام: ' + data.error);
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('خطا در ارسال پیام');
+        }
+    });
+
+    // ارسال با کلید Enter (اختیاری)
+    contentInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendButton.click();
+        }
+    });
+
+    // منوی تنظیمات در هدر
+    const btnMenu = document.getElementById("menuButton");
+    const menuDropdown = document.getElementById("menuDropdown");
+
+    if (btnMenu && menuDropdown) {
+        btnMenu.addEventListener("click", () => {
+            menuDropdown.classList.toggle("hidden");
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!btnMenu.contains(e.target) && !menuDropdown.contains(e.target)) {
+                menuDropdown.classList.add("hidden");
+            }
+        });
+    }
+
+    // مدیریت ریپلای پیام‌ها
+    if (messagesDiv) {
+        // حذف ریپلای اگر روی جای خالی کلیک شود
+        document.body.addEventListener('click', e => {
+            if (!e.target.closest('[data-id]')) {
+                replyInput.value = '';
+                replyInfo.textContent = '';
+            }
+        });
+
+        // فعال‌کردن ریپلای با کلیک روی پیام‌ها
+        messagesDiv.querySelectorAll('[data-id]').forEach(div => {
+            div.addEventListener('click', () => {
+                const id = div.getAttribute('data-id');
+                const textElement = div.querySelector('p');
+                if (textElement) {
+                    const text = textElement.textContent.trim().substring(0, 30);
+                    replyInput.value = id;
+                    replyInfo.textContent = `در حال ریپلای به: "${text}..."`;
+                }
+            });
+        });
+    }
+
+    
+    // تابع fetchUnseenMessages
+function fetchUnseenMessages() {
+    console.log("درحال چک کردن پیام‌های جدید...");
+    fetch("/chat/unseen_messages/{{ ch_id }}/")
+        .then(response => response.json())
+        .then(data => {
+            console.log("پیام‌های جدید:", data.messages);
+            const messagesDiv = document.getElementById('messages');
+
+            data.messages.forEach(msg => {
+                if (!document.getElementById(`msg-${msg.id}`)) {
+                    const isOwner = msg.sender_id == currentUserId;
+                    
+                    let replyHtml = '';
+                    if (msg.reply_to_content) {
+                        replyHtml = `
+                            <div class="text-xs text-gray-400 mb-2 border-l-2 border-gray-500 pl-2 italic truncate max-w-full">
+                                ریپلای به: ${msg.reply_to_content.substring(0, 30)}
+                            </div>
+                        `;
+                    }
+
+                    // بررسی اگر پیام محصول دارد
+                    let productHtml = '';
+                    if (msg.product) {
+                        productHtml = `
+                            <div class="flex items-center gap-3 mb-3">
+                                <a href="${msg.product.url}">
+                                    <img src="${msg.product.image}" class="w-12 h-12 rounded-lg border border-[#0bffff33] object-cover">
+                                </a>
+                                <div class="flex-1">
+                                    <p class="text-white text-sm font-bold">${msg.product.name}</p>
+                                    <p class="text-[#0bffffaa] text-xs">${msg.product.price} تومان</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // بررسی اگر پیام تصویر دارد
+                    let imageHtml = '';
+                    if (msg.image_url) {
+                        imageHtml = `
+                            <div class="mb-3 rounded-xl overflow-hidden border border-[#0bffff33]">
+                                <img src="${msg.image_url}" class="w-full max-w-xs object-cover rounded-lg">
+                            </div>
+                        `;
+                    }
+
+                    const newMsgHtml = `
+                        <div id="msg-${msg.id}" data-id="${msg.id}" class="flex items-start gap-3 group ${isOwner ? '' : 'justify-end'}">
+                            ${isOwner ? `
+                                <img src="${msg.sender_profile || '{{ sender_profile.url }}'}" class="w-10 h-10 rounded-xl border border-[#0bffff33] object-cover flex-shrink-0" />
+                            ` : ''}
+                            <div class="flex-1 max-w-md">
+                                <div class="rounded-2xl p-4 border max-w-md
+                                    ${isOwner ? 
+                                        'bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] border-[#0bffff33] rounded-tr-none' : 
+                                        'bg-gradient-to-br from-[#06244188] to-[#0b142188] border-[#0bffff33] rounded-tl-none'
+                                    }">
+                                    ${replyHtml}
+                                    ${productHtml}
+                                    ${imageHtml}
+                                    ${msg.content ? `<p class="text-white text-sm leading-6 whitespace-pre-wrap break-words">${msg.content}</p>` : ''}
+                                </div>
+                                <div class="flex items-center gap-2 mt-2 text-[#0bffff66] text-xs ${isOwner ? '' : 'justify-end'}">
+                                    <span>${msg.timestamp}</span>
+                                    <i class="bi bi-check2-all text-[#0bffff]"></i>
+                                </div>
+                            </div>
+                            ${!isOwner ? `
+                                <img src="${msg.sender_profile || '{{ receiver_profile.url }}'}" class="w-10 h-10 rounded-xl border border-[#0bffff33] object-cover flex-shrink-0" />
+                            ` : ''}
+                        </div>
+                    `;
+
+                    messagesDiv.insertAdjacentHTML('beforeend', newMsgHtml);
+                    
+                    // اضافه کردن event listener برای ریپلای
+                    const newMsgDiv = document.getElementById(`msg-${msg.id}`);
+                    newMsgDiv.addEventListener('click', () => {
+                        document.getElementById('reply_to').value = msg.id;
+                        document.getElementById('reply-info').textContent = `در حال ریپلای به: "${msg.content ? msg.content.substring(0,30) : 'تصویر یا محصول'}..."`;
+                    });
+                    
+                    // اسکرول به پایین
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }
+            });
+        })
+        .catch(err => console.error('خطا در دریافت پیام‌های جدید:', err));
+}
+// هر 5 ثانیه پیام‌های جدید را چک کن
+    setInterval(fetchUnseenMessages, 5000);
+
+    // بار اول اجرا کن
+    fetchUnseenMessages();
+});
+</script>
+
+{% endblock chat_content %}

@@ -1,0 +1,190 @@
+{% extends "accaunts/base.html" %}
+
+    {% block account_content %}
+<title>
+     ورود | {% if site_info.site_title %} {{ site_info.site_title }} {% else %}Alastra {% endif %} 
+</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+     
+    <style>
+        .body {
+            background: linear-gradient(135deg, #0b1421 0%, #062441 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gradient-border {
+            background: linear-gradient(135deg, #0bffffcc 0%, #0bffffee 100%);
+            padding: 2px;
+            border-radius: 1rem;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #0bffffcc 0%, #0bffffee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0bffffcc 0%, #0bffffee 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(11, 255, 255, 0.3);
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: #0bffffcc;
+            box-shadow: 0 0 0 3px rgba(11, 255, 255, 0.1);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(11, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(11, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(11, 255, 255, 0); }
+        }
+    </style>
+ 
+<div class="min-h-screen body flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md">
+        <!-- هدر -->
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 mx-auto mb-4 gradient-border rounded-full flex items-center justify-center">
+                <div class="w-16 h-16 bg-primary-dark rounded-full flex items-center justify-center">
+                    <i class="bi bi-person-fill-lock text-2xl gradient-text"></i>
+                </div>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">ورود به حساب کاربری</h1>
+            <p class="text-gray-400">لطفاً رمز عبور خود را وارد کنید</p>
+        </div>
+
+        <!-- فرم ورود -->
+        <div class="glass-effect rounded-2xl p-8 shadow-luxury">
+            <form action="" method="POST" id="loginForm">
+
+                {% csrf_token %}
+                <div class="mb-6">
+                    <label class="block text-gray-300 text-sm font-medium mb-2" for="username">
+                        <i class="fas fa-user ml-2"></i>
+                         نام کاربری
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username"
+                        name="username"
+                        class="w-full input-field bg-secondary-dark border border-gray-600 rounded-xl px-4 py-3 text-[#0000] placeholder-[#0000] focus:outline-none focus:border-accent-blue transition-all duration-300"
+                        placeholder="نام کاربری"
+                        required
+                    >
+                </div>
+
+                <!-- فیلد رمز عبور -->
+                <div class="mb-6">
+                    <label class="block text-gray-300 text-sm font-medium mb-2" for="password">
+                        <i class="fas fa-key ml-2"></i>
+                        رمز عبور
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            name="password"
+                            id="password"
+                            class="w-full input-field bg-secondary-dark border border-gray-600 rounded-xl px-4 py-3 text-black placeholder-black focus:outline-none focus:border-accent-blue transition-all duration-300 pr-12"
+                            placeholder="••••••••"
+                            required
+                        >
+                        <button 
+                            type="button"
+                            onclick="togglePassword()"
+                            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-300"
+                        >
+                            <i id="eyeIcon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- گزینه‌های اضافی -->
+                <div class="flex items-center justify-between mb-6">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="form-checkbox h-4 w-4 text-accent-blue bg-secondary-dark border-gray-600 rounded focus:ring-accent-blue">
+                        <span class="mr-2 text-gray-300 text-sm">مرا به خاطر بسپار</span>
+                    </label>
+                    <a href="{% url 'acc:send_reset_password_link' %}" class="text-accent-blue hover:text-accent-teal text-sm transition-colors duration-300">
+                        رمز عبور را فراموش کرده‌اید؟
+                    </a>
+                </div>
+
+                <!-- دکمه ورود -->
+                <button 
+                    type="submit"
+                    class="w-full btn-primary text-primary-dark font-bold py-3 px-4 rounded-xl transition-all duration-300 pulse-animation"
+                >
+                    <i class="fas fa-sign-in-alt ml-2"></i>
+                    ورود به حساب
+                </button>
+            </form>
+
+
+        </div>
+
+        <!-- فوتر -->
+        <div class="text-center mt-6">
+            <p class="text-gray-400">
+                حساب کاربری ندارید؟
+                <a href="{% url 'acc:sign' %}" class="text-accent-blue hover:text-accent-teal font-medium transition-colors duration-300">
+                    ثبت‌نام کنید
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // نمایش/مخفی کردن رمز عبور
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.className = 'fas fa-eye';
+            }
+        }
+
+ 
+
+        // افکت hover برای کارت‌ها
+        document.querySelectorAll('.glass-effect').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</div>
+ 
+      
+      {% endblock %}
+    

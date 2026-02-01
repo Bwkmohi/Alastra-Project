@@ -1,0 +1,15 @@
+{% extends 'follow/base.html' %}
+
+
+{% block follow_con %}
+<h1>
+    {{ len }}  
+</h1>
+
+
+{% for f in followers %}
+    {{ f.user.first_name }} {{ f.user.last_name }}
+{% endfor %}
+    
+     
+{% endblock follow_con %}

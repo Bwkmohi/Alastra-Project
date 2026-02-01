@@ -1,0 +1,479 @@
+{% extends 'core/base.html' %}
+{% block content %}
+{% load math_tags %}
+
+<title>
+    داشبورد فروشنده
+</title>
+
+<style>
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+</style>
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] p-6">
+    
+    <!-- هدر داشبورد -->
+    <div class="max-w-7xl mx-auto mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center">
+                    <i class="bi bi-person-badge text-2xl text-[#062441]"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                        داشبورد فروشنده
+                    </h1>
+                    <p class="text-[#0bffffaa] mt-2">مدیریت تمام فروشگاه‌های شما در یک نگاه</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <a href="{% url 'sellers:create_shop' %}" class="bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] px-6 py-3 rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300 font-bold">
+                    <i class="bi bi-plus-lg mr-2"></i>
+                    فروشگاه جدید
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- آمار کلی فروشنده -->
+    <div class="max-w-7xl mx-auto mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            
+            <!-- کل فروش -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[#0bffffaa] text-sm">فروش کل</p>
+                        <p class="text-lg font-black text-white mt-2 group-hover:text-[#0bffff] transition-colors">{{ total_sales }}</p>
+                        <p class="text-[#0bffff66] text-xs mt-1">سود حاصل از فروش</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-xl flex items-center justify-center group-hover:from-[#0bffff] group-hover:to-[#0bffffee] transition-all duration-500">
+                        <i class="bi bi-currency-dollar text-xl text-[#0bffff] group-hover:text-[#062441] transition-colors"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تعداد فروشگاه‌ها -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[#0bffffaa] text-sm">تعداد فروشگاه‌ها</p>
+                        <p class="text-3xl font-black text-white mt-2 group-hover:text-[#0bffff] transition-colors">{{ count_shops}}</p>
+                        <p class="text-[#0bffff66] text-xs mt-1">کل فروشگاه ها</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-xl flex items-center justify-center group-hover:from-[#0bffff] group-hover:to-[#0bffffee] transition-all duration-500">
+                        <i class="bi bi-shop text-xl text-[#0bffff] group-hover:text-[#062441] transition-colors"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- محصولات کل -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[#0bffffaa] text-sm">کل محصولات</p>
+                        <p class="text-3xl font-black text-white mt-2 group-hover:text-[#0bffff] transition-colors">{{ products_count }}</p>
+                        <p class="text-[#0bffff66] text-xs mt-1">محصولات فعال</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-xl flex items-center justify-center group-hover:from-[#0bffff] group-hover:to-[#0bffffee] transition-all duration-500">
+                        <i class="bi bi-box-seam text-xl text-[#0bffff] group-hover:text-[#062441] transition-colors"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- سفارشات کل -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[#0bffffaa] text-sm">سفارشات کل</p>
+                        <p class="text-3xl font-black text-white mt-2 group-hover:text-[#0bffff] transition-colors">{{ reservs_count }}</p>
+                        <p class="text-[#0bffff66] text-xs mt-1">سفارشات تحویل نشده</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-xl flex items-center justify-center group-hover:from-[#0bffff] group-hover:to-[#0bffffee] transition-all duration-500">
+                        <i class="bi bi-bag-check text-xl text-[#0bffff] group-hover:text-[#062441] transition-colors"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- لیست فروشگاه‌ها -->
+    <div class="max-w-7xl mx-auto">
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm overflow-hidden">
+            
+            <!-- هدر لیست -->
+            <div class="p-6 border-b border-[#0bffff33]">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-black text-white flex items-center gap-3">
+                        <i class="bi bi-list-ul text-[#0bffff]"></i>
+                        فروشگاه‌های من
+                    </h3>
+                </div>
+            </div>
+
+            <!-- کارت‌های فروشگاه -->
+            <div class="p-6 grid grid-cols-1 lg:grid-cols-1 xl:grid-cols-3 gap-6">
+                {% for i in shops %}
+                {% if i.active %}
+                <!-- فروشگاه نمونه ۱ -->
+                <div class="group bg-gradient-to-br from-[#0b142133] to-[#06244133] rounded-2xl p-6 border border-[#0bffff33] hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="relative">
+                            <img src="{{ i.logo.url }}" class="w-16 h-16 rounded-2xl border-2 border-[#0bffff33] object-cover">
+                            <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-[#0b1421]"></div>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-black text-white group-hover:text-[#0bffff] transition-colors">{{ i.name_shop }}</h4>
+                            <p class="text-[#0bffffaa] text-sm mt-1">{{ i.description_ }}</p>
+                        </div>
+                    </div>
+
+                    <!-- آمار فروشگاه -->
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="text-center p-3 rounded-xl bg-[#0b142133]">
+                            <p class="text-[#0bffffaa] text-xs">محصولات</p>
+                            <p class="text-white font-bold text-lg">{{ i.shop_products_count }}</p>
+                        </div>
+                        <div class="text-center p-3 rounded-xl bg-[#0b142133]">
+                            <p class="text-[#0bffffaa] text-xs">امتیاز</p>
+                            <p class="text-white font-bold text-lg">{{ i.rateing }}</p>
+                        </div>
+                    </div>
+
+                    <!-- وضعیت و اقدامات -->
+                    <div class="flex items-center justify-between pt-4 border-t border-[#0bffff33]">
+                        <span class="bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff33] text-[#0bffff] px-3 py-1 rounded-full text-xs font-bold">
+                            فعال
+                        </span>
+                        <a href="{% url 'sellers:shop_dashbord' i.id %}" class="bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] px-4 py-2 rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] transition-all duration-300 text-sm font-medium">
+                            مدیریت
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="group bg-gradient-to-br from-[#0b142133] to-[#06244133] rounded-2xl p-6 border border-[#ff6b6b33] hover:border-[#ff6b6b] hover:shadow-[0_0_30px_rgba(255,107,107,0.2)] transition-all duration-500">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="relative">
+                            <img src="{{ i.logo.url }}" class="w-16 h-16 rounded-2xl border-2 border-[#ff6b6b33] object-cover">
+                            <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-400 rounded-full border-2 border-[#0b1421]"></div>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-black text-white group-hover:text-[#ff6b6b] transition-colors">{{ i.name_shop }}</h4>
+                            <p class="text-[#ff6b6baa] text-sm mt-1">{{ i.description }}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="text-center p-3 rounded-xl bg-[#0b142133]">
+                            <p class="text-[#ff6b6baa] text-xs">محصولات</p>
+                            <p class="text-white font-bold text-lg">{{ i.shop_products_count }}</p>
+                        </div>
+                        <div class="text-center p-3 rounded-xl bg-[#0b142133]">
+                            <p class="text-[#ff6b6baa] text-xs">امتیاز</p>
+                            <p class="text-white font-bold text-lg">{{ i.rateing }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-[#ff6b6b33]">
+                        <span class="bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b33] text-[#ff6b6b] px-3 py-1 rounded-full text-xs font-bold">
+                            غیرفعال
+                        </span>
+                        {% if i.reported %}
+                        <span class="bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b33] text-[#ff6b6b] px-3 py-1 rounded-full text-xs font-bold">
+                            مسدود شده 
+                        </span>           
+                        {% else %}
+                        <a href="{% url 'sellers:shop_edit' i.id %}" class="bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] px-4 py-2 rounded-xl hover:border-[#ff6b6b] hover:shadow-[0_0_15px_rgba(255,107,107,0.3)] transition-all duration-300 text-sm font-medium">
+                            فعال‌سازی
+                        </a>
+                        {% endif %}
+
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="p-6 border-t border-[#0bffff33]">
+                <a href="{% url 'sellers:create_shop' %}">
+                    <button class="w-full py-6 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border-2 border-dashed border-[#0bffff44] text-[#0bffff] font-bold rounded-2xl hover:border-[#0bffff] hover:bg-gradient-to-r hover:from-[#0bffff44] hover:to-[#0bffff22] hover:shadow-[0_0_30px_rgba(11,255,255,0.3)] transition-all duration-500 group">
+                        <div class="flex items-center justify-center gap-3">
+                            <i class="bi bi-plus-lg text-2xl group-hover:scale-110 transition-transform"></i>
+                            <span class="text-lg">ایجاد فروشگاه جدید</span>
+                        </div>
+                        <p class="text-[#0bffffaa] text-sm mt-2">فروشگاه جدید خود را ایجاد کنید</p>
+                    </button>                    
+                </a>
+            </div>
+        </div>
+    </div>
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] p-6">
+    
+    <div class="max-w-7xl mx-auto mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center">
+                    <i class="bi bi-graph-up text-2xl text-[#062441]"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                        تحلیل‌های پیشرفته
+                    </h1>
+                    <p class="text-[#0bffffaa] mt-2">داده‌های تحلیلی تمام فروشگاه‌های شما</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="window.print()" class="bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] px-6 py-3 rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300 font-bold">
+                    <i class="bi bi-download mr-2"></i>
+                    خروجی گزارش
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- چارت وضعیت سفارشات -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-black text-white flex items-center gap-3">
+                        <i class="bi bi-pie-chart text-[#0bffff]"></i>
+                        وضعیت سفارشات
+                    </h3>
+                    <span class="text-[#0bffffaa] text-sm">کل: {{ total_orders }} سفارش</span>
+                </div>
+
+                <div class="h-80 relative">
+                    <div class="grid grid-cols-2 gap-4 h-full">
+                        <!-- دایره -->
+                        <div class="flex items-center justify-center">
+                            <div class="relative w-48 h-48">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <!-- حلقه پس‌زمینه -->
+                                <circle cx="50%" cy="50%" r="70" stroke="#0bffff33" stroke-width="14" fill="none" />
+
+                                <!-- delivered -->
+                                <circle cx="50%" cy="50%" r="70" stroke="#4ecdc4" stroke-width="14" fill="none"
+                                stroke-dasharray="440" stroke-dashoffset="{{ delivered_offset }}" stroke-linecap="round" />
+
+                                <!-- canceled -->
+                                <circle cx="50%" cy="50%" r="70" stroke="#ffa726" stroke-width="14" fill="none"
+                                stroke-dasharray="440" stroke-dashoffset="{{ canceled_offset }}" stroke-linecap="round" />
+
+                                <!-- pending -->
+                                <circle cx="50%" cy="50%" r="70" stroke="#66bb6a" stroke-width="14" fill="none"
+                                stroke-dasharray="440" stroke-dashoffset="{{ pending_offset }}" stroke-linecap="round" />
+                            </svg>
+
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="text-center">
+                                <p class="text-2xl font-black text-white">{{ total_orders }}</p>
+                                <p class="text-[#0bffffaa] text-sm">سفارش</p>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        <!-- لیست وضعیت‌ها -->
+                        <div class="flex flex-col justify-center space-y-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-4 h-4 bg-[#4ecdc4] rounded-full"></div>
+                                <span class="text-white text-sm">ارسال شده ({{ sent_count }})</span>
+                                <span class="text-[#0bffffaa] text-sm mr-auto">{{ sent_percent }}٪</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-4 h-4 bg-[#66bb6a] rounded-full"></div>
+                                <span class="text-white text-sm">تحویل شده ({{ delivered_count }})</span>
+                                <span class="text-[#0bffffaa] text-sm mr-auto">{{ delivered_percent }}٪</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-4 h-4 bg-[#ffa726] rounded-full"></div>
+                                <span class="text-white text-sm">در انتظار ارسال ({{ waiting_count }})</span>
+                                <span class="text-[#0bffffaa] text-sm mr-auto">{{ waiting_percent }}٪</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-4 h-4 bg-[#ff6b6b] rounded-full"></div>
+                                <span class="text-white text-sm">لغو شده ({{ canceled_count }})</span>
+                                <span class="text-[#0bffffaa] text-sm mr-auto">{{ canceled_percent }}٪</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-4 h-4 bg-[#0bffff] rounded-full"></div>
+                                <span class="text-white text-sm">سفارشات جدید ({{ new_count }})</span>
+                                <span class="text-[#0bffffaa] text-sm mr-auto">{{ new_percent }}٪</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-black text-white flex items-center gap-3">
+                    <i class="bi bi-people text-[#0bffff]"></i>
+                    روند رشد فالوورها
+                    </h3>
+                </div>
+                <div class="h-80 flex items-end gap-4">
+                {% for shop in shops_followers %}
+                    <div class="flex flex-col items-center flex-1">
+                    <div class="w-8 bg-[#0bffffcc] rounded-t-lg mb-2" style="height: {{shop.height_percent}}px; "></div>
+                    <span class="text-[#0bffffaa] text-xs text-center whitespace-nowrap">{{ shop.name }}</span>
+                    <span class="text-white font-bold mt-1">{{ shop.followers }}</span>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ردیف دوم چارت‌ها -->
+    <div class="max-w-7xl mx-auto mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- فروش هر فروشگاه -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm">
+                <h3 class="text-xl font-black text-white mb-6 flex items-center gap-3">
+                    <i class="bi bi-currency-dollar text-[#0bffff]"></i>
+                    فروش هر فروشگاه
+                </h3>
+                <div class="space-y-4">
+                    {% for i in shops_profit %}
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-[#0b142133]">
+                            <div class="flex items-center gap-3">
+                                <img src="{{ i.logo }}" class="w-10 h-10 rounded-lg">
+                                <span class="text-white text-sm">{{ i.name_shop }}</span>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-white font-bold">{{ i.orders_count }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- سود هر فروشگاه -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm">
+                <h3 class="text-xl font-black text-white mb-6 flex items-center gap-3">
+                    <i class="bi bi-graph-up-arrow text-[#0bffff]"></i>
+                    سود هر فروشگاه
+                </h3>
+                <div class="space-y-4">
+                    {% for sp in shops_profit %}
+                    <div class="flex items-center justify-between">
+                        <span class="text-white text-sm">{{ sp.name_shop }}</span>
+                        <div class="text-right">
+                            <p class="text-white font-bold text-xs">{{ sp.profit }}</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-[#0b142133] rounded-full h-2">
+                        <div class="bg-gradient-to-r from-[#0bffff] to-[#0bffffee] h-2 rounded-full" style="width: {{ sp.progress }}%"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <!-- سنتیک خریداران -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm">
+                <h3 class="text-xl font-black text-white mb-6 flex items-center gap-3">
+                    <i class="bi bi-venn-diagram text-[#0bffff]"></i>
+                    جنسیت خریداران
+                </h3>
+                <div class="grid grid-cols-1 gap-2 text-center">
+                    <div class="p-3 rounded-xl bg-[#0b142133]">
+                        <i class="bi bi-gender-male text-2xl text-[#0bffff] mb-2"></i>
+                        <p class="text-white font-bold">{{ men }}</p>
+                        <p class="text-[#0bffffaa] text-xs">مرد</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-[#0b142133]">
+                        <i class="bi bi-gender-female text-2xl text-[#ff6b6b] mb-2"></i>
+                        <p class="text-white font-bold">{{ women }}</p>
+                        <p class="text-[#ff6b6baa] text-xs">زن</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-[#0b142133]">
+                        <i class="bi bi-geo text-2xl text-[#ff6b6b] mb-2"></i>
+                        <p class="text-white font-bold">{{ unknown }}</p>
+                        <p class="text-[#ff6b6baa] text-xs">نا مشخص</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ردیف سوم چارت‌ها -->
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- دسته‌بندی پرفروش -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm">
+                <h3 class="text-xl font-black text-white mb-6 flex items-center gap-3">
+                    <i class="bi bi-tags text-[#0bffff]"></i>
+                    دسته‌بندی‌های پرفروش
+                </h3>
+                <div class="space-y-4">
+                    {% for item in category_distribution %}
+                    <div class="flex items-center justify-between">
+                        <span class="text-white text-sm">{{ item.name }}</span>
+                        <span class="text-white font-bold">{{ item.percent }}٪</span>
+                    </div>
+                    <div class="w-full bg-[#0b142133] rounded-full h-3">
+                        <div class="bg-gradient-to-r from-[#0bffff] to-[#0bffffee] h-3 rounded-full" style="width: {{ item.percent }}%"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- جغرافیای مشتریان -->
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm">
+                <h3 class="text-xl font-black text-white mb-6 flex items-center gap-3">
+                    <i class="bi bi-geo-alt text-[#0bffff]"></i>
+                    جغرافیای مشتریان
+                </h3>
+                <div class="space-y-4">
+                    {% for item in province_distribution %}
+                    <div class="flex items-center justify-between">
+                        <span class="text-white text-sm">{{ item.name }}</span>
+                        <span class="text-white font-bold">{{ item.percent }}٪</span>
+                    </div>
+                    <div class="w-full bg-[#0b142133] rounded-full h-3">
+                        <div class="bg-gradient-to-r from-[#0bffff] to-[#0bffffee] h-3 rounded-full" style="width: {{ item.percent }}%"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// اسکریپت برای نمودارهای تعاملی
+document.addEventListener('DOMContentLoaded', function() {
+    // می‌تونید از Chart.js یا هر کتابخانه دیگه‌ای اینجا استفاده کنید
+    // اینجا فقط نمونه ساده‌ای گذاشتم
+    
+    // مدیریت hover روی چارت‌ها
+    const chartCards = document.querySelectorAll('.bg-gradient-to-bl');
+    chartCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+
+
+</div>
+ 
+{% endblock %}

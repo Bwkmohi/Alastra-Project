@@ -1,0 +1,226 @@
+{% extends 'notifications/base.html' %}
+
+{% block notf_con %}
+
+ 
+
+<title>
+  اعلان ها
+</title>
+
+<!-- نوتیفیکیشن -->
+<div id="notifBox" class="fixed top-6 right-6 bg-white/5 border border-white/10 text-white shadow-xl backdrop-blur-md rounded-xl px-5 py-4 w-[340px] flex items-start gap-4 animate-slide-in z-50 transition-all">
+  
+    <!-- آیکون -->
+    <div>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-400 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+  
+    <!-- متن -->
+    <div class="flex-1">
+      <h3 class="font-bold text-base mb-1">ورود موفق!</h3>
+      <p class="text-sm text-gray-300">شما با موفقیت وارد پنل خود شدید.</p>
+    </div>
+  
+    <!-- بستن -->
+    <button onclick="document.getElementById('notifBox').classList.add('hidden')" class="text-gray-400 hover:text-white transition">
+      &times;
+    </button>
+  </div>
+  
+  <!-- انیمیشن ورودی -->
+  <style>
+    .animate-slide-in {
+      animation: slideIn 0.4s ease-out forwards;
+    }
+  
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+  </style>
+
+
+   
+
+  <div class="min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] px-4 py-8">
+
+    <h2 class="text-white text-2xl font-bold mb-8 text-center">اعلان‌های شما</h2>
+  
+    <div class="max-w-3xl mx-auto space-y-4">
+  
+      {% if notify %}
+      {% for i in notify %} 
+      <div class="flex items-start gap-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-4 shadow-md hover:shadow-lg transition-all">
+  
+        <!-- آیکون -->
+         {% if i.notification.svg %}
+        <div class="{{ i.notification.svg.bg_color }}/20 p-3 rounded-full">
+          <svg class="w-6 h-6 {{ i.notification.svg.svg_color }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ i.notification.svg }}" />
+          </svg>
+        </div>
+        {% else %}
+          <i class="bi bi-bell 20 p-3 text-2xl text-[#0bffff66] border border-[#0bffff66] rounded-lg"></i>
+        {% endif %}
+  
+        <!-- متن -->
+        <div class="flex-1">
+          <h3 class="text-white font-semibold text-base">{{ i.notification.subject }}</h3>
+          <p class="text-gray-300 text-sm mt-1">{{ i.notification.message }}</p>
+          <span class="text-xs text-gray-500 mt-2 inline-block">{{ i.created.date }}</span>
+        </div>
+      </div>
+  {% endfor %}
+  {% else %}
+  <div>
+    <center>
+      <h4 class="text-2xl">
+          هیچ اعلانی یافت نشد
+      </h4>
+    </center>
+
+  </div>
+  {% endif %}
+    </div>
+  </div>
+
+
+
+
+
+<!-- نوتیفیکیشن -->
+<div class="fixed top-24 left-6 bg-white/5 border border-white/10 text-white shadow-xl backdrop-blur-md rounded-xl px-5 py-4 flex items-start gap-4 animate-slide-in z-50 transition-all">
+  
+  <div class="relative">
+    <button onclick="toggleOptions()" class="bg-[#0bffffcc] hover:bg-[#0bffff66] text-white px-4 py-2 rounded-lg transition">
+     تنظیمات اعلان ها
+   </button>
+ 
+
+   <div id="optionMenu" class="hidden mt-2 space-x-2 rtl:space-x-reverse transition-all">
+ 
+  <div class="w-full mx-4 p-2">
+      <label class="inline-flex items-center me-5 cursor-pointer">
+          <input type="checkbox" class="sr-only peer" name='is_avb' onclick="siteNotificationSettings()" id="site_notification_setting">
+          <div class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">خاموش کردن نوتیفیکیشن ها</span>
+      </label>
+  </div>
+  <div class="w-full mx-4 p-2">
+    <label class="inline-flex items-center me-5 cursor-pointer">
+        <input type="checkbox" class="sr-only peer" name='is_avb' id="email_notification_setting" onclick="emailNotificationSettings()">
+        <div class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+        <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">خاموش کردن نوتیفیکیشن های ایمیل</span>
+    </label>
+  </div>
+  <div class="w-full mx-4 p-2">
+    <label class="inline-flex items-center me-5 cursor-pointer">
+        <input type="checkbox" class="sr-only peer" checked name='is_avb'>
+        <div class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+        <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">خاموش کردن نوتیفیکیشن های واچ لیست</span>
+    </label>
+  </div>
+
+  <div class="w-full mx-4 p-2">
+    <label class="inline-flex items-center me-5 cursor-pointer">
+        <input type="checkbox" class="sr-only peer" checked name='is_avb'>
+        <div class="relative w-11 h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+        <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">خاموش کردن همه نوتیفیکیشن   </span>
+    </label>
+  </div>
+
+     <button class="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-md text-sm">خاموش کردن اعلان ها</button>
+     <button class="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-md text-sm">خاموش کردن نوتیفیکیشن های ایمیل</button>
+     <button class="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-md text-sm">خ</button>
+ 
+   </div>
+ </div>
+ 
+ 
+
+ 
+</div>
+
+
+<script>
+  function emailNotificationSettings() {
+  fetch(`/notifications/ajax/notifications_setting/email/`)
+    .then(res => res.json(
+    ))
+    .then(data => {
+        if (data.status == 'True'){
+          alert('as')
+          defultStatusNotifications()
+        }
+        
+        if (data.status == 'False'){
+          alert('a')
+          defultStatusNotifications()
+        }
+    });      
+  }
+  
+  function siteNotificationSettings() {
+  fetch(`/notifications/ajax/notifications_setting/site/`)
+    .then(res => res.json())
+    .then(data => {
+        if (data.status == 'True'){
+          defultStatusNotifications()
+        }
+        if (data.status == 'False'){
+          defultStatusNotifications()
+        }
+    });      
+  }
+ 
+ 
+function defultStatusNotifications() {
+  fetch('/notifications/ajax/notifications_statuses/')
+  .then(res => res.json())
+    .then(data => {
+        if (data.site_ntf_stts == 'True'){
+          //    site
+          const getCheckBox = document.getElementById('site_notification_setting');
+          getCheckBox.innerHTML = '<input type="checkbox" class="sr-only peer" checked onclick="siteNotificationSettings()" id="site_notification_setting">'
+        }
+        if (data.site_ntf_stts == 'False'){
+          const getCheckBox = document.getElementById('site_notification_setting');
+          getCheckBox.innerHTML = '<input type="checkbox" class="sr-only peer" onclick="siteNotificationSettings()" id="site_notification_setting">'
+        }
+        // email
+        if (data.email_ntf_stts == 'True'){
+          //    site
+          const getCheckBox = document.getElementById('site_notification_setting');
+          getCheckBox.innerHTML = '<input type="checkbox" class="sr-only peer" checked onclick="siteNotificationSettings()" id="site_notification_setting">'
+        }
+        if (data.email_ntf_stts == 'False'){
+          const getCheckBox = document.getElementById('site_notification_setting');
+          getCheckBox.innerHTML = '<input type="checkbox" class="sr-only peer" onclick="siteNotificationSettings()" id="site_notification_setting">'
+        }
+    });     
+}
+defultStatusNotifications()
+
+</script>
+
+
+  
+  <script>
+    function toggleOptions() {
+      const menu = document.getElementById('optionMenu');
+      menu.classList.toggle('hidden');
+    }
+  </script>
+
+
+{% endblock notf_con %}
+    

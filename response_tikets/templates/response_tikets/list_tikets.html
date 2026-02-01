@@ -1,0 +1,475 @@
+{% extends 'response_tikets/base.html' %}
+
+{% block res_tik %}
+    
+<title>
+  لیست تیکت ها
+</title>
+
+
+<style>
+    /* استایل‌های سفارشی با رنگ‌های اصلی پروژه */
+    .glass-card {
+        background: rgba(11, 20, 33, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(11, 255, 255, 0.2);
+    }
+    
+    .gradient-border {
+        position: relative;
+        background: linear-gradient(#0b1421, #0b1421) padding-box,
+                    linear-gradient(135deg, #0bffff33, #0bffff88, #0bffff33) border-box;
+        border: 2px solid transparent;
+    }
+    
+    .pulse-animation {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+    
+    .floating-card {
+        animation: floating 6s ease-in-out infinite;
+    }
+    
+    @keyframes floating {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+    }
+    
+    .ticket-item {
+        position: relative;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: linear-gradient(135deg, #062441, #0b1421);
+    }
+    
+    .ticket-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, #0bffff, transparent);
+        opacity: 0;
+        transition: opacity 0.3s;
+        border-radius: 0 12px 12px 0;
+    }
+    
+    .ticket-item:hover::before {
+        opacity: 1;
+    }
+    
+    .ticket-item:hover {
+        transform: translateX(-5px);
+        box-shadow: 0 10px 25px rgba(11, 255, 255, 0.15);
+        border-color: rgba(11, 255, 255, 0.4);
+    }
+    
+    .category-chip {
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #0b1421, #062441);
+        border: 1px solid rgba(11, 255, 255, 0.3);
+    }
+    
+    .category-chip:hover {
+        transform: translateY(-2px);
+        border-color: rgba(11, 255, 255, 0.7);
+        box-shadow: 0 5px 15px rgba(11, 255, 255, 0.2);
+    }
+    
+    .status-badge {
+        position: relative;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .status-badge.answered {
+        background: rgba(11, 255, 255, 0.15);
+        color: #0bffff;
+        border: 1px solid rgba(11, 255, 255, 0.3);
+    }
+    
+    .status-badge.pending {
+        background: rgba(255, 71, 87, 0.15);
+        color: #ff4757;
+        border: 1px solid rgba(255, 71, 87, 0.3);
+    }
+    
+    .text-gradient {
+        background: linear-gradient(135deg, #0bffff, #0bffffcc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .modal-enter {
+        animation: modalEnter 0.3s ease-out;
+    }
+    
+    @keyframes modalEnter {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+</style>
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#062441]">
+    <!-- هدر اصلی -->
+    <div class="relative overflow-hidden bg-gradient-to-b from-[#062441] to-[#0b1421] py-16 px-4 border-b border-[#0bffff33]">
+        <!-- افکت‌های پس‌زمینه -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-40 -right-40 w-80 h-80 bg-[#0bffff11] rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-[#0bffff11] rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="relative max-w-7xl mx-auto text-center">
+            <!-- تیتر اصلی با انیمیشن -->
+            <div class="floating-card inline-block mb-8">
+                <h1 class="text-4xl md:text-5xl font-black mb-4">
+                    <span class="text-gradient">پنل تیکت‌های پشتیبانی</span>
+                </h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- بخش اصلی محتوا -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- هدر بخش -->
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-10">
+            <div class="flex-1">
+                <h2 class="text-3xl font-bold text-white mb-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] flex items-center justify-center">
+                        <svg class="w-5 h-5 text-[#0bffff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <span>تیکت‌ها </span>
+                </h2>
+                <p class="text-gray-400 text-sm">تمام درخواست‌های پشتیبانی خود را در این بخش مدیریت کنید</p>
+            </div>
+        </div>
+
+        <!-- فیلتر دسته‌بندی‌ها -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-[#0bffff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+                فیلتر بر اساس دسته‌بندی
+            </h3>
+            <div class="flex flex-wrap gap-3">
+                <!-- دکمه همه تیکت‌ها -->
+                <a href="{% url 'list_tikets' %}" class="category-chip px-5 py-2.5 text-[#0bffffcc] rounded-full font-semibold hover:text-white transition-all duration-300">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
+                        همه تیکت‌ها
+                    </span>
+                </a>
+                
+                <!-- دسته‌بندی‌ها -->
+                {% for cat in category %}
+                <a href="{% url 'filter_tikets' cat.id %}" class="category-chip px-5 py-2.5 text-[#0bffffcc] rounded-full font-semibold hover:text-white transition-all duration-300">
+                    {{ cat.title }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- لیست تیکت‌ها -->
+        <div class="space-y-4 max-w-4xl mx-auto">
+            {% if tikets %}
+                {% for ticket in tikets %}
+                <!-- کارت تیکت -->
+                <div onclick="openTicketModal({
+                    title: '{{ ticket.title|escapejs }}',
+                    id: '{{ ticket.id }}',
+                    subject: '{{ ticket.category.title|escapejs }}',
+                    time: '{{ ticket.time|date:'Y/m/d H:i' }}',
+                    text: '{{ ticket.text|linebreaksbr|striptags|escapejs }}',
+                    answered: {{ ticket.responsed|yesno:'true,false' }},
+                    img: '{% if ticket.image %}{{ ticket.image.url }}{% endif %}'
+                })"
+                class="ticket-item rounded-2xl p-5 border border-[#0bffff22] cursor-pointer hover:border-[#0bffff44]">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <!-- اطلاعات تیکت -->
+                        <div class="flex-1">
+                            <div class="flex items-start gap-4">
+                                <!-- آیکون تیکت -->
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-[#0bffff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                
+                                <!-- محتوای تیکت -->
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-white mb-2">{{ ticket.title }}</h3>
+                                    
+                                    <div class="flex flex-wrap items-center gap-3 mb-3">
+                                        <!-- دسته‌بندی -->
+                                        <span class="text-sm text-[#0bffffcc] bg-[#0bffff11] px-3 py-1 rounded-full">
+                                            {{ ticket.category.title }}
+                                        </span>
+                                        
+                                        <!-- تاریخ -->
+                                        <span class="text-sm text-gray-400 flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            {{ ticket.time|date:"Y/m/d - H:i" }}
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- متن کوتاه تیکت -->
+                                    <p class="text-gray-300 text-sm line-clamp-2 leading-relaxed">
+                                        {{ ticket.text|truncatechars:120 }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- وضعیت و دکمه -->
+                        <div class="flex items-center gap-4">
+                            <!-- وضعیت تیکت -->
+                            <div class="text-center">
+                                <div class="{% if ticket.responsed %}status-badge answered{% else %}status-badge pending pulse-animation{% endif %}">
+                                    {% if ticket.responsed %}
+                                    <svg class="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    پاسخ داده شده
+                                    {% else %}
+                                    <svg class="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    در انتظار پاسخ
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- دکمه مشاهده -->
+                            <div class="hidden md:block">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] flex items-center justify-center group-hover:from-[#0bffff44] group-hover:to-[#0bffff22] transition-all">
+                                    <svg class="w-5 h-5 text-[#0bffffcc]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- حالت بدون تیکت -->
+                <div class="text-center py-16 ">
+                    <div class="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-[#0bffff11] to-transparent rounded-full flex items-center justify-center">
+                        <svg class="w-16 h-16 text-[#0bffff44]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">تیکتی یافت نشد</h3>
+                    <p class="text-gray-400 max-w-md mx-auto mb-8">هنوز هیچ تیکتی ایجاد نکرده‌اید. می‌توانید اولین تیکت خود را ایجاد کنید.</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+
+<!-- مودال نمایش تیکت -->
+<div id="ticketModal" class="fixed inset-0 z-50 hidden">
+    <!-- پس‌زمینه مودال -->
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm" onclick="closeTicketModal()"></div>
+    
+    <!-- محتوای مودال -->
+    <div class="fixed inset-0 overflow-y-auto p-4">
+        <div class="min-h-full flex items-center justify-center">
+            <div class="modal-enter gradient-border rounded-2xl max-w-4xl w-full bg-gradient-to-br from-[#0b1421] to-[#062441] shadow-2xl">
+                <!-- هدر مودال -->
+                <div class="p-2 bg-gradient-to-r from-[#0bffff22] to-transparent">
+                    <div class="flex items-center justify-between p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0bffff] to-[#0bffffcc] flex items-center justify-center">
+                                <svg class="w-6 h-6 text-[#0b1421]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 id="modalTitle" class="text-xl font-bold text-white"></h2>
+                                <p id="modalSubject" class="text-sm text-[#0bffffcc]"></p>
+                            </div>
+                        </div>
+                        
+                        <button onclick="closeTicketModal()" class="w-10 h-10 rounded-full bg-[#0bffff11] text-[#0bffff] hover:bg-[#0bffff22] transition-colors flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- بدنه مودال -->
+                <div class="p-6">
+                    <!-- اطلاعات تیکت -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="text-sm font-semibold text-gray-400 mb-2">زمان ایجاد</h3>
+                                <p id="modalTime" class="text-white font-medium"></p>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-sm font-semibold text-gray-400 mb-2">وضعیت</h3>
+                                <div id="modalStatus" class="inline-flex items-center gap-2">
+                                    <!-- وضعیت اینجا نمایش داده می‌شود -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- تصویر تیکت -->
+                        <div class="relative h-48 bg-gradient-to-br from-[#062441] to-[#0b1421] rounded-xl overflow-hidden border border-[#0bffff22]">
+                            <img id="modalImage" src="" alt="تصویر تیکت" class="w-full h-full object-cover hidden">
+                            <div id="noImage" class="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+                                <svg class="w-12 h-12 text-[#0bffff44] mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <p class="text-gray-400 text-sm">تصویری ضمیمه نشده است</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- متن تیکت -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-[#0bffff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                            </svg>
+                            متن تیکت
+                        </h3>
+                        <div id="modalText" class="glass-card rounded-xl p-6 text-gray-300 leading-relaxed max-h-60 overflow-y-auto"></div>
+                    </div>
+                    
+                    <!-- فرم پاسخ (فقط برای ادمین) -->
+                    {% if user.is_staff %}
+                    <div class="border-t border-[#0bffff22] pt-6">
+                        <h3 class="text-lg font-semibold text-white mb-4">ارسال پاسخ</h3>
+                        <form action="{% url 'response_to_tiket' %}" method="post" class="space-y-4">
+                            {% csrf_token %}
+                            <input type="hidden" id="ticketId" name="ticket_id" value="">
+                            
+                            <div>
+                                <textarea id="responseText" name="response_text" 
+                                    class="w-full px-4 py-3 rounded-xl border border-[#0bffff33] bg-[#0b1421] text-white placeholder-gray-500 focus:outline-none focus:border-[#0bffff] focus:ring-1 focus:ring-[#0bffff33] transition-all resize-none"
+                                    rows="4" placeholder="پاسخ خود را اینجا وارد کنید..." required></textarea>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <button type="submit" 
+                                    class="px-6 py-3 bg-gradient-to-r from-[#0bffffcc] to-[#0bffff99] text-[#0b1421] font-bold rounded-xl hover:from-[#0bffff] hover:to-[#0bffffcc] transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(11,255,255,0.4)] flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                    </svg>
+                                    ارسال پاسخ
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // تابع باز کردن مودال
+    function openTicketModal(data) {
+        const modal = document.getElementById('ticketModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalSubject = document.getElementById('modalSubject');
+        const modalTime = document.getElementById('modalTime');
+        const modalText = document.getElementById('modalText');
+        const modalImage = document.getElementById('modalImage');
+        const noImage = document.getElementById('noImage');
+        const modalStatus = document.getElementById('modalStatus');
+        const ticketId = document.getElementById('ticketId');
+        
+        // تنظیم مقادیر
+        modalTitle.textContent = data.title;
+        modalSubject.textContent = 'دسته‌بندی: ' + data.subject;
+        modalTime.textContent = data.time;
+        modalText.textContent = data.text;
+        ticketId.value = data.id;
+        
+        // تنظیم تصویر
+        if (data.img && data.img.trim() !== '') {
+            modalImage.src = data.img;
+            modalImage.classList.remove('hidden');
+            noImage.classList.add('hidden');
+        } else {
+            modalImage.classList.add('hidden');
+            noImage.classList.remove('hidden');
+        }
+        
+        // تنظیم وضعیت
+        if (data.answered) {
+            modalStatus.innerHTML = `
+                <span class="status-badge answered flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    پاسخ داده شده
+                </span>
+            `;
+        } else {
+            modalStatus.innerHTML = `
+                <span class="status-badge pending flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    در انتظار پاسخ
+                </span>
+            `;
+        }
+        
+        // نمایش مودال
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    // تابع بستن مودال
+    function closeTicketModal() {
+        document.getElementById('ticketModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+    
+    // بستن مودال با کلیک روی پس‌زمینه
+    document.getElementById('ticketModal').addEventListener('click', function(e) {
+        if (e.target === this || e.target.classList.contains('close-btn')) {
+            closeTicketModal();
+        }
+    });
+    
+    // بستن مودال با کلید Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeTicketModal();
+        }
+    });
+    
+ 
+</script>
+
+{% endblock %}

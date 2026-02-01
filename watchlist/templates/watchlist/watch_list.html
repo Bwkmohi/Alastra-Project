@@ -1,0 +1,398 @@
+{% extends 'watchlist/base.html' %}
+{% block watchlist_con %}
+{% load humanize %}
+<title>
+    واچ لیست
+</title>
+
+ 
+<div id="alertModal" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50">
+  <div 
+  class="bg-gradient-to-bl from-[#062441] to-[#0b1421] rounded-2xl p-8 border border-[#0bffff33] shadow-2xl shadow-[#0bffff33] w-full max-w-4xl mx-4 relative"
+  >
+    <h2 class="text-2xl font-bold mb-4 text-center">ویرایش / افزودن هشدار</h2>
+
+      <form id="alertForm" class="flex flex-col gap-4" method="POST" action="{% url 'watchlist:add_or_edit_alert' %}">
+        {% csrf_token %}
+        <input type="hidden" name="id" id="modalProductId">
+
+        <div class="flex flex-row">
+          <div class="w-full mx-2">
+            <label class="mb-1 text-[#b0bfd1]">قیمت هشدار</label>
+            <input
+            type="number" 
+            name="alert_price" placeholder="قیمت هشدار" class="w-full px-4 py-3 rounded-xl border-2 border-[#0bffffcc] bg-[#071927dd] placeholder-[#84a9bb] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]"
+            required>            
+          </div>
+          <div class="w-full mx-2">
+            <label class="mb-1 text-[#b0bfd1]">نوع هشدار</label>
+            <select name="direction" class="w-full px-4 py-3 rounded-xl border-2 border-[#0bffffcc] bg-[#071927dd] placeholder-[#84a9bb] focus:outline-none focus:ring-4 focus:ring-[#0bffffcc]">
+              <option value="above">افزایش قیمت</option>
+              <option value="below">کاهش قیمت</option>
+            </select>
+          </div>
+        </div>
+ 
+
+        <div class="flex flex-col">
+            <div class="w-full mx-4 p-2">
+            <label class="inline-flex items-center me-5 cursor-pointer">
+                <input type="checkbox" class="sr-only peer" name='alert_in_change_price'>
+                <div class="relative w-11 h-6 border border-[#0bffffcc] bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+                <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">هشدار در تغیر قیمت</span>
+            </label>
+            </div> 
+        </div>
+
+        <div class="flex flex-col">
+            <div class="w-full mx-4 p-2">
+            <label class="inline-flex items-center me-5 cursor-pointer">
+                <input type="checkbox" class="sr-only peer" name='send_notification'>
+                <div class="relative w-11 border border-[#0bffffcc] h-6 bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+                <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">ارسال هشدار</span>
+            </label>
+            </div> 
+        </div>
+
+          <div class="flex gap-4 pt-4">
+              <button 
+                  type="button"
+                  id="closeModalBtn"
+                  class="flex-1 bg-[#0b1421aa] border border-[#0bffff44] text-[#0bffff] py-3 rounded-xl font-bold text-center hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300"
+              >
+                  انصراف
+              </button>
+              <button 
+                  type="submit"
+                  class="flex-1 bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441] py-3 rounded-xl font-black text-center hover:shadow-[0_0_20px_rgba(11,255,255,0.5)] transition-all duration-300"
+              >
+                  ذخیره اعلان
+              </button>
+          </div>
+      </form>
+
+
+    <button id="closeModalTop" class="absolute top-2 right-2 text-[#0bffffcc] hover:text-white text-xl font-bold">&times;</button>
+  </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const modal = document.getElementById('alertModal');
+  const closeBtn = document.getElementById('closeModalBtn');
+  const closeTop = document.getElementById('closeModalTop');
+
+  const openBtns = document.querySelectorAll('.openModalBtn');
+  const modalProductId = document.getElementById('modalProductId');
+
+  openBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      console.log('Open modal clicked for product:', btn.getAttribute('data-product-name'));
+
+      const productId = btn.getAttribute('data-id');
+      const alertPrice = btn.getAttribute('data-alert-price');
+      const direction = btn.getAttribute('data-direction');
+      const alertInChangePrice = btn.getAttribute('data-alert-in-change-price') === 'true';
+      const sendNotification = btn.getAttribute('data-send-notification') === 'true';
+
+      // ست کردن مقادیر
+      modalProductId.value = productId;
+      document.querySelector('input[name="alert_price"]').value = alertPrice || '';
+      document.querySelector('select[name="direction"]').value = direction || 'above';
+      document.querySelector('input[name="alert_in_change_price"]').checked = alertInChangePrice;
+      document.querySelector('input[name="send_notification"]').checked = sendNotification;
+
+      // نمایش مودال
+      modal.classList.remove('hidden');
+    });
+  });
+
+  closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+  closeTop.addEventListener('click', () => modal.classList.add('hidden'));
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
+});
+
+
+</script>
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="actionPanel" class="fixed top-[-300px] right-0 left-0 z-50 bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#062441] border-b-2 border-[#0bffffcc] rounded-b-3xl shadow-2xl transition-all duration-500 ease-in-out overflow-hidden">
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+    <div class="flex items-center gap-6">
+      <span class="text-white text-lg font-bold">تعداد انتخاب شده: <span id="selectedCount">0</span></span>
+    </div>
+    <div class="flex md:flex-row flex-col gap-3 items-center">
+      <button id="btn-cart" class="bg-[#0bffff] hover:bg-[#0bffffcc] text-[#0b1421] text-sm sm:text-md font-bold sm:px-4 px-2 py-2 rounded-xl transition">
+        <i class="bi bi-cart2"></i> سبد خرید
+      </button>
+      <button id="btn-compare" class="bg-[#0bffff] hover:bg-[#0bffffcc] text-[#0b1421] text-sm sm:text-md font-bold sm:px-4 px-2 py-2 rounded-xl transition">
+        <i class="bi bi-ui-checks-grid"></i> مقایسه
+      </button>
+      <button id="btn-wishlist" class="bg-[#0bffff] hover:bg-[#0bffffcc] text-[#0b1421] text-sm sm:text-md font-bold sm:px-4 px-2 py-2 rounded-xl transition">
+        <i class="bi bi-card-list"></i>  حذف
+      </button>
+      <button id="btn-clear" class="text-white text-xl hover:text-[#0bffffcc] transition px-2">✕</button>
+    </div>
+  </div>
+</div>
+<style>
+#actionPanel.show {
+  top: 0;
+  border-radius: 0 0 2rem 2rem; 
+}
+</style>
+
+
+
+
+
+
+
+<section class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] text-white p-6">
+    
+    <div class="max-w-7xl mx-auto">
+        <!-- هدر صفحه -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-4xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                    واچ لیست من
+                </h1>
+                <p class="text-[#0bffffaa] mt-2">مدیریت محصولات مورد علاقه شما</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-[#0bffffaa]">{{ len }} محصول</span>
+            </div>
+        </div>
+
+        <!-- دکمه‌های عملیات گروهی -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm mb-6">
+            <div class="flex flex-wrap gap-4 justify-between items-center">    
+                <div class="flex items-center gap-4">
+                    <a 
+                        href="{% url 'watchlist:add_cart_from_wactchlist' %}"
+                        class="bg-gradient-to-r from-[#4ecdc4] to-[#4ecdc4cc] text-sm md:text-md text-[#062441] md:px-6 px-4 md:py-3 py-2 rounded-xl font-black hover:shadow-[0_0_20px_rgba(78,205,196,0.5)] transition-all duration-300 flex items-center gap-2"
+                    >
+                        <i class="bi bi-cart-plus"></i>
+                        افزودن همه محصولات به سبد خرید
+                </a>
+                    <a 
+                        href="{% url 'watchlist:clear_watchlist' %}"
+                        class="bg-gradient-to-r from-[#ff6b6b] to-[#ff6b6bcc] text-sm md:text-md text-white md:px-6 px-4 md:py-3 py-2 rounded-xl font-black hover:shadow-[0_0_20px_rgba(255,107,107,0.5)] transition-all duration-300 flex items-center gap-2"
+                    >
+                        <i class="bi bi-trash"></i>
+                       خالی کردن واچ لیست
+                  </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- لیست محصولات -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {% for i in products %}
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-xl border border-[#0bffff33] shadow-lg backdrop-blur-sm overflow-hidden group hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                <div class="relative">
+                    <!-- تصویر محصول -->
+                    <div class="h-48 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] flex items-center justify-center">
+                            <!-- <i class="bi bi-phone text-[#0bffff] text-4xl"></i> -->
+                             <img src="{{ i.product.image.url }}" class="w-full h-full" alt="">
+                        </div>
+                        
+                        <!-- چک‌باکس انتخاب -->
+                        <div class="absolute top-3 left-3" data-id="{{ i.id }}">
+                          <label class="relative flex items-center cursor-pointer">
+                            <input type="checkbox" class="hidden peer compare-checkbox" id="compare-checkbox-{{ i.product.id }}" value="{{ i.product.id }}">
+                            <span class="w-6 h-6 rounded border border-[#0bffffcc] inline-block bg-transparent peer-checked:bg-[#0bffff] peer-checked:shadow-lg peer-checked:shadow-[#0bffffcc] transition"></span>
+                          </label>
+                        </div>
+                                                
+                        <!-- ایکون اعلان قیمت "-->
+                        <div class="absolute top-3 right-3">
+                            <button 
+                                  data-id="{{ i.id }}"
+                                  data-product-name="{{ pr.product.name }}"
+                                  data-alert-price="{{ i.alert_price|default:'' }}"
+                                  data-direction="{{ i.direction|default:'' }}"
+                                  data-alert-in-change-price="{{ i.alert_in_change_price|yesno:'true,false' }}"
+                                  data-send-notification="{{ i.send_notification|yesno:'true,false' }}"
+                                class="w-10 h-10 openModalBtn bg-[#0b1421aa] hover:bg-[#0bffff33] text-[#0bffffaa] hover:text-[#0bffff] rounded-lg flex items-center justify-center border border-[#0bffff33] transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+                            >
+                                <i class="bi bi-bell"></i>
+                                <span class="text-xs">+</span>
+                            </button>
+                        </div>
+                        
+                        <!-- وضعیت اعلان فعال -->
+                        <div class="absolute bottom-3 right-3">
+                            <span class="bg-[#4ecdc433] text-[#4ecdc4] px-2 py-1 rounded-full text-xs border border-[#4ecdc433] backdrop-blur-sm">
+                                
+                                {% if i.send_notification == True %}
+                                <i class="bi bi-bell-fill ml-1"></i>
+                                  اعلان فعال
+                                {% else %}
+                                <i class="bi bi-bell-slash ml-1"></i>
+                                  غیر فعال
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- اطلاعات محصول -->
+                <div class="p-4">
+                    <h3 class="text-lg font-black text-white mb-2">{{ i.product.name }}</h3>
+                    <p class="text-[#0bffffaa] text-sm mb-3">{{ i.product.description_ }}</p>
+                    
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <span class="text-2xl font-black text-[#0bffff]">{{ i.product.price_|intcomma  }}</span>
+                            <span class="text-[#0bffffaa] text-sm mr-1">تومان</span>
+                        </div>
+                          {% if i.direction == 'above' %}
+                            <span class="text-[#0bffffaa] text-sm font-bold">
+                                <i class="bi bi-arrow-up ml-1"></i>
+                                {{ i.alert_price }} افزایش
+                            </span>
+                          {% elif i.direction == 'below' %}
+                              <span class="text-[#ff6b6b] text-sm font-bold">
+                                <i class="bi bi-arrow-down ml-1"></i>
+                                {{ i.alert_price }} کاهش
+                            </span>
+                          {% endif %}
+                    </div>
+                    
+                    <!-- دکمه‌های عمل -->
+                    <div class="flex gap-2">
+                        <button class="flex-1 bg-[#0b1421aa] border border-[#0bffff44] text-[#0bffff] py-2 rounded-xl text-sm font-bold hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] transition-all duration-300">
+                            <i class="bi bi-cart-plus ml-1"></i>
+                            افزودن به سبد
+                        </button>
+                        <a href="{% url 'watchlist:watchlist_remove' i.id %}" class="w-10 h-10 bg-[#0b1421aa] hover:bg-[#ff6b6b33] text-[#0bffffaa] hover:text-[#ff6b6b] rounded-xl flex items-center justify-center border border-[#0bffff33] transition-all duration-300 hover:scale-110">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<script>
+  const checkboxes = document.querySelectorAll('.compare-checkbox');
+  const panel = document.getElementById('actionPanel');
+  const selectedCount = document.getElementById('selectedCount');
+
+  function updatePanel() {
+    const checked = document.querySelectorAll('.compare-checkbox:checked');
+    selectedCount.innerText = checked.length;
+    console.log(`تعداد چک‌باکس‌های انتخاب شده: ${checked.length}`);
+
+    if (checked.length > 0) {
+      panel.classList.add('show');
+    } else {
+      panel.classList.remove('show');
+    }
+  }
+
+  function clearAllCheckboxes() {
+    checkboxes.forEach(cb => cb.checked = false);
+    updatePanel();
+  }
+
+  function getSelectedProductIds() {
+    return Array.from(document.querySelectorAll('.compare-checkbox:checked')).map(cb => cb.value);
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  function sendSelectedProducts(url) {
+    const selectedIds = getSelectedProductIds();
+    const csrftoken = getCookie('csrftoken');
+    if (selectedIds.length === 0) {
+      alert("هیچ محصولی انتخاب نشده.");
+      return;
+    }
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify({ product_ids: selectedIds }),
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log("نتیجه:", data);
+      alert("ارسال موفقیت‌آمیز بود.");
+      clearAllCheckboxes();
+    })
+    .catch(err => {
+      console.error("خطا:", err);
+      alert("مشکلی در ارسال اطلاعات رخ داد.");
+    });
+  }
+
+  checkboxes.forEach(cb => cb.addEventListener('change', updatePanel));
+
+  document.getElementById('btn-cart').addEventListener('click', () => {
+    sendSelectedProducts("{% url 'cart:add_to_cart' %}");
+  });
+
+  document.getElementById('btn-compare').addEventListener('click', () => {
+    sendSelectedProducts("{% url 'com:add_to_compare_by_list' %}");
+  });
+
+  document.getElementById('btn-wishlist').addEventListener('click', () => {
+    sendSelectedProducts("{% url 'watchlist:remove_from_watchlist_by_list' %}");
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', clearAllCheckboxes);
+</script>
+{% endblock %} 

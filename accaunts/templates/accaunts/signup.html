@@ -1,0 +1,431 @@
+{% extends "accaunts/base.html" %}
+    {% block account_content %}
+<title>
+    ثبت نام | {% if site_info.site_title %} {{ site_info.site_title }} {% else %}Alastra {% endif %}
+</title>
+
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] flex items-center justify-center p-4">
+    <div class="w-full max-w-7xl">
+        
+        <div class="text-center mb-12">
+            <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#0bffff66]">
+                <i class="bi bi-person-plus text-4xl text-[#062441]"></i>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent mb-6">
+                به جمع ما بپیوندید
+            </h1>
+            <div class="flex items-center justify-center gap-8 text-[#0bffffaa] text-sm sm:text-lg">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-3 bg-[#0bffff] rounded-full animate-pulse"></div>
+                    <span class="text-sm md:text-lg">اطلاعات شخصی</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-[#0bffff33] rounded-full"></div>
+                    <span class="text-sm md:text-lg">حساب کاربری</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-[#0bffff33] rounded-full"></div>
+                    <span class="text-sm md:text-lg">تأیید هویت</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm overflow-hidden">
+            
+            <div class="flex border-b border-[#0bffff33]">
+                <div class="flex-1 sm:p-6 p-3 border-l border-[#0bffff33] bg-gradient-to-r from-[#0bffff11] to-transparent">
+                    <div class="flex items-center gap-4">
+                        <div class="md:w-12 md:h-12 w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center">
+                            <i class="bi bi-person-vcard md:text-xl text-md text-[#062441]"></i>
+                        </div>
+                        <div>
+                            <h3 class="md:text-xl text-md font-black text-white">اطلاعات شخصی</h3>
+                            <p class="text-[#0bffffaa] text-xs">نام، ایمیل و اطلاعات تماس</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 p-6 border-l border-[#0bffff33]">
+                    <div class="flex items-center gap-4">
+                        <div class="md:w-12 md:h-12 w-8 h-8 bg-gradient-to-br from-[#0bffff33] to-[#0bffff55] rounded-2xl flex items-center justify-center">
+                            <i class="bi bi-shield-lock md:text-xl text-md text-[#0bffff]"></i>
+                        </div>
+                        <div>
+                            <h3 class="md:text-xl text-md font-black text-white">امنیت حساب</h3>
+                            <p class="text-[#0bffffaa] text-sm">رمز عبور و تنظیمات امنیتی</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 p-6 border-l border-[#0bffff33]">
+                    <div class="flex items-center gap-4">
+                        <div class="md:w-12 md:h-12 w-8 h-8 bg-gradient-to-br from-[#0bffff33] to-[#0bffff55] rounded-2xl flex items-center justify-center">
+                            <i class="bi bi-check-circle md:text-xl text-md text-[#0bffff]"></i>
+                        </div>
+                        <div>
+                            <h3 class="md:text-xl text-md font-black text-white">تأیید نهایی</h3>
+                            <p class="text-[#0bffffaa] text-sm">قوانین و ایجاد حساب</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form method="POST" action="" class="flex flex-col lg:flex-row">
+                {% csrf_token %}
+                
+                <div class="flex-1 p-8 border-l border-[#0bffff33]">
+                    <div class="space-y-8">
+                        
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="group">
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    <i class="bi bi-person ml-2"></i>
+                                    نام
+                                </label>
+                                <input type="text" name="first_name" required id="nameInput" value="{{ user.first_name }}"
+                                       class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none"
+                                       pl aceholder="نام خود را وارد کنید">
+                                <p id="nameError" class="text-red-400 text-xs mt-1 hidden">نام باید فقط با حروف فارسی وارد شود</p>
+                            </div>
+                            <div class="group">
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    نام خانوادگی
+                                </label>
+                                <input type="text" name="last_name" required value="{{ user.last_name }}"
+                                       class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none"
+                                       placeholder="نام خانوادگی خود را وارد کنید" id="lastnameInput">
+                                <p id="lastnameError" class="text-red-400 text-xs mt-1 hidden">نام خانوادگی باید فقط حروف فارسی باشد</p>
+                            </div>
+                        </div>
+ 
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-envelope ml-2"></i>
+                                آدرس ایمیل
+                            </label>
+                            <input type="email" name="email" required id="emailInput" value="{{ user.email }}"
+                                   class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none"
+                                   placeholder="example@domain.com">
+                            <p id="emailError" class="text-red-400 text-xs mt-1 hidden">فرمت ایمیل معتبر نیست</p>
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="flex-1 p-8 border-l border-[#0bffff33]">
+                    <div class="space-y-8">
+                         
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-at ml-2"></i>
+                                نام کاربری
+                            </label>
+                            <input type="text" name="username" required id="usernameInput" value="{{ user.username }}"
+                                   class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none"
+                                   placeholder="نام کاربری منحصربفرد">
+                            <p id="usernameError" class="text-red-400 text-xs mt-1 hidden">باید شامل یک حرف بزرگ، عدد و خط تیره باشد</p>
+                            <div class="flex justify-between items-center mt-3">
+                                <span class="text-[#0bffff66] text-sm">این نام در پروفایل شما نمایش داده می‌شود</span>
+                                <span id="username-counter" class="text-[#0bffff] text-sm font-bold">۰/۲۰</span>
+                            </div>
+                        </div>
+
+                        <!-- رمز عبور -->
+                         {% if not request.user.is_authenticated %}
+                            <div class="group">
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    <i class="bi bi-key ml-2"></i>
+                                    رمز عبور
+                                </label>
+                                <div class="relative">
+                                    <input type="password" name="password" required id="passwordInput"
+                                        class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none pr-12"
+                                        placeholder="حداقل ۸ کاراکتر">
+                                    <p id="passwordError" class="text-red-400 text-xs mt-1 hidden">رمز عبور باید حداقل ۸ کاراکتر باشد</p>
+                                    <button type="button" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#0bffffaa] hover:text-[#0bffff] transition-colors">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="mt-3 space-y-2">
+                                    <div class="flex items-center gap-2 text-[#0bffff66] text-sm">
+                                        <i class="bi bi-dot"></i>
+                                        <span>حداقل ۸ کاراکتر</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-[#0bffff66] text-sm">
+                                        <i class="bi bi-dot"></i>
+                                        <span>شامل حروف بزرگ و کوچک</span>
+                                    </div>
+                                </div>
+                            </div> 
+                        {% else %}
+                            <div class="group">
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    <i class="bi bi-key ml-2"></i>
+                                    رمز عبور فعلی
+                                </label>
+                                <div class="relative">
+                                    <input type="password" name="old_password"
+                                        class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none pr-12"
+                                        placeholder="حداقل ۸ کاراکتر">
+                                    <button type="button" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#0bffffaa] hover:text-[#0bffff] transition-colors">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <!--  -->
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    <i class="bi bi-key ml-2"></i>
+                                      رمز عبور جدید  
+                                </label>
+                                <div class="relative">
+                                    <input type="password" name="new_password" id="passwordInput"
+                                        class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none pr-12"
+                                        placeholder="حداقل ۸ کاراکتر">
+                                    <p id="passwordError" class="text-red-400 text-xs mt-1 hidden">رمز عبور باید حداقل ۸ کاراکتر باشد</p>
+                                    <button type="button" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#0bffffaa] hover:text-[#0bffff] transition-colors">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="mt-3 space-y-2">
+                                    <div class="flex items-center gap-2 text-[#0bffff66] text-sm">
+                                        <i class="bi bi-dot"></i>
+                                        <span>حداقل ۸ کاراکتر</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-[#0bffff66] text-sm">
+                                        <i class="bi bi-dot"></i>
+                                        <span>شامل حروف بزرگ و کوچک</span>
+                                    </div>
+                                </div>
+                            </div> 
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- ستون سوم - تأیید نهایی -->
+                <div class="flex-1 p-8 border-l border-[#0bffff33]">
+                    <div class="space-y-8">
+                        
+
+                        {% if not request.user.is_authenticated %}
+                        <div class="group">
+                            <label class="flex items-center gap-4 p-4 rounded-xl bg-[#0b142133] border-2 border-[#0bffff44] cursor-pointer hover:border-[#0bffff] transition-all duration-300">
+                                <input type="checkbox" name="terms" required class="hidden">
+                                <div class="w-6 h-6 border-2 border-[#0bffff66] rounded flex items-center justify-center">
+                                    <i class="bi bi-check text-[#0bffff] text-sm hidden"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="text-white font-medium">تایید ایمیل</span>
+                                    <p class="text-[#0bffffaa] text-xs mt-1">
+                                       تایید و دریافت کد از ایمیل
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                        {% endif %}
+
+                        <!-- خلاصه اطلاعات -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-4 text-lg">
+                                <i class="bi bi-card-checklist ml-2"></i>
+                                خلاصه اطلاعات
+                            </label>
+                            <div class="bg-gradient-to-br from-[#0b142133] to-[#06244133] rounded-2xl p-4 border border-[#0bffff33] space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[#0bffffaa] text-sm">نام کامل:</span>
+                                    <span id="summary-name" class="text-white text-sm font-medium">---</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[#0bffffaa] text-sm">ایمیل:</span>
+                                    <span id="summary-email" class="text-white text-sm font-medium">---</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[#0bffffaa] text-sm">وضعیت:</span>
+                                    <span class="text-[#0bffff] text-sm font-medium">آماده ایجاد</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- دکمه ثبت‌نام -->
+                        <button type="submit" 
+                                class="w-full py-4 bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] text-[#062441] font-black text-lg rounded-2xl shadow-2xl shadow-[#0bffff66] hover:shadow-[0_0_40px_rgba(11,255,255,0.8)] hover:scale-[1.02] transition-all duration-500 flex items-center justify-center gap-3">
+                            <i class="bi bi-lightning-fill"></i>
+                            ایجاد حساب کاربری
+                            <i class="bi bi-arrow-left"></i>
+                        </button>
+
+                        <!-- ورود -->
+                        <div class="text-center">
+                            <p class="text-[#0bffffaa] text-sm">
+                                قبلاً حساب دارید؟ 
+                                <a href="{% url 'acc:login' %}" class="text-[#0bffff] font-bold hover:underline">ورود به حساب</a>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // مدیریت شمارنده نام کاربری
+    const usernameInput = document.querySelector('input[name="username"]');
+    const usernameCounter = document.getElementById('username-counter');
+    
+    usernameInput.addEventListener('input', function() {
+        const count = this.value.length;
+        usernameCounter.textContent = `${count}/20`;
+        
+        if (count > 15) {
+            usernameCounter.style.color = '#ffa726';
+        } else {
+            usernameCounter.style.color = '#0bffff';
+        }
+    });
+    
+    // مدیریت نمایش/مخفی کردن رمز عبور
+    const passwordInput = document.querySelector('input[name="password"]');
+    const confirmPasswordInput = document.querySelector('input[name="confirm_password"]');
+    const togglePasswordBtn = document.querySelector('.bi-eye').closest('button');
+    
+    togglePasswordBtn.addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            confirmPasswordInput.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            confirmPasswordInput.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    });
+    
+    // مدیریت radio buttons
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.querySelectorAll(`input[name="${this.name}"]`).forEach(r => {
+                const label = r.closest('label');
+                const dot = label.querySelector('.bg-\\[#0bffff\\]');
+                const icon = label.querySelector('i:last-child');
+                
+                if (r.checked) {
+                    label.style.borderColor = '#0bffff';
+                    label.style.background = '#0bffff22';
+                    if (dot) dot.classList.remove('hidden');
+                    if (icon) icon.style.color = '#0bffff';
+                } else {
+                    label.style.borderColor = '#0bffff44';
+                    label.style.background = '#0b142133';
+                    if (dot) dot.classList.add('hidden');
+                    if (icon) icon.style.color = '#0bffffaa';
+                }
+            });
+            
+            // آپدیت خلاصه
+            if (this.name === 'account_type') {
+                document.getElementById('summary-account').textContent = 
+                    this.value === 'personal' ? 'شخصی' : 'فروشنده';
+            }
+        });
+    });
+    
+    // مدیریت checkbox ها
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const label = this.closest('label');
+            const icon = label.querySelector('.bi-check');
+            
+            if (this.checked) {
+                label.style.borderColor = '#0bffff';
+                label.style.background = '#0bffff22';
+                icon.classList.remove('hidden');
+            } else {
+                label.style.borderColor = '#0bffff44';
+                label.style.background = '#0b142133';
+                icon.classList.add('hidden');
+            }
+        });
+        
+        // فعال کردن checkbox های پیش‌فرض
+        if (checkbox.checked) {
+            checkbox.dispatchEvent(new Event('change'));
+        }
+    });
+    
+    // آپدیت خلاصه اطلاعات
+    function updateSummary() {
+        const firstName = document.querySelector('input[name="first_name"]').value;
+        const lastName = document.querySelector('input[name="last_name"]').value;
+        const email = document.querySelector('input[name="email"]').value;
+        
+        if (firstName && lastName) {
+            document.getElementById('summary-name').textContent = `${firstName} ${lastName}`;
+        }
+        
+        if (email) {
+            document.getElementById('summary-email').textContent = email;
+        }
+    }
+    
+    // گوش دادن به تغییرات فیلدها
+    document.querySelectorAll('input[name="first_name"], input[name="last_name"], input[name="email"]')
+        .forEach(input => {
+            input.addEventListener('input', updateSummary);
+        });
+    
+    // فعال کردن radio button پیش‌فرض
+    document.querySelector('input[type="radio"]').dispatchEvent(new Event('change'));
+});
+</script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Inputs
+    const nameInput = document.getElementById("nameInput");
+    const lastnameInput = document.getElementById("lastnameInput");
+    const usernameInput = document.getElementById("usernameInput");
+    const emailInput = document.getElementById("emailInput");
+    const passwordInput = document.getElementById("passwordInput");
+  
+    // Error Elements
+    const nameError = document.getElementById("nameError");
+    const lastnameError = document.getElementById("lastnameError");
+    const usernameError = document.getElementById("usernameError");
+    const emailError = document.getElementById("emailError");
+    const passwordError = document.getElementById("passwordError");
+  
+    // Validators
+    const isPersian = (text) => /^[\u0600-\u06FF\s]+$/.test(text.trim());
+    const isValidUsername = (text) => /[A-Z]/.test(text) && /[0-9]/.test(text) && /_/.test(text);
+    const isValidEmail = (text) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text);
+    const isValidPassword = (text) => text.length >= 8;
+  
+    const validateField = (input, errorEl, conditionFn) => {
+      if (input.value.trim() === "") {
+        input.classList.remove("ring-red-500", "border-red-500", "ring-4");
+        errorEl.classList.add("hidden");
+        return;
+      }
+  
+      if (!conditionFn(input.value)) {
+        input.classList.add("ring-red-500", "border-red-500", "ring-4");
+        errorEl.classList.remove("hidden");
+      } else {
+        input.classList.remove("ring-red-500", "border-red-500", "ring-4");
+        errorEl.classList.add("hidden");
+      }
+    };
+  
+    // Live validation
+    nameInput.addEventListener("input", () => validateField(nameInput, nameError, isPersian));
+    lastnameInput.addEventListener("input", () => validateField(lastnameInput, lastnameError, isPersian));
+    usernameInput.addEventListener("input", () => validateField(usernameInput, usernameError, isValidUsername));
+    emailInput.addEventListener("input", () => validateField(emailInput, emailError, isValidEmail));
+    passwordInput.addEventListener("input", () => validateField(passwordInput, passwordError, isValidPassword));
+  });
+</script>
+{% endblock %}

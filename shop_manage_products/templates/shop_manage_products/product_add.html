@@ -1,0 +1,496 @@
+{% extends 'shop_manage_products/base.html' %}
+{% block shop_prod_con %} 
+<title>افزودن محصول جدید</title>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+    
+    .form-section {
+        transition: all 0.3s ease;
+    }
+    
+    .form-section:hover {
+        transform: translateY(-2px);
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.5s ease-in;
+    }
+    
+    .ring-animation {
+        animation: ringPulse 2s infinite;
+    }
+    
+    @keyframes ringPulse {
+        0% { box-shadow: 0 0 0 0 rgba(11, 255, 255, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(11, 255, 255, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(11, 255, 255, 0); }
+    }
+</style>
+
+<div class="grid md:grid-cols-4 grid-cols-2 gap-4 md:p-5">
+ 
+  <a href="{% url 'pro:products_list' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-box-seam text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست محصولات</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_products }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+  <a href="{% url 'pro:product_Add' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-plus-circle text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">افزودن محصول</p>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">افزودن</button>
+  </a>
+
+  <a href="{% url 'pro:products_data' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-reception-4 text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">امار محصولات</p>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+
+  <form action="{% url 'pro:filter_product' shop_id %}" method="GET">
+    <input type="text" hidden class="hidden" name="inventory" value="2" id="">
+    <a href="#" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+      <i class="bi bi-exclamation-triangle text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+      <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">موجودی کم <span style="font-size: 15px; color: rgb(119, 119, 119);">تر از 2</span></p>
+      <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_lte2_products }}</span>
+      <button type="submit" class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+    </a>    
+  </form>
+
+
+
+
+
+
+</div>
+ 
+<div class="bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] min-h-screen p-4">
+    
+    <form method="POST" enctype="multipart/form-data" class="max-w-7xl mx-auto">
+        {% csrf_token %}
+         
+        <div class="text-center mb-8 relative fade-in">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#0bffff22] to-transparent blur-xl"></div>
+            <h1 class="text-4xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent relative drop-shadow-[0_0_30px_rgba(11,255,255,0.6)]">
+                افزودن محصول جدید
+            </h1>
+            <p class="text-[#0bffffaa] text-lg mt-4 font-medium">محصول خود را با جزئیات کامل ثبت کنید</p>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mb-6 fade-in">
+            <button type="button" class="tab-btn px-6 py-3 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl transition-all duration-300 hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] active-tab" data-tab="basic">
+                اطلاعات پایه
+            </button>
+            <button type="button" class="tab-btn px-6 py-3 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl transition-all duration-300 hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)]" data-tab="price">
+                قیمت‌گذاری
+            </button>
+            <button type="button" class="tab-btn px-6 py-3 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl transition-all duration-300 hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)]" data-tab="media">
+                رسانه و تصاویر
+            </button>
+            <button type="button" class="tab-btn px-6 py-3 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl transition-all duration-300 hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)]" data-tab="details">
+                جزئیات فنی
+            </button>
+            <button type="button" class="tab-btn px-6 py-3 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl transition-all duration-300 hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)]" data-tab="seo">
+                سئو  
+            </button>
+        </div>
+
+        <div class="space-y-6">
+            <div id="basic" class="tab-content active">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- اطلاعات اصلی -->
+                    <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm form-section">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                                <span class="text-[#062441] font-bold">📝</span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">اطلاعات اصلی محصول</h3>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[#0bffffdd] text-sm font-medium mb-2">نام محصول *</label>
+                                <input type="text" name="name" required maxlength="20"
+                                       class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all"
+                                       placeholder="نام محصول...">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[#0bffffdd] text-sm font-medium mb-2">توضیحات محصول *</label>
+                                <textarea name="description" rows="4" required
+                                          class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] font-medium resize-none focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all"
+                                          placeholder="توضیحات کامل محصول..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- دسته‌بندی‌ها -->
+                    <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm form-section">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                                <span class="text-[#062441] font-bold">📂</span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">دسته‌بندی‌ها</h3>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[#0bffffdd] text-sm font-medium mb-2">دسته‌بندی اصلی</label>
+                                <select name="category" 
+                                        class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none appearance-none">
+                                    <option value="" selected disabled class="bg-[#0b1421]">انتخاب دسته‌بندی اصلی</option>
+                                    {% for i in super_categories %}
+                                        <option value="{{ i.id }}" class="bg-[#0b1421]">{{ i.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[#0bffffdd] text-sm font-medium mb-2">دسته‌بندی‌های فرعی</label>
+                                <select name="main_category" multiple
+                                        class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none appearance-none h-32">
+                                    {% for i in main_categories %}
+                                        <option value="{{ i.id }}">{{ i.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <p class="text-[#0bffff66] text-xs mt-2">برای انتخاب چندگانه، کلید Ctrl را نگه دارید</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[#0bffffdd] text-sm font-medium mb-2">رنگ</label>
+                                    <select name="color" 
+                                            class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none appearance-none">
+                                        <option value="" class="bg-[#0b1421]" disabled selected>انتخاب رنگ</option>
+                                        {% for i in colors %}
+                                            <option value="{{ i.id }}" class="bg-[#062441]">{{ i.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-[#0bffffdd] text-sm font-medium mb-2">برند</label>
+                                    <select name="brand" 
+                                            class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none appearance-none">
+                                        <option value="" disabled selected class="bg-[#0b1421]">انتخاب برند</option>
+                                        {% for i in brands %}
+                                            <option value="{{ i.id }}" class="bg-[#062441]">{{ i.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تب قیمت‌گذاری -->
+            <div id="price" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- قیمت‌ها -->
+                    <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm form-section">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                                <span class="text-[#062441] font-bold">💰</span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">قیمت‌گذاری</h3>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[#0bffffdd] text-sm font-medium mb-2">قیمت اصلی (تومان) *</label>
+                                <input type="number" name="price" required
+                                       class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all"
+                                       placeholder="قیمت محصول...">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[#0bffffdd] text-sm font-medium mb-2">قیمت فروش ویژه (تومان)</label>
+                                <input type="number" name="sell_price"
+                                       class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all"
+                                       placeholder="قیمت ویژه...">
+                            </div>
+                            
+                            <div class="flex items-center gap-3 p-3 bg-[#0b142144] rounded-xl border border-[#0bffff33]">
+                                <input type="checkbox" name="is_sellprice" id="is_sellprice" 
+                                       class="w-5 h-5 text-[#0bffff] bg-[#0b1421] border-[#0bffff44] rounded focus:ring-[#0bffff] focus:ring-2">
+                                <label for="is_sellprice" class="text-[#0bffffdd] font-medium">فعال‌سازی تخفیف ویژه</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- موجودی و وضعیت -->
+                    <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm form-section">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                                <span class="text-[#062441] font-bold">📦</span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">موجودی و وضعیت</h3>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[#0bffffdd] text-sm font-medium mb-2">تعداد موجودی *</label>
+                                <input type="number" name="qunat" required
+                                       class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all"
+                                       placeholder="تعداد موجود...">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="flex items-center gap-3 p-3 bg-[#0b142144] rounded-xl border border-[#0bffff33]">
+                                    <input type="checkbox" name="have" id="have" checked
+                                           class="w-5 h-5 text-[#0bffff] bg-[#0b1421] border-[#0bffff44] rounded focus:ring-[#0bffff] focus:ring-2">
+                                    <label for="have" class="text-[#0bffffdd] font-medium text-sm">موجود در انبار</label>
+                                </div>
+                                
+                                <div class="flex items-center gap-3 p-3 bg-[#0b142144] rounded-xl border border-[#0bffff33]">
+                                    <input type="checkbox" name="active" id="active" checked
+                                           class="w-5 h-5 text-[#0bffff] bg-[#0b1421] border-[#0bffff44] rounded focus:ring-[#0bffff] focus:ring-2">
+                                    <label for="active" class="text-[#0bffffdd] font-medium text-sm">فعال</label>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 p-3 bg-[#0b142144] rounded-xl border border-[#0bffff33]">
+                                <input type="checkbox" name="spessial" id="spessial"
+                                       class="w-5 h-5 text-[#0bffff] bg-[#0b1421] border-[#0bffff44] rounded focus:ring-[#0bffff] focus:ring-2">
+                                <label for="spessial" class="text-[#0bffffdd] font-medium">محصول ویژه</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تب رسانه و تصاویر -->
+            <div id="media" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
+                    <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm form-section">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                                <span class="text-[#062441] font-bold">🖼</span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">تصویر اصلی محصول</h3>
+                        </div>
+                        
+                        <div class="border-2 border-dashed border-[#0bffff44] rounded-xl p-6 text-center hover:border-[#0bffff] transition-colors cursor-pointer">
+                            <input type="file" name="image" accept="image/*" class="hidden" id="main-image" required>
+                            <label for="main-image" class="cursor-pointer block">
+                                <div class="text-[#0bffffaa] mb-3">
+                                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-[#0bffff] font-medium text-lg">آپلود تصویر اصلی</span>
+                                <span class="text-[#0bffffaa] text-sm block mt-2">ابعاد پیشنهادی: 575x575 پیکسل</span>
+                                <span class="text-[#0bffff66] text-xs block mt-1">PNG, JPG, GIF - حداکثر 5MB</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تب جزئیات فنی -->
+            <div id="details" class="tab-content">
+                <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm form-section">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                                <span class="text-[#062441] font-bold">⚙️</span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">مشخصات فنی محصول</h3>
+                        </div>
+                        <span id="specs-counter" class="bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] text-[#0bffff] px-4 py-2 rounded-full font-bold text-sm border border-[#0bffff33]">
+                            ۰ مشخصه
+                        </span>
+                    </div>
+
+                    <div id="specs-container" class="space-y-4">
+                        {% for i in spec_keys %}
+                        <section class="bg-gradient-to-br from-[#0b142188] to-[#06244188] rounded-xl p-4 border border-[#0bffff33]">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-6 h-6 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-lg flex items-center justify-center">
+                                        <span class="text-[#062441] font-bold text-xs"><i class="{{ i.icon }} text-[#0bffffcc] font-bold"></i></span>
+                                    </div>
+                                    <h4 class="text-white font-bold">مشخصه 33</h4>
+                                </div>
+                                <button type="button" class="remove-spec-btn w-6 h-6 bg-[#0b1421aa] hover:bg-[#ff555533] text-[#0bffffaa] hover:text-[#ff5555] rounded flex items-center justify-center border border-[#0bffff33] hover:border-[#ff5555] transition-all duration-300 text-xs">
+                                    ✕
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[#0bffffdd] text-xs font-medium mb-2">کلید مشخصه</label>
+                                    <input type="text" value="{{ i.key }}" required readonly
+                                        class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-lg px-3 py-2 text-white placeholder-[#0bffff66] text-sm focus:border-[#0bffff] outline-none transition-all"
+                                        placeholder="مثلاً: وزن، ابعاد، رنگ...">
+                                        <input type="text" name="spec_keys[]" hidden class="hidden" value="{{ i.id }}" id="">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-[#0bffffdd] text-xs font-medium mb-2">مقدار مشخصه</label>
+                                    <input type="text" name="spec_values[]" required
+                                        class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-lg px-3 py-2 text-white placeholder-[#0bffff66] text-sm focus:border-[#0bffff] outline-none transition-all"
+                                        placeholder="مثلاً: 500 گرم، 20x30 سانتی‌متر...">
+                                </div>
+                            </div>
+                        </section>
+                        {% endfor %}
+                    </div> 
+                </div>
+            </div>
+
+            <!-- تب سئو و انتشار -->
+            <div id="seo" class="tab-content">
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- اطلاعات سئو -->
+                    <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm form-section">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                                <span class="text-[#062441] font-bold">🔍</span>
+                            </div>
+                            <h3 class="text-xl font-black text-white">بهینه‌سازی موتور جستجو</h3>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[#0bffffdd] text-sm font-medium mb-2">توضیحات سئو</label>
+                                <textarea name="description_seo" rows="3" maxlength="80"
+                                          class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] font-medium resize-none focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all"
+                                          placeholder="توضیحات متا برای سئو (حداکثر ۸۰ کاراکتر)..."></textarea>
+                                <div class="text-[#0bffff66] text-xs mt-2 text-left">۰/۸۰ کاراکتر</div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[#0bffffdd] text-sm font-medium mb-2">اسلاگ (Slug)</label>
+                                <input type="text" name="slug" required
+                                       class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all"
+                                       placeholder="slug-product...">
+                                <p class="text-[#0bffff66] text-xs mt-2">آدرس یکتا برای محصول - در صورت خالی بودن، به صورت خودکار ایجاد می‌شود</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- دکمه‌های ارسال -->
+        <div class="flex gap-4 mt-8 fade-in">
+            <a href="{% url 'pro:products_list' shop_id %}" class="w-1/3 text-center py-3 bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] font-bold rounded-2xl transition-all duration-300 hover:border-[#ff6b6b] hover:shadow-[0_0_20px_rgba(255,107,107,0.3)]">
+                انصراف
+            </a>
+            <button type="submit" class="w-2/3 py-3 bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] text-[#062441] font-black text-lg rounded-2xl shadow-2xl shadow-[#0bffff66] transition-all duration-500 hover:shadow-[0_0_40px_rgba(11,255,255,0.8)] hover:scale-[1.02]">
+                    افزودن محصول
+            </button>
+        </div>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // مدیریت تب‌ها
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    tabBtns.forEach(b => b.classList.remove('active-tab'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active-tab');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+            
+ 
+            
+      
+ 
+ 
+            // مدیریت گالری تصاویر
+            const galleryContainer = document.getElementById('gallery-container');
+            const addGalleryBtn = document.getElementById('add-gallery-image');
+            
+            function createGalleryItem() {
+                const item = document.createElement('div');
+                item.className = 'flex items-center gap-4 p-3 bg-[#0b142144] rounded-lg border border-[#0bffff33]';
+                
+                item.innerHTML = `
+                    <div class="flex-1">
+                        <input type="file" name="gallery_images[]" accept="image/*" class="hidden gallery-file">
+                        <label class="gallery-file-label cursor-pointer block">
+                            <div class="border-2 border-dashed border-[#0bffff44] rounded-lg p-3 text-center hover:border-[#0bffff] transition-colors">
+                                <span class="text-[#0bffff] text-sm">انتخاب تصویر گالری</span>
+                                <span class="text-[#0bffff66] text-xs block mt-1">ابعاد: 575x575 پیکسل</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button type="button" class="remove-gallery-btn w-8 h-8 bg-[#0b1421aa] hover:bg-[#ff555533] text-[#0bffffaa] hover:text-[#ff5555] rounded flex items-center justify-center border border-[#0bffff33] hover:border-[#ff5555] transition-all duration-300">
+                        ✕
+                    </button>
+                `;
+                
+                // مدیریت انتخاب فایل
+                const fileInput = item.querySelector('.gallery-file');
+                const fileLabel = item.querySelector('.gallery-file-label');
+                
+                fileLabel.addEventListener('click', function() {
+                    fileInput.click();
+                });
+                
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files.length > 0) {
+                        fileLabel.innerHTML = `
+                            <div class="text-[#0bffff] text-sm">${e.target.files[0].name}</div>
+                            <span class="text-[#0bffff66] text-xs block mt-1">آپلود موفق</span>
+                        `;
+                    }
+                });
+                
+                // حذف آیتم گالری
+                item.querySelector('.remove-gallery-btn').addEventListener('click', function() {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(20px)';
+                    setTimeout(() => {
+                        item.remove();
+                    }, 300);
+                });
+                
+                return item;
+            }
+            
+            // افزودن آیتم گالری
+            addGalleryBtn.addEventListener('click', function() {
+                const newItem = createGalleryItem();
+                galleryContainer.appendChild(newItem);
+            });
+            
+            // افزودن یک مشخصه به صورت پیشفرض
+            setTimeout(() => addSpecBtn.click(), 100);
+            updateSpecsCounter();
+            
+            // افزودن یک آیتم گالری به صورت پیشفرض
+            setTimeout(() => addGalleryBtn.click(), 200);
+        });
+    </script>
+</div>
+{% endblock %}

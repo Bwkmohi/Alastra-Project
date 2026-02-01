@@ -1,0 +1,330 @@
+{% extends 'reservations/base.html' %}
+
+{% block res_content %}
+  <title>
+    ثبت سفارش
+  </title>
+ 
+ <div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] py-8">
+    <div class="max-w-6xl mx-auto px-4">
+        
+        <!-- هدر صفحه -->
+        <div class="text-center mb-12">
+            <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#0bffff66]">
+                <i class="bi bi-cart-plus text-3xl text-[#062441]"></i>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent mb-4">
+                ثبت سفارش جدید
+            </h1>
+            <p class="text-xl text-[#0bffffaa] max-w-2xl mx-auto">
+                اطلاعات مشتری و جزئیات سفارش را وارد کنید
+            </p>
+        </div>
+
+        <!-- فرم افقی پیچیده -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm overflow-hidden">
+            
+            <!-- ناوبری افقی -->
+            <div class="flex border-b border-[#0bffff33]">
+                <div class="flex-1 p-6 border-l border-[#0bffff33] bg-gradient-to-r from-[#0bffff11] to-transparent">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center">
+                            <i class="bi bi-person-vcard text-xl text-[#062441]"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-white">اطلاعات مشتری</h3>
+                            <p class="text-[#0bffffaa] text-sm">نام، شماره تماس و اطلاعات شخصی</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 p-6 border-l border-[#0bffff33]">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-[#0bffff33] to-[#0bffff55] rounded-2xl flex items-center justify-center">
+                            <i class="bi bi-geo-alt text-xl text-[#0bffff]"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-white">آدرس ارسال</h3>
+                            <p class="text-[#0bffffaa] text-sm">آدرس پستی و اطلاعات مکانی</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 p-6 border-l border-[#0bffff33]">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-[#0bffff33] to-[#0bffff55] rounded-2xl flex items-center justify-center">
+                            <i class="bi bi-credit-card text-xl text-[#0bffff]"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-white">پرداخت</h3>
+                            <p class="text-[#0bffffaa] text-sm">روش پرداخت و تسویه حساب</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بدنه فرم افقی -->
+            <form method="POST" action="{% if is_group_cart %}{% else %}{% url 'res:res' %}{% endif %}" class="flex flex-col lg:flex-row">
+                {% csrf_token %}
+                
+                <!-- ستون اول - اطلاعات مشتری -->
+                <div class="flex-1 p-8 border-l border-[#0bffff33]">
+                    <div class="space-y-8">
+                        
+                        <!-- نام و نام خانوادگی -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="group">
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    <i class="bi bi-person ml-2"></i>
+                                    نام
+                                </label>
+                                <input type="text" name="name" value="{{ user.first_name }}" required
+                                       class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none"
+                                       placeholder="نام مشتری">
+                            </div>
+                            <div class="group">
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    نام خانوادگی
+                                </label>
+                                <input type="text" name="lastname" value="{{ user.last_name }}" required
+                                       class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none"
+                                       placeholder="نام خانوادگی مشتری">
+                            </div>
+                        </div>
+
+                        <!-- شماره تلفن -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                              <i class="bi bi-phone ml-2"></i>
+                              شماره تلفن
+                          </label>                          
+                            <div class="flex gap-4">
+                                <input type="text" name="phone" value="{{ order.phone }}" inputmode="numeric" required maxlength="11"
+                                       class="flex-1 bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none text-left dir-ltr"
+                                       placeholder="9123456789"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <div class="bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-4 py-4 text-white w-24 text-center font-medium">
+                                    +۹۸
+                                </div>                                       
+                            </div>                          
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ستون دوم - آدرس ارسال -->
+                <div class="flex-1 p-8 border-l border-[#0bffff33]">
+                    <div class="space-y-8">
+                        
+                        <!-- استان و شهر -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="group">
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    استان
+                                </label>
+                                <select name="province" required class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none appearance-none">
+                                    {% if order.province %}
+                                      <option value="{{ order.province.id }}" selected>{{ order.province.name }}</option>
+                                    {% else %}
+                                      {% for i in province %}
+                                        <option value="" disabled selected>انتخاب استان  </option>
+                                        <option value="{{ i.id }}">{{ i }}</option>
+                                      {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                            
+                            <div class="group">
+                                <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                    شهر
+                                </label>
+                                <select name="city" required class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none appearance-none">
+                                    <option value="{{ order.city.id }}" selected>{{ order.city }}</option>                                      
+                                      {% for i in city %}
+                                        <option value="{{ i.id }}">{{ i.name }}</option>
+                                      {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- کد پستی -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-mailbox ml-2"></i>
+                                کد پستی
+                            </label>
+                            <input type="text" name="postaddress" value="{{ userauth.postal_code }}" required maxlength="10"
+                                   class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none text-left dir-ltr"
+                                   placeholder="۱۳۴۵۷۸۹۶۳۲"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+
+                        <!-- آدرس کامل -->
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                                <i class="bi bi-geo-alt-fill ml-2"></i>
+                                آدرس کامل
+                                <span class="text-[#0bffff66] text-sm font-normal">(خیابان، پلاک، واحد)</span>
+                            </label>
+                            <textarea name="address" required rows="4"
+                                      class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium resize-none transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] outline-none"
+                                      placeholder="آدرس کامل پستی شامل خیابان، کوچه، پلاک، واحد و ...">{{ order.address }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 p-8 border-l border-[#0bffff33]">
+                    <div class="space-y-8">
+                        <div class="group">
+                            <label class="block text-[#0bffffdd] font-bold mb-4 text-lg">
+                                <i class="bi bi-credit-card ml-2"></i>
+                                روش پرداخت
+                            </label>
+
+                            <div class="space-y-4">
+                                <label class="flex items-center gap-4 p-4 rounded-xl bg-[#0b142133] border-[#0bffff44] border-2 hover:border-[#0bffff] cursor-pointer transition-all duration-300">
+                                    <input type="radio" name="payment_method" value="ZARRINPAL" class="hidden peer" required>
+                                    <div class="w-6 h-6 border-2 border-[#0bffff66] rounded-full flex items-center justify-center peer-checked:border-[#0bffff]">
+                                        <div class="w-3 h-3 bg-[#0bffff] rounded-full peer-checked:block hidden"></div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <span class="text-white font-medium">پرداخت آنلاین</span>
+                                        <p class="text-[#0bffffaa] text-xs mt-1">درگاه بانکی امن</p>
+                                    </div>
+                                    <i class="bi bi-wifi text-[#0bffff] text-xl"></i>
+                                </label>
+
+                                <label class="flex items-center gap-4 p-4 rounded-xl bg-[#0b142133] border-2 border-[#0bffff44] cursor-pointer hover:border-[#0bffff] transition-all duration-300">
+                                    <input type="radio" name="payment_method" value="WALLET" class="hidden peer" required> 
+                                    <div class="w-6 h-6 border-2 border-[#0bffff66] rounded-full flex items-center justify-center peer-checked:border-[#0bffff]">
+                                        <div class="w-3 h-3 bg-[#0bffff] rounded-full peer-checked:block hidden"></div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <span class="text-white font-medium">پرداخت از طریق کیف پول</span>
+                                        <p class="text-[#0bffffaa] text-xs mt-1">انتقال دارایی</p>
+                                    </div>
+                                    <i class="bi bi-credit-card text-[#0bffffaa] text-xl"></i>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- هزینه ارسال -->
+                        <div class="group">
+                            {% if cost_fee %}
+                            <label class="block text-[#0bffffdd] font-bold mb-3 text-lg">
+                                <i class="bi bi-truck ml-2"></i>
+                                هزینه ارسال
+                            </label>
+                            <div class="bg-gradient-to-br from-[#0b142133] to-[#06244133] rounded-2xl p-4 border border-[#0bffff33]">
+                                {% for i in cost_fee %}
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-[#0bffffaa] text-sm"> {{ i.title }}:</span>
+                                    <span class="text-white font-bold text-sm">{{ i }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" 
+                                class="w-full py-4 bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] text-[#062441] font-black text-lg rounded-2xl shadow-2xl shadow-[#0bffff66] hover:shadow-[0_0_40px_rgba(11,255,255,0.8)] hover:scale-[1.02] transition-all duration-500 flex items-center justify-center gap-3">
+                            <i class="bi bi-check-lg"></i>
+                            ثبت سفارش
+                            <i class="bi bi-arrow-left"></i>
+                        </button>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- اطلاعات تکمیلی -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] text-center">
+                <i class="bi bi-shield-check text-3xl text-[#0bffff] mb-3"></i>
+                <h4 class="text-white font-bold mb-2">اطلاعات امن</h4>
+                <p class="text-[#0bffffaa] text-sm">تمامی اطلاعات مشتری محرمانه می‌ماند</p>
+            </div>
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] text-center">
+                <i class="bi bi-truck text-3xl text-[#0bffff] mb-3"></i>
+                <h4 class="text-white font-bold mb-2">تحویل سریع</h4>
+                <p class="text-[#0bffffaa] text-sm">ارسال به تمام نقاط کشور</p>
+            </div>
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] text-center">
+                <i class="bi bi-headset text-3xl text-[#0bffff] mb-3"></i>
+                <h4 class="text-white font-bold mb-2">پشتیبانی</h4>
+                <p class="text-[#0bffffaa] text-sm">۲۴ ساعته در ۷ روز هفته</p>
+            </div>
+        </div>
+      </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // مدیریت radio buttons روش پرداخت
+    document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.querySelectorAll('input[name="payment_method"]').forEach(r => {
+                const label = r.closest('label');
+                const dot = label.querySelector('.bg-\\[#0bffff\\]');
+                const icon = label.querySelector('i:last-child');
+                
+                if (r.checked) {
+                    label.style.borderColor = '#0bffff';
+                    label.style.background = '#0bffff22';
+                    if (dot) dot.classList.remove('hidden');
+                    if (icon) icon.style.color = '#0bffff';
+                } else {
+                    label.style.borderColor = '#0bffff44';
+                    label.style.background = '#0b142133';
+                    if (dot) dot.classList.add('hidden');
+                    if (icon) icon.style.color = '#0bffffaa';
+                }
+            });
+            
+            updateSummary();
+        });
+    });
+  
+    citySelect.addEventListener('change', updateSummary);
+ 
+
+    // اعتبارسنجی شماره تلفن
+    const phoneInput = document.querySelector('input[name="phone"]');
+    phoneInput.addEventListener('blur', function() {
+        if (this.value.length === 10 && !this.value.startsWith('9')) {
+            this.style.borderColor = '#ff6b6b';
+            // می‌تونید پیام خطا نمایش بدید
+        } else if (this.value.length === 10) {
+            this.style.borderColor = '#66bb6a';
+        } else if (this.value.length > 0) {
+            this.style.borderColor = '#ffa726';
+        } else {
+            this.style.borderColor = '#0bffff44';
+        }
+    });
+});
+
+</script>
+
+<style>
+.dir-ltr {
+    direction: ltr;
+    text-align: left;
+}
+
+/* استایل برای select ها */
+select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230bffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: left 1rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-left: 3rem;
+}
+
+/* انیمیشن برای آیتم‌های فرم */
+.group {
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

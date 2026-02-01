@@ -1,0 +1,182 @@
+{% extends 'sellers/base_admin.html' %}
+
+{% block seller_con %}
+ 
+<title>
+    لیست همکاران
+</title>
+
+<div class="grid grid-cols-2 gap-2 sm:p-5">
+ 
+  <a href="{% url 'coll:collaborator_add' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-person-plus-fill text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">افزودن همکار</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ responses_count }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition text-sm sm:text-md">افزودن همکار</button>
+  </a>
+  
+
+  <a href="{% url 'coll:collaborators_list' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-people text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست همکاران</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_collaborators }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition text-sm sm:text-md">لیست همکاران</button>
+  </a>
+</div>
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] p-4 md:p-6">
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- هدر صفحه -->
+        <div class="text-center mb-8 md:mb-12">
+            <h2 class="text-3xl md:text-5xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent mb-4">
+                لیست همکاران
+            </h2>
+            <p class="text-[#0bffffaa] text-lg md:text-xl max-w-2xl mx-auto">
+                مدیریت و ارتباط با همکاران فروشگاه
+            </p>
+        </div>
+
+        <!-- گرید همکاران -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+            {% for i in collab %}
+            <div class="group relative">
+                <!-- افکت پس‌زمینه -->
+                <div class="absolute inset-0 bg-gradient-to-br from-[#0bffff33] to-[#0bffffee33] rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                
+                <!-- کارت اصلی -->
+                <div class="relative bg-gradient-to-br from-[#062441] to-[#0b1421] rounded-2xl border border-[#0bffff33] p-6 md:p-8 shadow-2xl shadow-[#0bffff11] backdrop-blur-sm transition-all duration-500 group-hover:border-[#0bffff] group-hover:shadow-[0_0_40px_rgba(11,255,255,0.3)] group-hover:scale-105">
+                    
+                    <!-- هدر کارت -->
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <!-- تصویر پروفایل -->
+                        <div class="relative mb-4">
+                            {% if i.user_authentication.profile %}
+                                <img src="{{ i.user_authentication.profile.url }}" alt="{{ i.user.username }}" 
+                                     class="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-[#0bffffcc] shadow-lg group-hover:border-[#0bffff] transition-all duration-300">
+                            {% else %}
+                                <div class="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-[#0bffffcc] bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] flex items-center justify-center shadow-lg group-hover:border-[#0bffff] transition-all duration-300">
+                                    <i class="bi bi-person-fill text-3xl md:text-4xl text-[#0bffff]"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- وضعیت آنلاین -->
+                            <div class="absolute -bottom-1 -right-1 w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-[#062441] {% if i.active %}bg-green-400{% else %}bg-red-400{% endif %}"></div>
+                        </div>
+                        
+                        <!-- اطلاعات کاربر -->
+                        <h3 class="text-xl md:text-2xl font-black text-white mb-2 group-hover:text-[#0bffff] transition-colors duration-300">
+                            {{ i.user.get_full_name }}
+                        </h3>
+                        <p class="text-[#0bffffaa] text-sm md:text-base mb-3">
+                            @{{ i.user.username }}
+                        </p>
+                        
+                        <!-- وضعیت فعال/غیرفعال -->
+                        {% if i.active %}
+                            <span class="inline-flex items-center gap-2 bg-green-500/20 text-green-400 px-3 md:px-4 py-1 md:py-2 rounded-full text-xs md:text-sm border border-green-400/50">
+                                <i class="bi bi-check-circle"></i>
+                                فعال
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center gap-2 bg-red-500/20 text-red-400 px-3 md:px-4 py-1 md:py-2 rounded-full text-xs md:text-sm border border-red-400/50">
+                                <i class="bi bi-x-circle"></i>
+                                غیرفعال
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- دکمه‌های اقدام -->
+                    <div class="grid grid-cols-2 gap-3 md:gap-4">
+                        <!-- دکمه پیام -->
+                        <form action="{% url 'new_chat' %}" method="POST" class="w-full">
+                            {% csrf_token %}
+                            <input type="hidden" name="username" value="{{ i.user.username }}">
+                            <input type="hidden" name="user_id" value="{{ i.user.id }}">
+                            <button type="submit" 
+                                    class="w-full bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441] font-bold py-2 md:py-3 rounded-xl hover:shadow-[0_0_20px_rgba(11,255,255,0.5)] transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base">
+                                <i class="bi bi-chat-dots"></i>
+                                پیام
+                            </button>
+                        </form>
+                        
+                        <!-- دکمه فعالیت‌ها -->
+                        <a href="{% url 'coll:collab_activity' shop_id i.id %}" 
+                           class="w-full bg-gradient-to-r from-[#0b142133] to-[#06244133] border border-[#0bffff44] text-[#0bffff] font-bold py-2 md:py-3 rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base">
+                            <i class="bi bi-activity"></i>
+                            فعالیت‌ها
+                        </a>
+                        
+                        <!-- دکمه ویرایش -->
+                        <a href="{% url 'coll:collaborator_edit' shop_id i.id %}" 
+                           class="col-span-2 w-full bg-gradient-to-r from-[#4ecdc433] to-[#4ecdc411] border border-[#4ecdc444] text-[#4ecdc4] font-bold py-2 md:py-3 rounded-xl hover:border-[#4ecdc4] hover:shadow-[0_0_15px_rgba(78,205,196,0.3)] transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base">
+                            <i class="bi bi-pencil-square"></i>
+                            ویرایش اطلاعات
+                        </a>
+                    </div>
+                    
+                    <!-- اطلاعات اضافی -->
+                    <div class="mt-4 md:mt-6 pt-4 border-t border-[#0bffff33]">
+                        <div class="grid grid-cols-1 gap-4 text-center">
+                            <div>
+                                <p class="text-[#0bffffaa] text-xs md:text-sm">همکاری از</p>
+                                <p class="text-white font-bold text-sm md:text-base">{{ i.created }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            
+            <!-- حالت خالی -->
+            <div class="col-span-full text-center py-12 md:py-16">
+                <div class="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="bi bi-people text-[#0bffff] text-3xl md:text-4xl"></i>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-black text-white mb-3">همکاری یافت نشد</h3>
+                <p class="text-[#0bffffaa] text-lg md:text-xl max-w-md mx-auto mb-6">
+                    هنوز هیچ همکاری به فروشگاه اضافه نشده است
+                </p>
+                <a href="{% url 'coll:collaborator_add' shop_id %}" 
+                   class="inline-flex items-center gap-2 bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441] font-black px-6 md:px-8 py-3 md:py-4 rounded-xl shadow-2xl shadow-[#0bffff66] hover:shadow-[0_0_30px_rgba(11,255,255,0.8)] transition-all duration-300 text-base md:text-lg">
+                    <i class="bi bi-person-plus"></i>
+                    افزودن همکار جدید
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    /* انیمیشن‌های اضافی برای زیبایی بیشتر */
+    .group:hover .group-hover\:scale-105 {
+        transform: scale(1.05);
+    }
+    
+    .group:hover .group-hover\:border-\[\#0bffff\] {
+        border-color: #0bffff;
+    }
+    
+    .group:hover .group-hover\:text-\[\#0bffff\] {
+        color: #0bffff;
+    }
+    
+    /* انیمیشن برای دکمه‌ها */
+    button, a {
+        transition: all 0.3s ease;
+    }
+    
+    /* افکت برای تصویر پروفایل */
+    img {
+        transition: all 0.3s ease;
+    }
+    
+    .group:hover img {
+        transform: scale(1.1);
+    }
+</style>
+
+
+
+{% endblock seller_con %}

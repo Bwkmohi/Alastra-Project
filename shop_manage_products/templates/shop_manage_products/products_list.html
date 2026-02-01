@@ -1,0 +1,388 @@
+{% extends 'shop_manage_products/base.html' %}
+
+
+{% block shop_prod_con %}
+{% load humanize %}
+
+<title>
+    مدیریت محصولات
+</title>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 p-5">
+
+  <!-- کارت لیست محصولات -->
+  <div class="relative group bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm hover:border-[#0bffff] hover:shadow-[0_0_40px_rgba(11,255,255,0.3)] transition-all duration-500">
+    <div class="text-center mb-4">
+      <div class="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-[#b0ffd133] to-[#b0ffd155] rounded-2xl flex items-center justify-center group-hover:from-[#b0ffd1] group-hover:to-[#b0ffd1ee] transition-all duration-500">
+        <i class="bi bi-box-seam text-2xl text-[#b0ffd1] group-hover:text-[#062441] transition-colors"></i>
+      </div>
+      <p class="font-black text-lg text-white mb-2">لیست محصولات</p>
+      <span class="absolute top-4 left-4 bg-[#0bffff33] text-[#0bffff] px-3 py-1 rounded-full text-sm font-bold border border-[#0bffff33]">
+        {{ count_shop_products }}
+      </span>
+    </div>
+    <a href="{% url 'pro:products_list' shop_id %}" class="block w-full py-2 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl text-center hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.4)] transition-all duration-300 group-hover:scale-105">
+      مشاهده
+    </a>
+  </div>
+
+  <!-- کارت افزودن محصول -->
+  <div class="relative group bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm hover:border-[#0bffff] hover:shadow-[0_0_40px_rgba(11,255,255,0.3)] transition-all duration-500">
+    <div class="text-center mb-4">
+      <div class="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-[#b0ffd133] to-[#b0ffd155] rounded-2xl flex items-center justify-center group-hover:from-[#b0ffd1] group-hover:to-[#b0ffd1ee] transition-all duration-500">
+        <i class="bi bi-plus-circle text-2xl text-[#b0ffd1] group-hover:text-[#062441] transition-colors"></i>
+      </div>
+      <p class="font-black text-lg text-white mb-2">افزودن محصول</p>
+    </div>
+    <a href="{% url 'pro:product_Add' shop_id %}" class="block w-full py-2 bg-gradient-to-r from-[#0bffff] to-[#0bffffee] text-[#062441] font-black rounded-xl text-center shadow-lg shadow-[#0bffff66] hover:shadow-[0_0_30px_rgba(11,255,255,0.8)] hover:scale-105 transition-all duration-300">
+      افزودن
+    </a>
+  </div>
+
+  <!-- کارت آمار محصولات -->
+  <div class="relative group bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm hover:border-[#0bffff] hover:shadow-[0_0_40px_rgba(11,255,255,0.3)] transition-all duration-500">
+    <div class="text-center mb-4">
+      <div class="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-[#b0ffd133] to-[#b0ffd155] rounded-2xl flex items-center justify-center group-hover:from-[#b0ffd1] group-hover:to-[#b0ffd1ee] transition-all duration-500">
+        <i class="bi bi-reception-4 text-2xl text-[#b0ffd1] group-hover:text-[#062441] transition-colors"></i>
+      </div>
+      <p class="font-black text-lg text-white mb-2">آمار محصولات</p>
+    </div>
+    <a href="{% url 'pro:products_data' shop_id %}" class="block w-full py-2 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] font-bold rounded-xl text-center hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.4)] transition-all duration-300 group-hover:scale-105">
+      مشاهده
+    </a>
+  </div>
+
+  <!-- کارت موجودی کم -->
+  <form action="{% url 'pro:filter_product' shop_id %}" method="GET" class="h-full">
+    <input type="text" hidden name="inventory" value="2">
+    <div class="relative group bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl p-6 border border-[#ff6b6b33] shadow-2xl shadow-[#ff6b6b11] backdrop-blur-sm hover:border-[#ff6b6b] hover:shadow-[0_0_40px_rgba(255,107,107,0.3)] transition-all duration-500 h-full">
+      <div class="text-center mb-4">
+        <div class="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-[#ff6b6b33] to-[#ff6b6b55] rounded-2xl flex items-center justify-center group-hover:from-[#ff6b6b] group-hover:to-[#ff6b6bee] transition-all duration-500">
+          <i class="bi bi-exclamation-triangle text-2xl text-[#ff6b6b] group-hover:text-[#062441] transition-colors"></i>
+        </div>
+        <p class="font-black text-lg text-white mb-2">موجودی کم</p>
+        <!-- <p class="text-[#ff6b6baa] text-sm">کمتر از ۲ عدد</p> -->
+        <span class="absolute top-4 left-4 bg-[#ff6b6b33] text-[#ff6b6b] px-3 py-1 rounded-full text-sm font-bold border border-[#ff6b6b33]">
+          {{ count_shop_lte2_products }}
+        </span>
+      </div>
+      <button type="submit" class="w-full py-2 bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] font-bold rounded-xl hover:border-[#ff6b6b] hover:shadow-[0_0_20px_rgba(255,107,107,0.4)] transition-all duration-300 group-hover:scale-105">
+        مشاهده
+      </button>
+    </div>
+  </form>
+
+</div>
+
+
+<div class="bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0d4370] p-6 rounded-2xl shadow-2xl shadow-[#b0bfd1]/40 border border-[#0bffff55] mt-6">
+  <form action="{% url 'pro:filter_product' shop_id %}" method="GET" class="space-y-6">
+    
+    <!-- عنوان -->
+    <h2 class="text-2xl font-extrabold text-white drop-shadow flex items-center gap-2">
+      <i class="bi bi-sliders text-[#0bffffcc]"></i> فیلتر محصولات
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      <!-- فیلتر محصولات ویژه -->
+      <div class="relative group">
+        <label class="absolute -top-3 right-3 bg-[#0b1421] text-[#0bffffcc] px-2 text-sm">نوع فیلتر</label>
+        <select name="filter_ss"
+          class="w-full p-3 rounded-xl bg-gradient-to-b from-[#062441] to-[#0b1421] 
+                 border-2 border-[#0bffffcc] text-white font-bold focus:ring-4 
+                 focus:ring-[#0bffffcc] transition duration-500 ease-in-out">
+          <option value="">انتحاب کنید</option>
+          <option value="best_selling_products">پرفروش‌ترین</option>
+          <option value="populer">محبوب‌ترین</option>
+          <option value="in_cart_products">در سبد خرید</option>
+          <option value="in_watchlist_products">در واچ‌لیست</option>
+          <option value="coupon_products">دارای کوپن</option>
+          <option value="uncoupon_products">بدون کوپن</option>
+        </select>
+      </div>
+
+      <!-- دسته بندی -->
+      <div class="relative group">
+        <label class="absolute -top-3 right-3 bg-[#0b1421] text-[#0bffffcc] px-2 text-sm">دسته‌بندی</label>
+        <select name="category"
+          class="w-full p-3 rounded-xl bg-gradient-to-b from-[#062441] to-[#0b1421] 
+                 border-2 border-[#0bffffcc] text-white font-bold focus:ring-4 
+                 focus:ring-[#0bffffcc] transition duration-500 ease-in-out">
+          <option value="">همه دسته‌ها</option>
+          {% for i in super_category %}
+            <option value="{{ i.id }}">{{ i.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- وضعیت -->
+      <div class="relative group">
+        <label class="absolute -top-3 right-3 bg-[#0b1421] text-[#0bffffcc] px-2 text-sm">وضعیت</label>
+        <select name="filter_v"
+          class="w-full p-3 rounded-xl bg-gradient-to-b from-[#062441] to-[#0b1421] 
+                 border-2 border-[#0bffffcc] text-white font-bold focus:ring-4 
+                 focus:ring-[#0bffffcc] transition duration-500 ease-in-out">
+            <option value="">انتحاب کنید</option>
+          <option value="lte_from_5">باقی‌مانده کمتر از 5</option>
+          <option value="spessial">ویژه</option>
+          <option value="actives">فعال</option>
+          <option value="is_avb">موجود</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- دکمه -->
+    <div class="flex justify-center">
+      <button type="submit"
+        class="px-8 py-3 rounded-xl bg-[#0bffffcc] text-[#0b1421] font-bold flex items-center gap-2
+               hover:bg-[#0bffff] hover:shadow-lg hover:scale-[1.03] transition duration-300 shadow-lg">
+        <i class="bi bi-funnel"></i> اعمال فیلتر
+      </button>
+    </div>
+  </form>
+</div>
+
+ 
+
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] p-4 md:p-6">
+    
+    <!-- هدر لیست محصولات -->
+    <div class="max-w-7xl mx-auto mb-6 md:mb-8">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
+            <div class="flex items-center gap-3 md:gap-4">
+                <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-xl md:rounded-2xl flex items-center justify-center">
+                    <i class="bi bi-box-seam text-lg md:text-2xl text-[#062441]"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-4xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                        مدیریت محصولات
+                    </h1>
+                    <p class="text-[#0bffffaa] mt-1 md:mt-2 text-sm md:text-base">مدیریت و ویرایش محصولات فروشگاه</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 md:gap-4 w-full md:w-auto">
+                <button class="flex-1 md:flex-none bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] px-3 md:px-6 py-2 md:py-3 rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300 font-bold text-sm md:text-base">
+                    <i class="bi bi-filter-left mr-1 md:mr-2"></i>
+                    فیلترها
+                </button>
+                <a href="{% url 'pro:product_Add' shop_id %}" class="flex-1 md:flex-none bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] text-[#062441] font-black px-3 md:px-6 py-2 md:py-3 rounded-xl shadow-2xl shadow-[#0bffff66] hover:shadow-[0_0_30px_rgba(11,255,255,0.8)] transition-all duration-300 text-sm md:text-base text-center">
+                    <i class="bi bi-plus-lg mr-1 md:mr-2"></i>
+                    محصول جدید
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- جدول محصولات -->
+    <div class="max-w-7xl mx-auto">
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl md:rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm overflow-hidden">
+            
+            <!-- هدر جدول -->
+            <div class="p-4 md:p-6 border-b border-[#0bffff33]">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <h3 class="text-lg md:text-xl font-black text-white flex items-center gap-2 md:gap-3">
+                        <i class="bi bi-list-ul text-[#0bffff]"></i>
+                        لیست محصولات
+                    </h3>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-4 w-full md:w-auto">
+                        <select class="bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-3 md:px-4 py-2 text-white focus:border-[#0bffff] outline-none text-sm md:text-base">
+                            <option>همه دسته‌ها</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- لیست محصولات -->
+            <div class="p-4 md:p-6 space-y-4">
+                {% for i in products %}
+                {% if i.active == False or i.qunat < 2 or i.have == False %}
+                <!-- محصول غیرفعال -->
+                <div class="group bg-gradient-to-r from-[#0b142133] to-[#06244133] rounded-2xl p-4 md:p-6 border border-[#ff6b6b33] hover:border-[#ff6b6b] hover:shadow-[0_0_30px_rgba(255,107,107,0.2)] transition-all duration-500">
+                    <div class="flex flex-col sm:flex-row items-start gap-4">
+                        <div class="relative flex-shrink-0">
+                            <img src="{{ i.image.url }}" alt="Product" class="w-16 h-16 md:w-20 md:h-20 rounded-2xl border-2 border-[#ff6b6b33]">
+                            <div class="absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 bg-gradient-to-br from-[#ff6b6b] to-[#ff6b6bee] rounded-full flex items-center justify-center">
+                                <i class="bi bi-exclamation text-xs text-white"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-1 w-full">
+                            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+                                <div class="flex-1">
+                                    <h4 class="text-base md:text-lg font-black text-white group-hover:text-[#ff6b6b] transition-colors break-words">
+                                        {{ i.name }}
+                                    </h4>
+                                    <p class="text-[#ff6b6baa] text-xs md:text-sm mt-1">
+                                        دسته: {{ i.category.name }}
+                                    </p>
+                                </div>
+                                <div class="text-left sm:text-right">
+                                    <p class="text-lg md:text-2xl font-black text-white">
+                                        {{ i.price_|intcomma  }}<span class="text-xs md:text-sm text-[#ff6b6baa]"> تومان</span>
+                                    </p>
+                                    <p class="text-[#ff6b6baa] text-xs md:text-sm mt-1">
+                                        {{ i.total_sale }} فروش
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-wrap items-center gap-2 md:gap-4 lg:gap-6 mt-3 md:mt-4">
+                                {% if i.active == False %}
+                                <div class="flex items-center gap-1 md:gap-2">
+                                    <span class="w-2 h-2 bg-red-400 rounded-full animate-pulse"></span>
+                                    <span class="text-red-400 text-xs md:text-sm font-medium">غیر فعال</span>
+                                </div>
+                                {% endif %}
+                                {% if i.have == False %}
+                                <div class="flex items-center gap-1 md:gap-2">
+                                    <span class="w-2 h-2 bg-red-400 rounded-full animate-pulse"></span>
+                                    <span class="text-red-400 text-xs md:text-sm font-medium">اتمام موجودی - {{ i.qunat }}</span>
+                                </div>
+                                {% endif %}
+                                <div class="flex items-center gap-1 md:gap-2">
+                                    <i class="bi bi-eye text-[#ff6b6baa] text-xs md:text-sm"></i>
+                                    <span class="text-[#ff6b6baa] text-xs md:text-sm">{{ i.views }} بازدید</span>
+                                </div>
+                                <div class="flex items-center gap-1 md:gap-2">
+                                    <i class="bi bi-star-fill text-yellow-400 text-xs md:text-sm"></i>
+                                    <span class="text-[#ff6b6baa] text-xs md:text-sm">{{ i.rate }} ({{ i.comments_count }} نظر)</span>
+                                </div>
+                                <div class="flex items-center gap-1 md:gap-2">
+                                    <i class="bi bi-box text-[#ff6b6baa] text-xs md:text-sm"></i>
+                                    <span class="text-[#ff6b6baa] text-xs md:text-sm">موجودی: {{ i.qunat }} عدد</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-2 md:gap-3 mt-4 md:mt-6 pt-4 border-t border-[#ff6b6b33]">
+                        <a href="{% url 'pro:edit_product' shop_id i.id %}" class="flex-1 min-w-[120px] text-center py-2 px-2 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-pencil-square ml-1 md:ml-2"></i>
+                            ویرایش
+                        </a>
+                        <a href="{% url 'pro:product_analysis' shop_id i.id %}" class="flex-1 min-w-[120px] text-center py-2 px-2 bg-gradient-to-r from-[#4ecdc433] to-[#4ecdc411] border border-[#4ecdc444] text-[#4ecdc4] rounded-xl hover:border-[#4ecdc4] hover:shadow-[0_0_15px_rgba(78,205,196,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-bar-chart ml-1 md:ml-2"></i>
+                            آمار
+                        </a>
+                        <a href="{% url 'product_detail' i.id i.slug %}" class="flex-1 min-w-[80px] text-center py-2 px-2 bg-gradient-to-r from-[#4ecdc433] to-[#4ecdc411] border border-[#4ecdc444] text-[#4ecdc4] rounded-xl hover:border-[#4ecdc4] hover:shadow-[0_0_15px_rgba(78,205,196,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-eye ml-1 md:ml-2"></i>
+                            مشاهده
+                        </a>
+                        <button onclick="document.getElementById('confirmModal-{{ i.id }}').classList.remove('hidden')" 
+                                class="flex-1 min-w-[80px] py-2 px-2 bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] rounded-xl hover:border-[#ff6b6b] hover:shadow-[0_0_15px_rgba(255,107,107,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-trash"></i>
+                            حذف
+                        </button>
+                    </div>
+                </div>
+                {% else %}
+                <!-- محصول فعال -->
+                <div class="group bg-gradient-to-r from-[#0b142133] to-[#06244133] rounded-2xl p-4 md:p-6 border border-[#0bffff33] hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.2)] transition-all duration-500">
+                    <div class="flex flex-col sm:flex-row items-start gap-4">
+                        <div class="relative flex-shrink-0">
+                            <img src="{{ i.image.url }}" alt="Product" class="w-16 h-16 md:w-20 md:h-20 rounded-2xl border-2 border-[#0bffff33]">
+                            <div class="absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-full flex items-center justify-center">
+                                <i class="bi bi-check text-xs text-[#062441]"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-1 w-full">
+                            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+                                <div class="flex-1">
+                                    <h4 class="text-base md:text-lg font-black text-white group-hover:text-[#0bffff] transition-colors break-words">
+                                        {{ i.name }}
+                                    </h4>
+                                    <p class="text-[#0bffffaa] text-xs md:text-sm mt-1">
+                                        دسته: {{ i.category.name }}
+                                    </p>
+                                </div>
+                                <div class="text-left sm:text-right">
+                                    <p class="text-lg md:text-2xl font-black text-white">
+                                        {{ i.price_|intcomma  }} <span class="text-xs md:text-sm text-[#0bffffaa]">تومان</span>
+                                    </p>
+                                    <p class="text-[#0bffffaa] text-xs md:text-sm mt-1">
+                                        {{ i.total_sale }} فروش
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-wrap items-center gap-2 md:gap-4 lg:gap-6 mt-3 md:mt-4">
+                                <div class="flex items-center gap-1 md:gap-2">
+                                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                    <span class="text-green-400 text-xs md:text-sm font-medium">فعال</span>
+                                </div>
+                                <div class="flex items-center gap-1 md:gap-2">
+                                    <i class="bi bi-eye text-[#0bffffaa] text-xs md:text-sm"></i>
+                                    <span class="text-[#0bffffaa] text-xs md:text-sm">{{ i.views }} بازدید</span>
+                                </div>
+                                <div class="flex items-center gap-1 md:gap-2">
+                                    <i class="bi bi-star-fill text-yellow-400 text-xs md:text-sm"></i>
+                                    <span class="text-[#0bffffaa] text-xs md:text-sm">{{ i.rate }} ({{ i.comments_count }} نظر)</span>
+                                </div>
+                                <div class="flex items-center gap-1 md:gap-2">
+                                    <i class="bi bi-box text-[#0bffffaa] text-xs md:text-sm"></i>
+                                    <span class="text-[#0bffffaa] text-xs md:text-sm">موجودی: {{ i.qunat }} عدد</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-2 md:gap-3 mt-4 md:mt-6 pt-4 border-t border-[#0bffff33]">
+                        <a href="{% url 'pro:edit_product' shop_id i.id %}" class="flex-1 min-w-[120px] text-center py-2 px-2 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-pencil-square ml-1 md:ml-2"></i>
+                            ویرایش
+                        </a>
+                        <a href="{% url 'pro:product_analysis' shop_id i.id %}" class="flex-1 min-w-[120px] text-center py-2 px-2 bg-gradient-to-r from-[#4ecdc433] to-[#4ecdc411] border border-[#4ecdc444] text-[#4ecdc4] rounded-xl hover:border-[#4ecdc4] hover:shadow-[0_0_15px_rgba(78,205,196,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-bar-chart ml-1 md:ml-2"></i>
+                            آمار
+                        </a>
+                        <a href="{% url 'product_detail' i.id i.slug %}" class="flex-1 min-w-[80px] text-center py-2 px-2 bg-gradient-to-r from-[#4ecdc433] to-[#4ecdc411] border border-[#4ecdc444] text-[#4ecdc4] rounded-xl hover:border-[#4ecdc4] hover:shadow-[0_0_15px_rgba(78,205,196,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-eye ml-1 md:ml-2"></i>
+                            مشاهده
+                        </a>
+                        <button onclick="document.getElementById('confirmModal-{{ i.id }}').classList.remove('hidden')" 
+                                class="flex-1 min-w-[80px] py-2 px-2 bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] rounded-xl hover:border-[#ff6b6b] hover:shadow-[0_0_15px_rgba(255,107,107,0.3)] transition-all duration-300 font-medium text-xs md:text-sm">
+                            <i class="bi bi-trash"></i>
+                            حذف
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- مودال تایید حذف -->
+                <div id="confirmModal-{{ i.id }}" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 hidden">
+                    <div class="bg-[#0b1421] rounded-lg shadow-lg w-full max-w-md p-4 md:p-6">
+                        <h2 class="text-lg md:text-xl font-semibold text-white mb-3 md:mb-4">حذف محصول</h2>
+                        <p class="text-white mb-4 md:mb-6 text-sm md:text-base">آیا مطمئن هستید که می‌خواهید این محصول را حذف کنید؟ این عملیات قابل بازگشت نیست.</p>
+                        <div class="flex justify-end gap-3 md:gap-4">
+                            <button onclick="document.getElementById('confirmModal-{{ i.id }}').classList.add('hidden')"
+                                class="bg-gray-200 hover:bg-gray-300 text-black px-3 md:px-4 py-2 rounded text-sm md:text-base">انصراف</button>
+                            
+                            <form id="deleteForm-{{ i.id }}">
+                                {% csrf_token %}
+                                <button type="submit" onclick="removeProduct({{ i.id }})" class="bg-red-600 hover:bg-red-700 text-white px-3 md:px-4 py-2 rounded text-sm md:text-base">
+                                    بله، حذف کن
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function removeProduct(id) { 
+        fetch(`/shop/shop_products/{{ shop_id }}/product/remove/${id}/`)
+            .then(res => res.json())
+            .then(data => {
+        });      
+    }
+</script>
+{% endblock %}

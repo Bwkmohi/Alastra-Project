@@ -1,0 +1,177 @@
+{% extends "gallery_products/base.html" %}    
+    {% block gallery_con %}
+ 
+    <title>
+      لیست گالری محصولات
+    </title>
+
+<div class="grid grid-cols-2 gap-2 sm:p-5">
+ 
+  <a href="{% url 'gallery:add_gallery' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-folder-plus text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">افزودن گالری محصول</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ responses_count }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">افزودن </button>
+  </a>
+  
+
+  <a href="{% url 'gallery:list_product_gallery' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-image text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست گالری محصولات</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_gallery }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">لیست گالری</button>
+  </a>
+</div>
+ 
+<style>
+  /* سبک تایتل */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0bffffee;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* انیمیشن متحرک برای تایتل */
+.section-title::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, #062441, #0bffffcc);
+    animation: lineMove 2s ease-in-out infinite;
+}
+
+/* انیمیشن حرکت خط پایین تایتل */
+@keyframes lineMove {
+    0% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+    50% {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    100% {
+        transform: scaleX(0);
+        transform-origin: bottom right;
+    }
+}
+
+/* افکت هاله برای تایتل */
+.section-title:hover {
+    color: #fff;
+    text-shadow: 0 0 15px rgba(11, 255, 255, 0.8);
+    animation: glowEffect 1.5s ease-in-out infinite alternate;
+}
+
+/* افکت هاله برای تایتل */
+@keyframes glowEffect {
+    0% {
+        text-shadow: 0 0 10px rgba(11, 255, 255, 0.6), 0 0 20px rgba(11, 255, 255, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(11, 255, 255, 0.9), 0 0 30px rgba(11, 255, 255, 0.8);
+    }
+}
+
+</style>
+ 
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] p-4 md:p-6">
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- هدر صفحه -->
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 md:mb-8">
+            <div class="flex items-center gap-3 md:gap-4">
+                <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-xl md:rounded-2xl flex items-center justify-center">
+                    <i class="bi bi-play-circle text-lg md:text-2xl text-[#062441]"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-4xl section-title font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                        گالری محصولات
+                    </h1>
+                    <p class="text-[#0bffffaa] mt-1 md:mt-2 text-sm md:text-base">مدیریت و مشاهده گالری</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- لیست استوری‌ها -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl md:rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm p-4 md:p-6">
+            
+            <!-- هدر -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+                <h3 class="text-lg md:text-xl font-black text-white flex items-center gap-2 md:gap-3">
+                    <i class="bi bi-collection-play text-[#0bffff]"></i>
+                    لیست گالری
+                </h3>
+            </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  {% for gallery in galleries %}
+    <div class="group relative bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#062441] border border-[#0bffffcc] rounded-2xl shadow-xl p-5 flex items-center justify-between hover:scale-[1.02] transition-transform duration-300 overflow-hidden">
+
+      <!-- تصویر اصلی -->
+      <div class="w-28 h-28 flex-shrink-0 rounded-xl overflow-hidden shadow-md">
+        {% if gallery.galleryitem_set.first %}
+          <img src="{{ gallery.galleryitem_set.first.image.url }}" alt="تصویر گالری"
+               class="w-full h-full object-cover" />
+        {% else %}
+          <div class="w-full h-full bg-gray-300 flex items-center justify-center text-sm text-gray-600">
+            بدون تصویر
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- نام محصول و گالری -->
+      <div class="flex-1 mx-4">
+        <h2 class="md:text-lg text-md font-bold text-white mb-3 drop-shadow">
+          {% for product in gallery.product.all %}
+            {{ product.name }}{% if not forloop.last %}، {% endif %}
+          {% empty %}
+            محصولی ثبت نشده
+          {% endfor %}
+        </h2>
+
+        <!-- تصاویر کوچک -->
+        <div class="flex items-center">
+          <div class="flex -space-x-3">
+            {% for item in gallery.galleryitem_set.all|slice:":4" %}
+              <img src="{{ item.image.url }}" alt=""
+                   class="w-10 h-10 rounded-full border-2 border-[#0bffffee] shadow-md object-cover">
+            {% endfor %}
+          </div>
+          {% if gallery.galleryitem_set.count > 0 %}
+            <span class="text-sm text-gray-300 ml-3">{{ gallery.galleryitem_set.count }} عکس</span>
+          {% else %}
+            <span class="text-sm text-gray-400 ml-3">بدون عکس</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- دکمه‌ها فقط هنگام هاور: با انیمیشن بالا به پایین -->
+      <div class="absolute top-4 right-4 flex flex-col gap-2 opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 z-10" 
+      dir="ltr"
+      >
+        <a href="{% url 'gallery:edit_gallery' shop_id gallery.id %}"
+           class="w-9 h-9 flex items-center justify-center rounded-full bg-[#0bffffcc] hover:bg-[#0bffffee] text-black shadow-lg transition-transform hover:scale-110 duration-300">
+          <i class="bi bi-pencil"></i>
+        </a>
+        <a href="{% url 'gallery:delete_gallery' shop_id gallery.id %}"
+           class="w-9 h-9 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg transition-transform hover:scale-110 duration-300">
+          <i class="bi bi-trash"></i>
+        </a>
+      </div>
+
+    </div>
+  {% endfor %}
+</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

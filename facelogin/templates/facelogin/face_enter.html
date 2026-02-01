@@ -1,0 +1,217 @@
+{% extends "facelogin/base.html" %}
+    {% block face_con %}
+
+    <title>
+        ثبت چهره
+    </title>
+
+<form id="face-auth-form" method="POST" action="{% url 'face_enter' %}" class="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-sm flex items-center justify-center z-50">
+    {% csrf_token %}
+    <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm p-8 max-w-md w-full mx-4">
+        
+        <!-- هدر Modal -->
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#4ecdc4] to-[#4ecdc4ee] rounded-2xl flex items-center justify-center">
+                <i class="bi bi-camera-video text-2xl text-[#062441]"></i>
+            </div>
+            <h3 class="text-xl font-black text-white mb-2">احراز هویت با چهره</h3>
+            <p class="text-[#0bffffaa] text-sm">لطفاً صورت خود را در مرکز دوربین قرار دهید</p>
+        </div>
+        
+
+            <div class="relative mb-6">
+        <!-- جای ویدیو -->
+        <video id="face-video" autoplay playsinline class="rounded-full w-48 h-48 mx-auto object-cover border-2 border-[#4ecdc4]"></video>
+
+        <!-- نقاط راهنما مثل دایره -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-48 h-48 border-2 border-[#4ecdc4] rounded-full opacity-50"></div>
+        </div>
+    </div>
+
+    <input type="hidden" name="face_image" id="face-image-input">
+
+
+        <!-- وضعیت تشخیص -->
+        <div class="bg-gradient-to-br from-[#0b142133] to-[#06244133] rounded-2xl p-4 border border-[#4ecdc433] mb-6">
+            <div class="flex items-center justify-between">
+                <span class="text-[#4ecdc4aa] text-sm">وضعیت:</span>
+                <span id="face-status" class="text-[#4ecdc4] text-sm font-medium">در انتظار تشخیص</span>
+            </div>
+            <div class="w-full bg-[#0b142133] rounded-full h-2 mt-2">
+                <div id="face-progress" class="h-2 rounded-full bg-gradient-to-r from-[#4ecdc4] to-[#4ecdc4ee] transition-all duration-1000" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- دکمه‌های Modal -->
+        <div class="flex gap-4">
+            <button type="button" id="cancel-face-auth"
+                    class="flex-1 py-3 bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] font-bold rounded-2xl hover:border-[#ff6b6b] hover:shadow-[0_0_20px_rgba(255,107,107,0.3)] transition-all duration-300">
+                انصراف
+            </button>
+            <button type="button" id="retry-face-auth"
+                    class="flex-1 py-3 bg-gradient-to-r from-[#4ecdc433] to-[#4ecdc411] border border-[#4ecdc444] text-[#4ecdc4] font-bold rounded-2xl hover:border-[#4ecdc4] hover:shadow-[0_0_20px_rgba(78,205,196,0.3)] transition-all duration-300">
+                <i class="bi bi-arrow-clockwise ml-2"></i>
+                تلاش مجدد
+            </button>
+            <!-- بعد از دکمه تلاش مجدد -->
+          <button type="submit" id="capture-face-photo"
+              class="flex-1 py-3 bg-gradient-to-r from-[#4ecdc4cc] to-[#4ecdc4aa] border border-[#4ecdc4cc] text-[#062441] font-bold rounded-2xl hover:border-[#4ecdc4] hover:shadow-[0_0_20px_rgba(78,205,196,0.3)] transition-all duration-300">
+              گرفتن عکس
+          </button>
+
+
+        </div>
+    </div>
+</form>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const videoContainer = document.querySelector('.relative.mb-6 > div'); // جایی که ویدیو قرار میگیره
+    const faceStatus = document.getElementById('face-status');
+    const faceProgress = document.getElementById('face-progress');
+    const captureBtn = document.getElementById('capture-face-photo');
+    let videoStream;
+    let videoElement;
+
+    async function startCamera() {
+        try {
+            videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+            // ایجاد تگ ویدیو
+            videoElement = document.createElement('video');
+            videoElement.autoplay = true;
+            videoElement.playsInline = true;
+            videoElement.srcObject = videoStream;
+            videoElement.classList.add('rounded-2xl', 'w-full', 'h-64', 'object-cover');
+            
+            // پاک کردن محتوای قبلی و قرار دادن ویدیو
+            videoContainer.innerHTML = '';
+            videoContainer.appendChild(videoElement);
+
+            faceStatus.textContent = 'دوربین فعال شد، لطفاً صورت خود را در کادر قرار دهید';
+            faceProgress.style.width = '20%';
+        } catch (err) {
+            console.error('خطا در دسترسی به دوربین:', err);
+            faceStatus.textContent = 'دوربین فعال نشد، لطفاً دسترسی دهید';
+            faceProgress.style.width = '0%';
+        }
+    }
+
+    // گرفتن عکس از ویدیو
+    function capturePhoto() {
+        if (!videoElement) return;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        const imageDataUrl = canvas.toDataURL('image/png');
+
+        // نمایش وضعیت
+        faceStatus.textContent = 'در حال ارسال عکس به سرور...';
+        faceProgress.style.width = '50%';
+
+        // ارسال عکس به سرور
+        fetch('/api/face-auth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: imageDataUrl })
+        })
+        .then(res => res.json())
+        .then(data => {
+            faceStatus.textContent = data.message || 'عملیات موفق';
+            faceProgress.style.width = '100%';
+        })
+        .catch(err => {
+            console.error(err);
+            faceStatus.textContent = 'خطا در ارسال عکس';
+            faceProgress.style.width = '0%';
+        });
+    }
+
+    // شروع دوربین وقتی صفحه باز شد
+    startCamera();
+
+    // دکمه گرفتن عکس
+    captureBtn.addEventListener('click', capturePhoto);
+
+    // دکمه انصراف و تلاش مجدد رو هم میشه به همین شکل مدیریت کرد
+    document.getElementById('cancel-face-auth').addEventListener('click', () => {
+        if (videoStream) {
+            videoStream.getTracks().forEach(track => track.stop());
+        }
+        faceStatus.textContent = 'احراز هویت لغو شد';
+        faceProgress.style.width = '0%';
+        videoContainer.innerHTML = `
+            <div class="text-center">
+                <i class="bi bi-camera text-4xl text-[#4ecdc4aa] mb-3"></i>
+                <p class="text-[#4ecdc4aa] text-sm">دوربین متوقف شد</p>
+            </div>
+        `;
+    });
+
+    document.getElementById('retry-face-auth').addEventListener('click', () => {
+        startCamera();
+        faceStatus.textContent = 'در انتظار تشخیص';
+        faceProgress.style.width = '0%';
+    });
+});
+
+
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const video = document.getElementById('face-video');
+    const faceImageInput = document.getElementById('face-image-input');
+    const form = document.getElementById('face-auth-form');
+
+    async function startCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+            video.srcObject = stream;
+        } catch (error) {
+            alert('دسترسی به دوربین امکان‌پذیر نیست.');
+            console.error(error);
+        }
+    }
+
+    startCamera();
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const imageDataUrl = canvas.toDataURL('image/png');
+        faceImageInput.value = imageDataUrl;
+
+        form.submit();
+    });
+});
+
+
+</script>
+
+<script>
+navigator.mediaDevices.enumerateDevices()
+  .then(devices => {
+    console.log(devices);
+  })
+  .catch(err => {
+    console.error("Enumerate error:", err);
+  });
+
+
+</script>
+    {% endblock %}

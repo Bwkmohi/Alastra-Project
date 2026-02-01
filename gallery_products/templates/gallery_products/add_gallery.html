@@ -1,0 +1,128 @@
+{% extends "gallery_products/base.html" %}    
+    {% block gallery_con %}
+
+<title>
+  افزودن گالری محصول
+</title>
+
+<div class="grid grid-cols-2 gap-2 sm:p-5">
+ 
+  <a href="{% url 'gallery:add_gallery' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-folder-plus text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">افزودن گالری محصول</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ responses_count }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">افزودن </button>
+  </a>
+  
+
+  <a href="{% url 'gallery:list_product_gallery' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-image text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست گالری محصولات</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_gallery }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">لیست گالری</button>
+  </a>
+</div>
+
+
+<center>
+
+<h1>ویرایش گالری</h1>
+ 
+
+<script>
+    let imageCount = 1;
+
+    function addNewImage() {
+        imageCount++;
+        const container = document.getElementById('new-images-container');
+        const newDiv = document.createElement('div');
+        newDiv.innerHTML = `
+
+            <div class="mb-8">
+              <label for="file-upload-${imageCount}" class="block mb-2 text-sm font-semibold text-[#0bffffcc]">آپلود تصویر ${imageCount}</label>
+              <div
+                class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#0bffff66] p-10 cursor-pointer hover:border-[#0bffffcc] transition"
+                ondragover="event.preventDefault()" 
+                ondrop="handleDrop(event, 'file-upload-${imageCount}')"
+                onclick="document.getElementById('file-upload-${imageCount}').click()"
+              >
+                <svg class="w-12 h-12 mb-4 text-[#0bffffcc]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.06zM13.125 8.25a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"/>
+                </svg>
+                <p class="text-sm text-[#b0bfd1]">فایل را بکشید و رها کنید یا کلیک کنید برای انتخاب</p>
+                <input id="file-upload-${imageCount}" name="image_new_${imageCount}" type="file" accept="image/*" class="hidden" />
+                <p class="text-xs mt-1 text-[#5ccfe6]">PNG, JPG تا ۱۰ مگابایت</p>
+              </div>
+            </div>
+        `;
+        container.appendChild(newDiv);
+    }
+</script> 
+
+ 
+<form method="post" enctype="multipart/form-data" class="max-w-3xl mx-auto text-white p-6 rounded-xl shadow-2xl space-y-6" dir="rtl">
+  {% csrf_token %}
+
+  <!-- انتخاب محصول -->
+  <div>
+    <label for="product_ids" class="block mb-2 text-sm font-semibold text-[#0bffffcc]">انتخاب محصول (برای افزودن تصویر):</label>
+    <select name="product_ids" id="product_ids" required multiple
+      class="w-full bg-[#0b1421] border border-[#0bffff44] text-white rounded-lg p-3 focus:ring-2 focus:ring-[#0bffffcc] focus:outline-none">
+      {% for i in products %}
+        <option value="{{ i.id }}">{{ i.name }} - {{ i.price_ }}</option>
+      {% endfor %}
+    </select>
+    <p class="text-xs text-[#b0bfd1] mt-1">برای انتخاب چند محصول از Ctrl استفاده کن.</p>
+  </div>
+
+  <!-- آپلود تصاویر جدید -->
+  <div>
+    <h3 class="text-lg font-bold mb-4">📷 افزودن تصاویر جدید:</h3>
+    <div id="new-images-container" class="space-y-4">
+      <div class="p-4 rounded-lg">
+  <div class="mb-8">
+    <label for="file-upload-1" class="block mb-2 text-sm font-semibold text-[#0bffffcc]">آپلود تصویر 1</label>
+    <div
+      class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#0bffff66] p-10 cursor-pointer hover:border-[#0bffffcc] transition"
+      ondragover="event.preventDefault()" 
+      ondrop="handleDrop(event, 'file-upload-1')"
+      onclick="document.getElementById('file-upload-1').click()"
+    >
+      <svg class="w-12 h-12 mb-4 text-[#0bffffcc]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.06zM13.125 8.25a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"/>
+      </svg>
+      <p class="text-sm text-[#b0bfd1]">فایل را بکشید و رها کنید یا کلیک کنید برای انتخاب</p>
+      <input id="file-upload-1" name="image_new_1" type="file" accept="image/*" class="hidden" />
+      <p class="text-xs mt-1 text-[#5ccfe6]">PNG, JPG, GIF تا ۱۰ مگابایت</p>
+    </div>
+  </div>
+      </div>
+    </div>
+    <button type="button" onclick="addNewImage()" class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-[#0bffffcc] hover:bg-[#0bffffee] text-[#062441] font-semibold rounded-lg shadow-lg transition">
+      <i class="bi bi-plus"></i> افزودن تصویر جدید
+    </button>
+  </div>
+
+  <!-- دکمه ارسال -->
+  <div class="pt-6 text-center">
+  <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#0bffffcc] to-[#00e6e6cc] rounded-xl font-bold text-[#062441] shadow-lg hover:from-[#0bffffee] hover:to-[#00e6e6ee] transition">
+    ارسال تصاویر
+  </button>
+  </div>
+</form>
+</center>
+ 
+ 
+
+<script>
+  // اجازه درگ و دراپ فایل روی دایوها
+  function handleDrop(event, inputId) {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    if(files.length > 0){
+      document.getElementById(inputId).files = files;
+    }
+  }
+</script>
+
+    {% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'report_shop\base.html' %}
+{% block report_content %}
+    
+<title>
+  جزئیات گزارش فروشگاه {{ report.shop.name_shop }}
+</title>
+
+<div class="max-w-3xl mx-auto p-6 bg-[#0b1421] rounded-md text-white" dir="rtl" style="font-family: inherit;">
+  <h2 class="text-3xl font-bold mb-4 border-b border-gray-700 pb-2">جزئیات گزارش شماره {{ report.id }}</h2>
+
+  <div class="mb-3">
+    <strong>کاربر گزارش‌دهنده:</strong> {{ report.user.username }}
+  </div>
+
+  <div class="mb-3">
+    <strong>فروشگاه گزارش شده:</strong> <a href="{% url 'sellers:shop_public_page' report.shop.id %}" class="text-[#0bffffcc]">{{ report.shop.name_shop }}</a>
+  </div>
+
+  <div class="mb-3">
+    <strong>دسته‌بندی گزارش:</strong> {{ report.category.name }}
+  </div>
+
+  <div class="mb-3">
+    <strong>متن گزارش:</strong>
+    <p class="bg-[#062441] p-4 rounded-xs whitespace-pre-wrap">{{ report.text }}</p>
+  </div>
+
+  <div class="mb-3">
+    <strong>وضعیت بررسی:</strong>
+    {% if report.is_checked %}
+      <span class="text-green-400 font-semibold"><i class="bi bi-check2-circle"></i></span>
+    {% else %}
+      <span class="text-red-400 font-semibold"><i class="bi bi-x-circle text-red-500 text-md"></i></span>
+    {% endif %}
+  </div>
+
+  <div class="mb-3">
+    <strong>وضعیت گزارش:</strong>
+    {% if report.is_true %}
+      <span class="text-green-500 font-semibold">گزارش معتبر</span>
+    {% else %}
+      <span class="text-red-500 font-semibold">گزارش نامعتبر یا تایید نشده</span>
+    {% endif %}
+  </div>
+
+  <div class="mb-3">
+    <strong>زمان ثبت گزارش:</strong> {{ report.time|date:"Y/m/d - H:i" }}
+  </div>
+
+  <a href="{% url 'rep:reports_list' %}" class="w-full py-3 rounded mt-4 px-4 font-semibold bg-[#0bffffcc] text-[#0b1421] hover:bg-[#0bffffaa] transition duration-300">بازگشت به لیست گزارش‌ها</a>
+</div>
+<!-- class="inline-block mt-4 px-4 py-2 bg-[#0f7efc] hover:bg-[#0c6ddc] rounded text-[#0b1421] font-semibold transition" -->
+
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <center>
+    <div class="w-full mx-4 py-4 px-8">
+        <label class="inline-flex items-center me-5 cursor-pointer">
+            <input type="checkbox" class="sr-only peer" name='is_true' {% if report.is_true %} checked {% else %}{% endif %}>
+            <div class="relative w-11 h-6 border bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">تایید میکنم</span>
+        </label>
+    </div>   
+
+      <div class="w-full mx-4 py-4 px-8">
+        <label class="inline-flex items-center me-5 cursor-pointer">
+            <input type="checkbox" class="sr-only peer" name='is_checked' {% if report.is_checked %} checked {% else %}{% endif %}>
+            <div class="relative w-11 h-6 border bg-[#0bffffcc] rounded-full peer dark:bg-[#0b1421] peer-focus:ring-4 peer-focus:ring-[#0bffffcc] dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-[#0bffffcc] after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">برسی شد</span>
+        </label>
+    </div>   
+  </center>
+    <button type="submit" class="w-full py-3 rounded-xl bg-[#0bffffcc] text-[#0b1421] font-bold hover:bg-[#0bffffaa] transition duration-300">
+       ارسال تایید
+    </button>
+</form>
+
+     
+
+{% endblock %}

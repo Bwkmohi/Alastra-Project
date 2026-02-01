@@ -1,0 +1,141 @@
+{% extends 'blog/base.html' %}
+
+{% block blog_con %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% if web_seo.page == 'blogs' %}{{ web_seo.title }}{% else %}فهرست وبلاگ ها و مقالات | {{ site_info.site_title }}{% endif %}</title>
+
+  <meta name="description" content="{% if web_seo.page == 'products' %}{{ web_seo.description }}{% else %}فهرست وبلاگ ها و مقالات | {{ site_info.site_title }}{% endif %}" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="{% if web_seo.page == 'blogs' %}{{ web_seo.title }}{% else %}فهرست وبلاگ ها و مقالات | {{ site_info.site_title }}{% endif %}" />
+  <meta property="og:description" content="{% if web_seo.page == 'products' %}{{ web_seo.description }}{% else %}فهرست وبلاگ ها و مقالات | {{ site_info.site_title }}{% endif %}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{% if web_seo.page == 'blogs' %}{{ web_seo.title }}{% else %}فهرست وبلاگ ها و مقالات | {{ site_info.site_title }}{% endif %}" />
+  <meta name="twitter:description" content="{% if web_seo.page == 'products' %}{{ web_seo.description }}{% else %}فهرست وبلاگ ها و مقالات | {{ site_info.site_title }}{% endif %}" />
+  <meta name="twitter:image" content="{% if blog.0.image %}{{ blog.0.image.url }}{% endif %}" />
+</head>
+<div>
+    <h1 class="text-5xl text-center font-bold">
+        لیست وبلاگ ها
+    </h1>
+</div>
+   
+<div class="container mx-auto py-8 px-4">
+    <!-- Filters -->
+    <div class="luxury-card rounded-2xl p-6 mb-8">
+        <div class="flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex flex-wrap gap-3">
+                {% for i in categorys %}
+                <a href="{% url 'blog:filter_blogs' i.id %}" class="bg-[#0bffffcc] text-[#0b1421] border border-[#0b1421] px-5 py-2 rounded-3xl font-extrabold" >{{ i.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Horizontal Articles List -->
+    <div class="space-y-6">
+        <!-- Article 1 -->
+        {% for i in blog %}
+            <div class="luxury-card rounded-2xl p-6 hover:shadow-sport transition-all border border-[#0bffffcc] duration-500 group">
+                <div class="flex flex-col lg:flex-row gap-6 items-start">
+                    <!-- Image - Horizontal -->
+                    <div class="lg:w-64 lg:h-36 w-full h-48 rounded-2xl overflow-hidden flex-shrink-0">
+                        <div class="w-full h-full bg-gradient-to-br from-accent/20 to-accent-light/20 flex items-center justify-center">
+                            <a href="{% url 'blog:blog_detail' i.id %}">
+                                <img src="{% if i.image %}{{ i.image.url }}{% endif %}" alt="{{ i.title }}" loading="lazy">
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-4 mb-3">
+                            <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-lg text-sm font-bold">{{ i.category.name }}</span>
+                            <span class="text-white/40 text-sm">{{ i.created }}</span>
+                        </div>
+                        
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-accent transition-all duration-300">
+                            <a href="{% url 'blog:blog_detail' i.id %}">
+                                {{ i.title }}
+                            </a>
+                        </h3>
+                        
+                        <p class="text-white/60 mb-4 leading-relaxed">
+                            {{ i.short_des }}
+                        </p>
+                        
+                        <div class="flex items-center justify-between flex-wrap gap-4">
+                            <div class="flex items-center space-x-6 space-x-reverse text-white/40">
+                                <div class="flex items-center space-x-2 space-x-reverse">
+                                    <i class="fas fa-clock"></i>
+                                    <span>{% if i.time_red %}{{ i.time_red }} دقیقه {% endif %}</span>
+                                </div>
+                            </div>
+                            
+                            <a href="{% url 'blog:blog_detail' i.id %}" class="luxury-card px-6 py-2 rounded-xl hover:shadow-sport hover:text-accent transition-all duration-300 flex items-center space-x-2 space-x-reverse">
+                                <span>مطالعه مقاله</span>
+                                <i class="fas fa-arrow-left"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script type="application/ld+json">
+                {
+                    "@context": "https://schema.org",
+                    "@type": "Article",
+                    "headline": "{{ i.title }}",
+                    "author": {
+                        "@type": "Person",
+                        "name": "{{ i.author.name }}"
+                    },
+                    "datePublished": "{{ i.created|date:'Y-m-d' }}",
+                    "image": "{{ i.image.url }}",
+                    "articleSection": "{{ i.category.name }}",
+                    "description": "{{ i.short_des }}",
+                    "url": "{% url 'blog:blog_detail' i.id %}",
+                    "mainEntityOfPage": {
+                        "@type": "WebPage",
+                        "@id": "{% url 'blog:blog_detail' i.id %}"
+                    }
+                }
+            </script>
+        {% endfor %}
+ 
+    </div>
+
+    <!-- Pagination -->
+    <div class="luxury-card rounded-2xl p-6 mt-8">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="text-white/60">
+                نمایش ۱-۴ از ۱۲۸ وبلاگ
+            </div>
+            
+            <div class="flex items-center space-x-2 space-x-reverse">
+                <button class="sport-input w-12 h-12 rounded-xl flex items-center justify-center hover:border-accent hover:shadow-sport transition-all duration-300">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <button class="sport-input w-12 h-12 rounded-xl flex items-center justify-center border-accent text-accent shadow-sport">1</button>
+                <button class="sport-input w-12 h-12 rounded-xl flex items-center justify-center hover:border-accent hover:shadow-sport transition-all duration-300">2</button>
+                <button class="sport-input w-12 h-12 rounded-xl flex items-center justify-center hover:border-accent hover:shadow-sport transition-all duration-300">3</button>
+                
+                <span class="text-white/40 mx-2">...</span>
+                
+                <button class="sport-input w-12 h-12 rounded-xl flex items-center justify-center hover:border-accent hover:shadow-sport transition-all duration-300">12</button>
+                
+                <button class="sport-input w-12 h-12 rounded-xl flex items-center justify-center hover:border-accent hover:shadow-sport transition-all duration-300">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

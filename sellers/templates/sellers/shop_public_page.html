@@ -1,0 +1,287 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<title>
+    پیج فروشگاه{{ shop.name_shop }}    
+</title>
+<div class="px-4 py-2">
+  <a href="{% url 'rep:report_add' shop.id %}">
+    <i class="bi bi-info-circle-fill text-xl"></i> گزارش فروشگاه
+  </a>
+</div>
+
+<div class="relative w-full h-60 md:h-72 lg:h-80 rounded-xl overflow-hidden shadow-lg mb-8">
+  {% if shop.banner %}
+  <img
+    src="{{ shop.banner }}"
+    alt="بنر فروشگاه"
+    class="w-full h-full object-cover object-center"
+  />
+  {% else %}
+  <img
+    src="{{ shop.logo }}"
+    alt="لوگو فروشگاه"
+    class="w-full h-full object-cover object-center"
+  />
+  {% endif %}
+  
+  <!-- لایه تاریک نیمه‌شفاف -->
+  <div class="absolute inset-0 bg-[#0b1421]/60"></div>
+
+  <!-- نام فروشگاه روی بنر -->
+  <div class="absolute bottom-4 right-6 md:right-10 text-right">
+    <h1 class="text-3xl md:text-4xl font-extrabold text-white drop-shadow-lg">{{ shop.name_shop }}</h1>
+    <p class="text-white text-sm md:text-base opacity-80 mt-1">{{ shop.description }}</p>
+  </div>
+</div>
+
+<body class="bg-background text-lighttext font-serif">
+
+  <div class="max-w-5xl mx-auto p-6 bg-primary rounded-xl shadow-lg mt-10">
+
+    <!-- پروفایل فروشگاه -->
+    <div class="flex flex-col md:flex-row items-center gap-8 pb-8">
+      {% if shop.logo %}
+      <img 
+        src="{{ shop.logo }}" 
+        alt="عکس پروفایل فروشگاه" 
+        class="w-32 h-32 rounded-full border-8 object-cover shadow-lg mx-auto md:mx-0"
+      />
+      {% else %}
+      <img 
+        src="" 
+        alt="عکس پروفایل فروشگاه" 
+        class="w-32 h-32 rounded-full border-8 object-cover shadow-lg mx-auto md:mx-0"
+      />
+      {% endif %}
+      <div class="flex-1 text-center md:text-right">
+        <h2 class="text-4xl font-extrabold text-accent mb-3">{{ shop.name_shop }}</h2>
+        <p class="text-secondary text-sm mb-6 max-w-xl leading-relaxed mx-auto md:mx-0">
+          {{ shop.description }}
+        </p>
+        <div class="flex flex-wrap justify-center md:justify-start gap-6 text-secondary text-base font-semibold mt-4">
+          <!-- فالوورها -->
+          <div class="flex items-center gap-3 text-[#0bffffcc] w-36 h-14">
+            <i class="bi bi-people-fill text-3xl"></i>
+            <div class="flex flex-col leading-tight">
+              <span class="text-xl font-extrabold text-[#0bffff]">{{ shop.count_followers }}</span>
+              <span class="text-xs text-[#00e0ffcc]">فالوور</span>
+            </div>
+          </div>
+
+          <!-- امتیاز -->
+          <div class="flex items-center gap-3 text-[#0bffffcc] w-36 h-14">
+            <i class="bi bi-star-fill text-3xl"></i>
+            <div class="flex flex-col leading-tight">
+              <span class="text-xl font-extrabold text-[#0bffff]">۴.۸</span>
+              <span class="text-xs text-[#00e0ffcc]">امتیاز</span>
+            </div>
+          </div>
+
+          <!-- محصولات -->
+          <div class="flex items-center gap-3 text-[#0bffffcc] w-36 h-14">
+            <i class="bi bi-box-seam text-3xl"></i>
+            <div class="flex flex-col leading-tight">
+              <span class="text-xl font-extrabold text-[#0bffff]">{{ shop.posts_count }}</span>
+              <span class="text-xs text-[#00e0ffcc]">محصول</span>
+            </div>
+          </div>
+        </div>
+            <div class="mt-6 w-full mx-auto md:mx-0">
+                
+                {% if is_following %}
+                <div class="flex justify-between space-x-4">
+                    <form action="{% url 'follow:follow' %}" method="POST" class="w-2/3">
+                      {% csrf_token %}
+                        <input type="hidden" name="url" value="{{ request.path }}">
+                        <input type="hidden" name="shop_id" value="{{ shop.id }}">
+                        <button type="submit" class="w-full py-3 rounded-xl bg-[#0b1421] text-[#0bffffcc] border border-[#0bffffcc] font-bold hover:bg-[#0bffffaa] transition duration-300">
+                            انفالو
+                        </button>
+                    </form>
+
+                    <form action="{% url 'new_chat' %}" method="POST" class="w-1/3">
+                      {% csrf_token %}
+                        <input type="hidden" name="username" value="{{ shop.user.username }}">
+                        <input type="hidden" name="user_id" value="{{ shop.user.id }}">
+                        <button type="submit" class="w-full py-3 rounded-xl bg-[#0bffffcc] text-[#0b1421] border border-[#0bffffcc] font-bold hover:bg-[#0bffffaa] transition duration-300">
+                            پیام
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <form action="{% url 'follow:follow' %}" method="POST" class="w-full">
+                  {% csrf_token %}
+                    <input type="hidden" name="url" value="{{ request.path }}">
+                    <input type="hidden" name="shop_id" value="{{ shop.id }}">
+                    <button type="submit" class="w-full py-3 rounded-xl bg-[#0bffffcc] text-[#0b1421] font-bold hover:bg-[#0bffffaa] transition duration-300">
+                        فالو
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+      </div>
+    </div>
+ 
+
+
+  
+<div class="my-6 overflow-x-auto whitespace-nowrap no-scrollbar py-2 px-4 bg-[#0b1421] rounded-xl shadow-lg">
+  <div class="inline-flex space-x-4" dir="ltr">
+    {% for story in storys %}
+      <div class="flex flex-col items-center cursor-pointer hover:brightness-110 transition" onclick="openStoryModal({{ forloop.counter0 }})">
+        {% if story.video %}
+          <!-- نمایش آیکون ویدیو روی تصویر بندانگشتی -->
+          <div class="relative w-16 h-16 rounded-full border-2 border-[#0bffffcc] overflow-hidden">
+            <video src="{{ story.video.url }}" muted playsinline class="w-full h-full object-cover"></video>
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <svg class="w-6 h-6 text-[#0bffffcc]" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+        {% else %}
+          <div class="w-16 h-16 rounded-full border-2 border-[#0bffffcc] overflow-hidden relative">
+            <img src="{{ story.image.url }}" alt="Story {{ forloop.counter }}" class="w-full h-full object-cover" />
+          </div>
+
+        {% endif %}
+        <span class="text-xs mt-1 text-[#b0bfd1]">استوری {{ forloop.counter }}</span>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div id="storyModal" class="fixed inset-0 bg-black/95 z-[9999] hidden flex items-center justify-center p-4">
+  <div class="relative w-full max-w-full max-h-full bg-[#0b1421] rounded-xl shadow-2xl p-2 flex flex-col items-center">
+    <button id="closeStoryModalBtn" class="absolute top-3 left-3 z-10 text-white text-2xl hover:text-[#0bffff] transition">
+      ✕
+    </button>
+
+    <button id="prevStoryBtn" class="absolute top-1/2 left-4 -translate-y-1/2 text-4xl text-[#0bffff] bg-black/50 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer hover:bg-[#0bffff] hover:text-black transition z-50 select-none">
+      ‹
+    </button>
+    <button id="nextStoryBtn" class="absolute top-1/2 right-4 -translate-y-1/2 text-4xl text-[#0bffff] bg-black/50 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer hover:bg-[#0bffff] hover:text-black transition z-50 select-none">
+      ›
+    </button>
+
+    <div id="storyContent" class="w-full h-[80vh] max-w-full max-h-full flex items-center justify-center rounded-xl overflow-hidden bg-black">
+      <!-- اینجا یا ویدیو یا تصویر قرار می‌گیرد -->
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+    <!-- لیست محصولات -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6 text-lighttext">
+      {% for i in products %}
+        <div class="bg-secondary rounded-lg p-4 shadow hover:shadow-lg cursor-pointer transition">
+          <a href="{% url 'product_detail' i.id i.slug %}">
+              <img src="{{ i.image.url }}" alt="{{ i.description }}" class="rounded-md mb-3 w-full h-36 object-cover" />
+          </a>
+          <h4 class="text-lg font-semibold mb-1">{{ i.name }}</h4>
+          <div class="font-bold text-accent">{{ i.price }} تومان</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
+
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+  const storyModal = document.getElementById("storyModal");
+  const closeBtn = document.getElementById("closeStoryModalBtn");
+  const prevBtn = document.getElementById("prevStoryBtn");
+  const nextBtn = document.getElementById("nextStoryBtn");
+  const storyContent = document.getElementById("storyContent");
+
+  // آرایه استوری‌ها از داده‌های قالب (اینجا فقط مسیرها و نوع را می‌گیریم)
+  const stories = [
+    {% for story in storys %}
+      {
+        video: {% if story.video %}"{{ story.video.url }}"{% else %}null{% endif %},
+        image: {% if story.image %}"{{ story.image.url }}"{% else %}null{% endif %}
+      }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ];
+
+  let currentIndex = 0;
+
+  window.openStoryModal = function(index) {
+    currentIndex = index;
+    updateStoryContent();
+    storyModal.classList.remove("hidden");
+    storyModal.classList.add("flex");
+  };
+
+  function updateStoryContent() {
+    const story = stories[currentIndex];
+    // پاک کردن محتوای قبلی
+    storyContent.innerHTML = "";
+
+    if (story.video) {
+      const video = document.createElement("video");
+      video.src = story.video;
+      video.controls = true;
+      video.autoplay = true;
+      video.muted = false;
+      video.loop = false;
+      video.className = "w-full h-full object-contain rounded-xl";  // پر کردن فضای کامل مودال
+      storyContent.appendChild(video);
+    } else if (story.image) {
+      const img = document.createElement("img");
+      img.src = story.image;
+      img.alt = "Story Image";
+      img.className = "w-full h-full object-contain rounded-xl";  // پر کردن فضای کامل مودال
+      storyContent.appendChild(img);
+    }
+  }
+
+  function closeModal() {
+    storyModal.classList.remove("flex");
+    storyModal.classList.add("hidden");
+    // اگر ویدیو پخش می‌شد، متوقفش کن
+    const video = storyContent.querySelector("video");
+    if (video) video.pause();
+    storyContent.innerHTML = "";
+  }
+
+  closeBtn.addEventListener('click', closeModal);
+
+  prevBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    currentIndex = (currentIndex - 1 + stories.length) % stories.length;
+    updateStoryContent();
+  });
+
+  nextBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    currentIndex = (currentIndex + 1) % stories.length;
+    updateStoryContent();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (!storyModal.classList.contains("flex")) return;
+    if (e.key === "Escape") closeModal();
+    else if (e.key === "ArrowRight") {
+      currentIndex = (currentIndex + 1) % stories.length;
+      updateStoryContent();
+    } else if (e.key === "ArrowLeft") {
+      currentIndex = (currentIndex - 1 + stories.length) % stories.length;
+      updateStoryContent();
+    }
+  });
+
+  storyModal.addEventListener('click', function(e) {
+    if (e.target === storyModal) closeModal();
+  });
+});
+
+</script>
+</body>
+{% endblock %}

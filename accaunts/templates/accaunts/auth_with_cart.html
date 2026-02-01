@@ -1,0 +1,254 @@
+{% extends "accaunts/base.html" %}
+    {% block account_content %}
+<title>
+     اهراز هویت با کارت ملی | {% if site_info.site_title %} {{ site_info.site_title }} {% else %}Alastra {% endif %}
+</title>
+
+
+
+
+
+ 
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] flex items-center justify-center p-4">
+    <div class="max-w-xl w-full">
+        <!-- کارت آپلود -->
+        <div class="bg-gradient-to-br from-[#0b1421] to-[#062441] border border-[#0bffff33] rounded-2xl p-8 shadow-2xl shadow-[#0bffff33]">
+            
+            <!-- هدر -->
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="bi bi-person-badge text-2xl text-[#062441]"></i>
+                </div>
+                <h2 class="text-2xl font-black text-white mb-2">احراز هویت با کارت ملی</h2>
+                <p class="text-[#0bffffaa] text-sm">
+                    لطفا تصویر کارت ملی خود را بارگذاری کنید
+                </p>
+            </div>
+
+            <!-- نمایش پیام‌ها -->
+            {% if messages %}
+                <div class="mb-6">
+                    {% for message in messages %}
+                        <div class="p-3 rounded-xl text-sm text-center {% if message.tags == 'error' %}bg-red-500/20 text-red-400 border border-red-500/50{% else %}bg-green-500/20 text-green-400 border border-green-500/50{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- فرم آپلود -->
+            <form method="POST" action="" enctype="multipart/form-data" id="upload-form">
+                {% csrf_token %}
+                
+                <!-- منطقه آپلود -->
+                <div class="mb-6">
+                    <div id="upload-area" 
+                         class="border-2 border-dashed border-[#0bffff44] rounded-2xl p-6 text-center cursor-pointer transition-all duration-300 hover:border-[#0bffff] hover:bg-[#0bffff11]">
+                        
+                        <!-- آیکون آپلود -->
+                        <div class="w-12 h-12 bg-[#0bffff33] rounded-xl flex items-center justify-center mx-auto mb-3">
+                            <i class="bi bi-cloud-arrow-up text-[#0bffff] text-xl"></i>
+                        </div>
+                        
+                        <!-- متن راهنما -->
+                        <p class="text-white font-bold mb-1">تصویر کارت ملی را اینجا رها کنید</p>
+                        <p class="text-[#0bffffaa] text-sm mb-3">یا برای انتخاب فایل کلیک کنید</p>
+                        
+                        <!-- دکمه انتخاب فایل -->
+                        <label for="national_card" class="inline-block bg-gradient-to-br from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] px-4 py-2 rounded-xl cursor-pointer hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] transition-all duration-300">
+                            <i class="bi bi-folder2-open ml-2"></i>
+                            انتخاب فایل
+                        </label>
+                        
+                        <input type="file" name="image" id="national_card" accept="image/*" class="hidden" required>
+                        
+                        <!-- محدودیت‌ها -->
+                        <p class="text-[#0bffff66] text-xs mt-3">
+                            فرمت‌های مجاز: JPG, PNG, JPEG • حداکثر سایز: ۵ مگابایت
+                        </p>
+                    </div>
+                    
+                    <!-- پیشنمایش تصویر -->
+                    <div id="image-preview" class="mt-4 hidden">
+                        <p class="text-[#0bffffaa] text-sm mb-2">پیشنمایش:</p>
+                        <div class="relative inline-block">
+                            <img id="preview" class="max-w-full h-48 rounded-xl border border-[#0bffff33] object-cover">
+                            <button type="button" id="remove-image" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-all">
+                                ×
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- اطلاعات مورد نیاز -->
+                <div class="bg-[#0bffff11] border border-[#0bffff33] rounded-xl p-4 mb-6">
+                    <h4 class="text-[#0bffff] text-sm font-bold mb-2">لطفا توجه کنید:</h4>
+                    <ul class="text-[#0bffffaa] text-xs space-y-1">
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle text-[#0bffff] mt-0.5"></i>
+                            <span>تصویر باید واضح و خوانا باشد</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle text-[#0bffff] mt-0.5"></i>
+                            <span>تمام اطلاعات کارت ملی باید مشخص باشد</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-check-circle text-[#0bffff] mt-0.5"></i>
+                            <span>از تصاویر با کیفیت پایین خودداری کنید</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- دکمه ارسال -->
+                <button type="submit" id="submit-btn"
+                        class="w-full bg-gradient-to-br from-[#0bffff] to-[#0bffffee] text-[#062441] font-bold py-4 rounded-2xl shadow-lg shadow-[#0bffff66] hover:shadow-[0_0_25px_rgba(11,255,255,0.8)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
+                    <i class="bi bi-shield-check ml-2"></i>
+                    <span>تایید و ارسال برای بررسی</span>
+                </button>
+            </form>
+
+            <!-- لینک بازگشت -->
+            <div class="text-center mt-6">
+                <a href="{% url 'acc:pro' %}" class="text-[#0bffffaa] text-sm hover:text-[#0bffff] transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="bi bi-arrow-right"></i>
+                    <span>بازگشت به پنل کاربری</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div> 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('national_card');
+    const uploadArea = document.getElementById('upload-area');
+    const imagePreview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview');
+    const removeBtn = document.getElementById('remove-image');
+    const submitBtn = document.getElementById('submit-btn');
+    const form = document.getElementById('upload-form');
+
+    // مدیریت drag and drop
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('border-[#0bffff]', 'bg-[#0bffff11]');
+    });
+
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('border-[#0bffff]', 'bg-[#0bffff11]');
+    });
+
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('border-[#0bffff]', 'bg-[#0bffff11]');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileSelect(files[0]);
+        }
+    });
+
+    // کلیک روی منطقه آپلود
+    uploadArea.addEventListener('click', function() {
+        fileInput.click();
+    });
+
+    // تغییر فایل
+    fileInput.addEventListener('change', function(e) {
+        if (this.files.length > 0) {
+            handleFileSelect(this.files[0]);
+        }
+    });
+
+    // حذف تصویر
+    removeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        fileInput.value = '';
+        imagePreview.classList.add('hidden');
+        submitBtn.disabled = true;
+    });
+
+    // مدیریت فایل انتخاب شده
+    function handleFileSelect(file) {
+        // بررسی نوع فایل
+        if (!file.type.startsWith('image/')) {
+            alert('لطفا فقط فایل تصویری انتخاب کنید');
+            return;
+        }
+
+        // بررسی سایز فایل (۵ مگابایت)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('حجم فایل باید کمتر از ۵ مگابایت باشد');
+            return;
+        }
+
+        // نمایش پیشنمایش
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            imagePreview.classList.remove('hidden');
+            submitBtn.disabled = false;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // اعتبارسنجی فرم
+    form.addEventListener('submit', function(e) {
+        if (!fileInput.files.length) {
+            e.preventDefault();
+            alert('لطفا تصویر کارت ملی را انتخاب کنید');
+            return;
+        }
+
+        // نمایش loading
+        submitBtn.innerHTML = `
+            <div class="flex items-center justify-center gap-2">
+                <div class="w-4 h-4 border-2 border-[#062441] border-t-transparent rounded-full animate-spin"></div>
+                <span>در حال ارسال...</span>
+            </div>
+        `;
+        submitBtn.disabled = true;
+    });
+});
+</script>
+
+<style>
+/* استایل برای منطقه آپلود */
+#upload-area {
+    transition: all 0.3s ease;
+}
+
+/* انیمیشن برای پیشنمایش */
+#image-preview {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* استایل برای حالت درگ */
+#upload-area.drag-over {
+    border-color: #0bffff;
+    background-color: rgba(11, 255, 255, 0.1);
+    transform: scale(1.02);
+}
+</style>
+ 
+
+
+
+
+ 
+
+ 
+
+{% endblock %}
+    

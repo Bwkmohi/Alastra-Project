@@ -1,0 +1,182 @@
+{% extends 'blog/base.html' %}
+
+{% block blog_con %}
+<title>
+    ثبت اطلاعات فروشنده
+</title>
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        
+        <!-- هدر صفحه -->
+        <div class="text-center mb-12">
+            <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center">
+                <i class="bi bi-pencil-square text-3xl text-[#062441]"></i>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent mb-4">
+                درخواست نویسندگی
+            </h1>
+            <p class="text-xl text-[#0bffffaa] max-w-2xl mx-auto">
+                فرم زیر را تکمیل کنید تا به جمع نویسندگان ما بپیوندید و محتوای حرفه‌ای تولید کنید
+            </p>
+        </div>
+
+        <!-- فرم درخواست -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm overflow-hidden">
+            
+            <!-- هدر فرم -->
+            <div class="p-8 border-b border-[#0bffff33] bg-gradient-to-r from-[#0bffff11] to-transparent">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-[#0bffff33] to-[#0bffff55] rounded-2xl flex items-center justify-center">
+                        <i class="bi bi-person-plus text-xl text-[#0bffff]"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-white">اطلاعات نویسنده</h2>
+                        <p class="text-[#0bffffaa] mt-1">لطفا اطلاعات خود را با دقت وارد کنید</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بدنه فرم -->
+            <form method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+                {% csrf_token %}
+                
+                <!-- ردیف اول: نام و نام‌نویسندگی -->
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- نام نویسندگی -->
+                    <div class="group">
+                        <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                            <i class="bi bi-at ml-2"></i>
+                            نام نویسندگی
+                        </label>
+                        <input type="text" name="name" required 
+                               class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] focus:scale-[1.02] outline-none"
+                               placeholder="نامی که در وبلاگ نمایش داده می‌شود">
+                    </div>
+                </div>
+
+                <!-- آپلود عکس پروفایل -->
+                <div class="group">
+                    <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                        <i class="bi bi-image ml-2"></i>
+                        عکس پروفایل
+                    </label>
+                    <div class="border-2 border-dashed border-[#0bffff44] rounded-2xl p-8 text-center hover:border-[#0bffff] transition-colors duration-300 cursor-pointer bg-[#0b142133]">
+                        <input type="file" name="profile" accept="image/*" 
+                               class="hidden" id="profile-upload">
+                        <label for="profile-upload" class="cursor-pointer block">
+                            <div class="text-[#0bffffaa] mb-4">
+                                <i class="bi bi-cloud-arrow-up text-4xl"></i>
+                            </div>
+                            <span class="text-[#0bffff] font-bold text-lg">آپلود عکس پروفایل</span>
+                            <span class="text-[#0bffffaa] text-sm block mt-2">PNG, JPG, GIF - حداکثر ۵ مگابایت</span>
+                            <span class="text-[#0bffff66] text-xs block mt-1">سایز پیشنهادی: ۴۰۰x۴۰۰ پیکسل</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- بیوگرافی -->
+                <div class="group">
+                    <label class="block text-[#0bffffdd] font-bold mb-3 text-lg transition-all duration-300 group-hover:text-[#0bffff]">
+                        <i class="bi bi-file-text ml-2"></i>
+                        بیوگرافی
+                        <span class="text-[#0bffff66] text-sm font-normal">(حداقل ۱۰۰ کاراکتر)</span>
+                    </label>
+                    <textarea name="biographi" required rows="6"
+                              class="w-full bg-[#0b1421aa] border-2 border-[#0bffff44] rounded-2xl px-6 py-4 text-white placeholder-[#0bffff66] font-medium resize-none transition-all duration-300 focus:border-[#0bffff] focus:bg-[#0b1421] focus:shadow-[0_0_20px_rgba(11,255,255,0.3)] focus:scale-[1.01] outline-none"
+                              placeholder="درباره خود، تخصص‌ها و تجربیاتتان بنویسید..."></textarea>
+                    <div class="flex justify-between items-center mt-2 text-[#0bffff66] text-sm">
+                        <span>این متن در پروفایل نویسنده نمایش داده می‌شود</span>
+                        <span id="bio-counter">۰/۱۰۰</span>
+                    </div>
+                </div>
+
+
+                <!-- دکمه‌های اقدام -->
+                <div class="flex gap-4 pt-8 border-t border-[#0bffff33]">
+                    <button type="button" class="flex-1 py-4 bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] font-bold rounded-2xl hover:border-[#ff6b6b] hover:shadow-[0_0_20px_rgba(255,107,107,0.3)] transition-all duration-300">
+                        انصراف
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 py-4 bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] text-[#062441] font-black text-lg rounded-2xl shadow-2xl shadow-[#0bffff66] hover:shadow-[0_0_40px_rgba(11,255,255,0.8)] hover:scale-[1.02] transition-all duration-500">
+                        <i class="bi bi-send-check ml-2"></i>
+                        ارسال درخواست
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- اطلاعات تکمیلی -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] text-center">
+                <i class="bi bi-shield-check text-3xl text-[#0bffff] mb-3"></i>
+                <h4 class="text-white font-bold mb-2">تایید کیفیت</h4>
+                <p class="text-[#0bffffaa] text-sm">وبلاگ شما قبل از انتشار بررسی می‌شوند</p>
+            </div>
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] text-center">
+                <i class="bi bi-graph-up text-3xl text-[#0bffff] mb-3"></i>
+                <h4 class="text-white font-bold mb-2">آمار پیشرفته</h4>
+                <p class="text-[#0bffffaa] text-sm">دسترسی به آمار کامل بازدید وبلاگ</p>
+            </div>
+            <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] text-center">
+                <i class="bi bi-award text-3xl text-[#0bffff] mb-3"></i>
+                <h4 class="text-white font-bold mb-2">درآمدزایی</h4>
+                <p class="text-[#0bffffaa] text-sm">امکان کسب درآمد از طریق تولید محتوا</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// شمارنده بیوگرافی
+document.addEventListener('DOMContentLoaded', function() {
+    const bioTextarea = document.querySelector('textarea[name="bio"]');
+    const bioCounter = document.getElementById('bio-counter');
+    
+    bioTextarea.addEventListener('input', function() {
+        const count = this.value.length;
+        bioCounter.textContent = `${count}/100`;
+        
+        if (count < 20) {
+            bioCounter.style.color = '#ff6b6b';
+        } else {
+            bioCounter.style.color = '#0bffff';
+        }
+    });
+    
+    // مدیریت چک‌باکس‌ها
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const label = this.closest('label');
+            const icon = label.querySelector('.bi-check');
+            
+            if (this.checked) {
+                label.style.borderColor = '#0bffff';
+                label.style.background = '#0bffff22';
+                icon.classList.remove('hidden');
+            } else {
+                label.style.borderColor = '#0bffff44';
+                label.style.background = '#0b142133';
+                icon.classList.add('hidden');
+            }
+        });
+    });
+    
+    // مدیریت آپلود عکس
+    const profileUpload = document.getElementById('profile-upload');
+    const uploadArea = profileUpload.parentElement;
+    
+    profileUpload.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            uploadArea.classList.remove('border-dashed');
+            uploadArea.classList.add('border-solid', 'border-[#0bffff]', 'bg-[#0bffff11]');
+            uploadArea.querySelector('.bi-cloud-arrow-up').classList.add('text-[#0bffff]');
+        }
+    });
+});
+</script>
+ 
+{% endblock %}
+    
+

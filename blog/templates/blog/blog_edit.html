@@ -1,0 +1,258 @@
+{% extends 'blog/base.html' %}
+{% block blog_con %}
+
+<title>
+    ویرایش وبلاگ
+</title>
+
+<form method="POST" enctype="multipart/form-data" class="max-w-6xl mx-auto p-8 bg-gradient-to-br from-[#0b1421] via-[#062441] to-[#041b2d] rounded-3xl shadow-2xl shadow-[#0bffff33] border border-[#0bffff33] backdrop-blur-sm" dir="rtl">
+    
+    {% csrf_token %}
+    
+    <!-- هدر لوکس -->
+    <div class="text-center mb-12 relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#0bffff22] to-transparent blur-xl"></div>
+        <h2 class="text-5xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent relative drop-shadow-[0_0_30px_rgba(11,255,255,0.6)]">
+            ویرایش بلاگ 
+        </h2>
+        <p class="text-[#0bffffaa] text-lg mt-4 font-medium">محتوای حرفه‌ای خود را خلق کنید</p>
+    </div>
+
+    <!-- ردیف افقی اول - اطلاعات اصلی -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- کارت عنوان -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                    <span class="text-[#062441] font-bold">📝</span>
+                </div>
+                <h3 class="text-lg font-black text-white">عنوان بلاگ</h3>
+            </div>
+            <input type="text" name="title" required value="{{ blog.title }}"
+                   class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all"
+                   placeholder="عنوان جذاب...">
+        </div>
+
+        <!-- کارت دسته‌بندی -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                    <span class="text-[#062441] font-bold">📂</span>
+                </div>
+                <h3 class="text-lg font-black text-white">دسته‌بندی</h3>
+            </div>
+            <select name="category_id" 
+                    class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none appearance-none">
+                {% for category in categorys %}
+                    <option  value="{{ category.id }}" {% if blog.category.id == category.id %}selected{% endif %} class="bg-[#0b1421]">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- کارت زمان مطالعه -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                    <span class="text-[#062441] font-bold">⏱</span>
+                </div>
+                <h3 class="text-lg font-black text-white">زمان مطالعه</h3>
+            </div>
+            <input type="number" name="time_read" value="{{ blog.time_red }}"
+                   class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] font-medium focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all"
+                   placeholder="دقیقه">
+        </div>
+    </div>
+
+    <!-- ردیف افقی دوم - تصویر و خلاصه -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- کارت تصویر شاخص -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                    <span class="text-[#062441] font-bold">🖼</span>
+                </div>
+                <h3 class="text-lg font-black text-white">تصویر شاخص</h3>
+            </div>
+            <div class="border-2 border-dashed border-[#0bffff44] rounded-xl p-4 text-center hover:border-[#0bffff] transition-colors cursor-pointer">
+                <label for="image-upload" class="cursor-pointer block">
+                    <div class="text-[#0bffffaa] mb-2">
+                    {% if blog.image %}
+                    <center>
+                        <img src="{{ blog.image.url }}" alt="تصویر فعلی" class="mt-4 rounded-lg w-40 border border-[#0bffff44]">
+                        <input type="file" name="image" value="{{ blog.image.url }}" accept="image/*" class="hidden" id="image-upload">
+                    </center>
+                    {% else %}
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <input type="file" name="image" accept="image/*" class="hidden" id="image-upload" required>
+                    {% endif %}
+
+                    </div>
+                    <span class="text-[#0bffff] font-medium">آپلود تصویر</span>
+                    <span class="text-[#0bffffaa] text-sm block mt-1">PNG, JPG, GIF</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- کارت خلاصه -->
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                    <span class="text-[#062441] font-bold">📄</span>
+                </div>
+                <h3 class="text-lg font-black text-white">خلاصه </h3>
+            </div>
+            <textarea name="short_des" rows="4" required
+                      class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-xl px-4 py-3 text-white placeholder-[#0bffff66] font-medium resize-none focus:border-[#0bffff] focus:shadow-[0_0_15px_rgba(11,255,255,0.3)] outline-none transition-all"
+                      placeholder="توصیحات کوتاه بلاگ">{{ blog.short_des }}</textarea>
+        </div>
+    </div>
+
+    <div id="content-container" class="space-y-6 mb-8">
+        {% for content in contents %}
+            <div class="content-item bg-gradient-to-br from-[#0b142188] to-[#06244188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm">
+                <input type="hidden" name="content_ids[]" value="{{ content.id }}">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                            <span class="text-[#062441] font-bold text-sm">{{ forloop.counter }}</span>
+                        </div>
+                        <h4 class="text-lg font-black text-white">بخش محتوا</h4>
+                    </div>
+                    <button type="button" class="remove-content-btn w-8 h-8 bg-[#0b1421aa] hover:bg-[#ff555533] text-[#0bffffaa] hover:text-[#ff5555] rounded-lg flex items-center justify-center border border-[#0bffff33] hover:border-[#ff5555] transition-all duration-300">
+                        ✕
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[#0bffffdd] text-sm font-medium mb-2">عنوان بخش</label>
+                        <input type="text" name="content_titles[]" required value="{{ content.title }}"
+                            class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-lg px-3 py-2 text-white placeholder-[#0bffff66] text-sm focus:border-[#0bffff] outline-none transition-all"
+                            placeholder="عنوان این بخش...">
+                    </div>
+
+                    <div>
+                        <label class="block text-[#0bffffdd] text-sm font-medium mb-2">تصویر بخش</label>
+                        <input type="file" name="content_images[]" accept="image/*"
+                            class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-lg px-3 py-2 text-[#0bffffdd] text-sm file:bg-[#0bffff33] file:border-0 file:rounded file:px-3 file:py-1 file:text-[#0bffff] file:text-sm file:mr-2 focus:border-[#0bffff] outline-none">
+                        {% if content.image %}
+                            <img src="{{ content.image.url }}" alt="تصویر بخش" class="mt-2 w-32 rounded border border-[#0bffff33]">
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <label class="block text-[#0bffffdd] text-sm font-medium mb-2">محتوای اصلی</label>
+                    <textarea name="content_bodies[]" required rows="3"
+                        class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-lg px-3 py-2 text-white placeholder-[#0bffff66] text-sm resize-none focus:border-[#0bffff] outline-none transition-all"
+                        placeholder="محتوای این بخش را بنویسید...">{{ content.content }}</textarea>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- ✅ دکمه افزودن بخش جدید -->
+    <div class="mb-10">
+        <button type="button" id="add-content-btn"
+            class="w-full lg:w-auto px-6 py-3 bg-[#0bffff33] hover:bg-[#0bffff44] text-[#0bffff] font-bold rounded-xl border border-[#0bffff66] transition-all">
+            ➕ افزودن بخش جدید
+        </button>
+    </div>
+
+
+    <!-- دکمه ارسال -->
+    <div class="flex gap-4">
+        <button type="button" class="flex-1 py-4 bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b44] text-[#ff6b6b] font-bold rounded-2xl transition-all duration-300 hover:border-[#ff6b6b] hover:shadow-[0_0_20px_rgba(255,107,107,0.3)]">
+            انصراف
+        </button>
+        <button type="submit" 
+                class="flex-1 py-4 bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffff] text-[#062441] font-black text-lg rounded-2xl shadow-2xl shadow-[#0bffff66] transition-all duration-500 hover:shadow-[0_0_40px_rgba(11,255,255,0.8)] hover:scale-[1.02]">
+            🚀 انتشار بلاگ
+        </button>
+    </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const contentContainer = document.getElementById('content-container');
+    const addContentBtn = document.getElementById('add-content-btn');
+
+    function updateSectionNumbers() {
+        const items = contentContainer.querySelectorAll('.content-item');
+        items.forEach((item, index) => {
+            const span = item.querySelector('span');
+            if (span) span.textContent = index + 1;
+        });
+    }
+
+    function createContentSection(index) {
+        const section = document.createElement('div');
+        section.className = 'content-item bg-gradient-to-br from-[#0b142188] to-[#06244188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg backdrop-blur-sm mb-6';
+
+        section.innerHTML = `
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-lg flex items-center justify-center">
+                        <span class="text-[#062441] font-bold text-sm">${index + 1}</span>
+                    </div>
+                    <h4 class="text-lg font-black text-white">بخش محتوا</h4>
+                </div>
+                <button type="button" class="remove-content-btn w-8 h-8 bg-[#0b1421aa] hover:bg-[#ff555533] text-[#0bffffaa] hover:text-[#ff5555] rounded-lg flex items-center justify-center border border-[#0bffff33] hover:border-[#ff5555] transition-all duration-300">
+                    ✕
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[#0bffffdd] text-sm font-medium mb-2">عنوان بخش</label>
+                    <input type="text" name="content_titles[]" required
+                           class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-lg px-3 py-2 text-white placeholder-[#0bffff66] text-sm focus:border-[#0bffff] outline-none transition-all"
+                           placeholder="عنوان این بخش...">
+                </div>
+                <div>
+                    <label class="block text-[#0bffffdd] text-sm font-medium mb-2">تصویر بخش</label>
+                    <input type="file" name="content_images[]" accept="image/*"
+                           class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-lg px-3 py-2 text-[#0bffffdd] text-sm file:bg-[#0bffff33] file:border-0 file:rounded file:px-3 file:py-1 file:text-[#0bffff] file:text-sm file:mr-2 focus:border-[#0bffff] outline-none">
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label class="block text-[#0bffffdd] text-sm font-medium mb-2">محتوای اصلی</label>
+                <textarea name="content_bodies[]" required rows="3"
+                          class="w-full bg-[#0b1421aa] border border-[#0bffff44] rounded-lg px-3 py-2 text-white placeholder-[#0bffff66] text-sm resize-none focus:border-[#0bffff] outline-none transition-all"
+                          placeholder="محتوای این بخش را بنویسید..."></textarea>
+            </div>
+        `;
+
+        // حذف کردن بخش
+        section.querySelector('.remove-content-btn').addEventListener('click', () => {
+            section.remove();
+            updateSectionNumbers();
+        });
+
+        return section;
+    }
+
+    // دکمه افزودن
+    addContentBtn.addEventListener('click', function () {
+        const newIndex = contentContainer.children.length;
+        const newSection = createContentSection(newIndex);
+        contentContainer.appendChild(newSection);
+        updateSectionNumbers();
+    });
+
+    // دکمه حذف برای بخش‌های موجود
+    document.querySelectorAll('.remove-content-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            btn.closest('.content-item').remove();
+            updateSectionNumbers();
+        });
+    });
+
+    updateSectionNumbers();
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,398 @@
+{% extends 'shop_manage_order/base.html' %}
+{% block shop_ord %}
+{% load humanize %}
+<title>
+   مدیریت سفارشات    
+</title>
+
+
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:p-5">
+ 
+  <a href="{% url 'ord:archive_list' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-layout-text-sidebar text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست آرشیو سفارش</p>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+  <a href="{% url 'ord:orders_list' shop_id %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-bag text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لیست سفارشات</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_paid_reservs }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+  <a href="{% url 'ord:list_filtered_orders' shop_id 'sended' %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-bag-check text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">سفارشات ارسال شده</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_send_reservs }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+  <a href="{% url 'ord:list_filtered_orders' shop_id 'unsended' %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-bag-dash text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">ارسال نشده</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_unsend_reservs }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+  <a href="{% url 'ord:list_filtered_orders' shop_id 'canceled' %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-bag-x text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">لغو ارسال شده</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_canceled_reservs }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+
+  <a href="{% url 'ord:list_filtered_orders' shop_id 'today' %}" class="relative group bg-gradient-to-br from-[#062441] via-[#0b1421] to-[#0d4370] rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center">
+    <i class="bi bi-calendar2-week text-5xl text-[#b0ffd1] mb-3 transition-all duration-300 group-hover:text-[#ffffff]"></i>
+    <p class="font-bold text-lg text-white group-hover:text-[#b0ffd1]">سفارشات امروز</p>
+    <span class="absolute top-3 right-3 bg-[#0bffff44] text-[#0b1421] px-2 py-1 rounded-full text-xs font-bold">{{ count_shop_today_reservs }}</span>
+    <button class="mt-4 bg-[#0bffffcc] text-[#0b1421] font-bold px-4 py-2 rounded hover:bg-[#0bffffee] transition">مشاهده</button>
+  </a>
+</div>
+ 
+
+  
+
+<form action="{% url 'ord:filter_reservs' shop_id %}" method="GET" class="w-full bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0b1421] p-6 rounded-2xl shadow-2xl shadow-[#b0bfd1]/40 mb-8">
+  <h2 class="text-2xl font-bold text-white drop-shadow-lg mb-6 text-center">
+    🎯 فیلتر سفارشات
+  </h2>
+
+  <!-- گرید فیلترها -->
+  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <!-- استان -->
+    <select name="filter_by_province"
+      class="w-full p-3 rounded-xl bg-gradient-to-b from-[#062441] to-[#0b1421] ring-1 ring-[#0bffffcc] focus:ring-4 text-white">
+      <option value="">استان</option>
+      {% for i in province %}
+      <option value="{{ i.id }}">{{ i.name }}</option>
+      {% endfor %}
+    </select>
+
+    <!-- شهر -->
+    <select name="filter_by_citys"
+      class="w-full p-3 rounded-xl bg-gradient-to-b from-[#062441] to-[#0b1421] ring-1 ring-[#0bffffcc] focus:ring-4 text-white">
+      <option value="">انتخاب شهر</option>
+      {% for i in citys %}
+        <option value="{{ i.id }}">{{ i.name }}</option>
+      {% endfor %}
+    </select>
+
+
+    <!-- مرتب‌سازی -->
+    <!-- <select name="filter_by_order"
+      class="w-full p-3 rounded-xl bg-gradient-to-b from-[#062441] to-[#0b1421] ring-1 ring-[#0bffffcc] focus:ring-4 text-white">
+      <option value="">مرتب سازی</option>
+      <option value="new">جدیدترین</option>
+      <option value="old">قدیمی‌ترین</option>
+      <option value="vol_price">بیشترین قیمت</option>
+      <option value="prod_qty">بیشترین محصول</option>
+    </select>  -->
+  </div>
+
+  <!-- دکمه‌ها -->
+  <div class="flex justify-center gap-4 mt-6">
+    <button
+      type="submit"
+      class="px-6 py-3 rounded-xl bg-[#b0bfd1] text-[#0b1421] font-bold hover:bg-white hover:shadow-lg transition">
+      اعمال فیلتر
+    </button>
+    <button
+      class="px-6 py-3 rounded-xl border border-[#b0bfd1] text-white font-bold hover:bg-[#0b1421]/70 transition">
+      پاک کردن
+    </button>
+  </div>
+</form>
+
+ 
+  
+<div class="p-6 rounded-2xl bg-gradient-to-r from-[#062441] via-[#0b1421] to-[#0b1421]" dir="ltr">
+  <table class="w-full text-left border-separate border-spacing-y-3 hidden md:table">
+    <tbody>
+    {% for i in orders %}
+        <div id="modal-{{ i.id }}" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" dir="rtl">
+          <div class="max-w-2xl w-full mx-4 bg-[#071927] rounded-2xl shadow-lg border border-[#0bffffcc] p-6 text-white">
+          <button class="close-modal absolute top-4 end-4 text-white text-2xl">&times;</button>
+
+            <!-- header مودال -->
+            <div class="flex justify-between items-center mb-6">
+              <div class="text-lg font-semibold text-[#0bffffcc] select-all cursor-pointer" title="کپی کد رهگیری" onclick="navigator.clipboard.writeText('{{ reserv.tracking_code }}')">
+                کد رهگیری: <span>{{ reserv.tracking_code }}</span>
+              </div>
+              <button onclick="navigator.clipboard.writeText('{{ reserv.tracking_code }}')" class="text-sm bg-[#0bffffcc] text-[#0b1421] px-4 py-1 rounded-lg hover:bg-[#0bffffee] transition">کپی</button>
+            </div>
+
+            <!-- بخش محصول -->
+            <div class="flex gap-6 items-center mb-8">
+              <a href="{% url 'product_detail' i.product.id i.product.slug %}">
+                <img src="{{ i.product.image.url }}" alt="{{ i.product.name }}" class="w-24 h-24 rounded-2xl object-cover border border-[#0bffffcc] shadow-md" />
+              </a>
+              <div class="flex flex-col justify-center space-y-1 flex-grow">
+                <h3 class="text-xl font-bold text-[#0bffffcc]"><a href="{% url 'product_detail' i.product.id i.product.slug %}">{{ i.product.name }}</a></h3>
+                <p>تعداد: <span class="font-semibold">{{ i.quantity }}X</span></p>
+                <p>قیمت کل: <span class="font-semibold">{{ i.totalprice|intcomma  }} تومان</span></p>
+              </div>
+            </div>
+
+            <hr class="border-[#0bffff44] mb-6">
+
+            <!-- اطلاعات گیرنده و وضعیت سفارش -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 text-[#84a9bb]">
+              <div class="space-y-2">
+                <h4 class="text-lg font-bold text-[#0bffffcc] mb-3">اطلاعات گیرنده</h4>
+                <p><span class="font-semibold text-white">نام و نام خانوادگی:</span> {{ i.order.name }}, {{ i.order.lastname }}</p>
+                <p><span class="font-semibold text-white">شماره تماس:</span>{{ i.order.phone }}</p>
+                <p><span class="font-semibold text-white">استان / شهر:</span> {{ i.order.province }} / {{ i.order.city }}</p>
+                <p><span class="font-semibold text-white">آدرس:</span>{{ i.order.address }}</p>
+                <p><span class="font-semibold text-white">تاریخ:</span>{{ i.order.created_at }}</p>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-lg font-bold text-[#0bffffcc] mb-3">وضعیت سفارش</h4>
+                <p><span class="font-semibold text-white">ارسال شده:</span> {{ reserv.delivered|yesno:"بله,خیر" }}</p>
+                <p><span class="font-semibold text-white">وضیعت سفارش:</span> {{ reserv.staff|default:"نامشخص" }}</p>
+
+                {% if i.canceled %}
+                <p class="text-red-500 font-bold">لغو شده  </p>
+                {% endif %}
+              </div>
+            </div>
+
+            <hr class="border-[#0bffff44] mb-6">
+
+            <!-- فرم ویرایش -->
+            <form action="{% url 'ord:update_reserv_detail' shop_id i.id %}" method="POST" class="space-y-6 text-[#0b1421] grid grid-cols-4 gap-2">
+              {% csrf_token %}
+              <!-- <div class="flex flex-col md:flex-row gap-2 items-center">
+              <div class="">
+                  <label for="" class="block mb-2 font-semibold text-[#0bffffcc] select-none">کد رهگیری</label>
+                  <input type="text" name="tracking_code" value="{{ reserv.tracking_code }}" placeholder="کد رهگیری"
+                  class="w-full rounded-xl border-2 border-[#0bffffcc] bg-[#071927] px-4 py-3 text-white focus:outline-none focus:ring-4 focus:ring-[#0bffffcc] transition duration-300" />               
+              </div>
+              </div> -->
+                <select name="preparation" class="p-3 rounded-xl bg-gradient-to-b from-[#062441] to-[#0b1421] ring-1 ring-[#0bffffcc] focus:ring-4 text-white">
+                  <option value="True" {% if i.preparation == True %} selected {% endif %}>اماده شده</option>
+                  <option value="False" {% if i.preparation == False %} selected {% endif %}>اماده نشده</option>
+                </select>
+              
+                <select name="sent_to_post" class="p-3 rounded-xl bg-gradient-to-b from-[#062441] to-[#0b1421] ring-1 ring-[#0bffffcc] focus:ring-4 text-white">
+                  <option value="True" {% if i.sent_to_post == True %} selected {% endif %}>به پست ارسال شده</option>
+                  <option value="False" {% if i.sent_to_post == False %} selected {% endif %}>ارسال نشده</option>
+                </select>
+
+                <select name="post_delivery" class="p-3 rounded-xl bg-gradient-to-b from-[#062441] to-[#0b1421] ring-1 ring-[#0bffffcc] focus:ring-4 text-white">
+                  <option value="True" {% if i.post_delivery == True %} selected {% endif %}>تحویل پست</option>
+                  <option value="False" {% if i.post_delivery == False %} selected {% endif %}>تحویل پست نشده</option>
+                </select>
+              
+                <select name="delivered" class="p-3 rounded-xl bg-gradient-to-b from-[#062441] to-[#0b1421] ring-1 ring-[#0bffffcc] focus:ring-4 text-white">
+                  <option value="False" {% if i.delivered == False %} selected {% endif %}>دریافت نشده</option>
+                  <option value="True" {% if i.delivered == True %} selected {% endif %}>دریافت شده</option>
+                  
+                </select>
+              
+
+              <div class="flex gap-4 justify-end mt-4">
+                <a href="{% url 'res:cancel_order' i.id %}" class="bg-red-500 text-white font-bold rounded-xl px-6 py-3 hover:bg-red-700 transition shadow-md">لغو ارسال سفارش</a>
+                <button type="submit" class="bg-[#0bffffcc] text-[#0b1421] font-bold rounded-xl px-6 py-3 hover:bg-[#0bffffee] transition shadow-md">ثبت تغییرات</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+
+
+  
+
+
+
+
+<div class="min-h-screen bg-gradient-to-br from-[#0b1421] via-[#0b1421] to-[#041b2d] p-6">
+    
+    <!-- هدر لیست سفارشات -->
+    <div class="max-w-7xl mx-auto mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-2xl flex items-center justify-center">
+                    <i class="bi bi-bag-check text-2xl text-[#062441]"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black bg-gradient-to-r from-[#0bffff] via-[#0bffffee] to-[#0bffffcc] bg-clip-text text-transparent">
+                        مدیریت سفارشات
+                    </h1>
+                    <p class="text-[#0bffffaa] mt-2">پیگیری و مدیریت تمام سفارشات فروشگاه</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button class="bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] px-6 py-3 rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_20px_rgba(11,255,255,0.3)] transition-all duration-300 font-bold">
+                    <i class="bi bi-filter-left mr-2"></i>
+                    فیلترها
+                </button>
+                <a href="{% url 'ord:export_orders_for_seller' shop_id %}" class="bg-gradient-to-r from-[#4ecdc433] to-[#4ecdc411] text-center border border-[#4ecdc444] text-[#4ecdc4] px-6 py-3 rounded-xl hover:border-[#4ecdc4] hover:shadow-[0_0_20px_rgba(78,205,196,0.3)] transition-all duration-300 font-bold">
+                    <i class="bi bi-download mr-2"></i>
+                    خروجی Excel
+                </a>
+            </div>
+        </div>
+    </div> 
+
+    <!-- جدول سفارشات -->
+    <div class="max-w-7xl mx-auto">
+        <div class="bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-3xl border border-[#0bffff33] shadow-2xl shadow-[#0bffff11] backdrop-blur-sm overflow-hidden">
+            
+            <!-- هدر جدول -->
+            <div class="p-6 border-b border-[#0bffff33]">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-black text-white flex items-center gap-3">
+                        <i class="bi bi-list-ul text-[#0bffff]"></i>
+                        لیست سفارشات
+                    </h3>  
+                </div>
+            </div>
+
+            <!-- لیست سفارشات -->
+            <div class="p-6 space-y-6">
+              {% for i in orders %}
+                <div class="group bg-gradient-to-bl from-[#06244188] to-[#0b142188] rounded-2xl p-6 border border-[#0bffff33] shadow-lg shadow-[#0bffff11] backdrop-blur-sm hover:border-[#0bffff] hover:shadow-[0_0_30px_rgba(11,255,255,0.3)] transition-all duration-500">
+
+                    <!-- هدر کارت -->
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="relative">
+                            <img src="{{ i.product.image.url }}" class="w-20 h-20 rounded-2xl object-cover border-2 border-[#0bffff33] shadow-lg" />
+                            <div class="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-[#0bffff] to-[#0bffffee] rounded-full flex items-center justify-center">
+                                <span class="text-[#062441] text-xs font-black">{{ i.quantity }}</span>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-black text-white group-hover:text-[#0bffff] transition-colors">
+                                {{ i.order.name }} {{ i.order.lastname }}
+                            </h4>
+                            <p class="text-[#0bffffaa] text-sm mt-1">{{ i.product.name }}</p>
+                            <div class="flex items-center gap-4 mt-2">
+                                <span class="text-white font-bold text-lg">{{ i.totalprice|intcomma  }} <span class="text-[#0bffffaa] text-sm">تومان</span></span>
+                                <span class="text-[#0bffffaa] text-sm">•</span>
+                                <span class="text-[#0bffffaa] text-sm">{{ i.order.province.name }}/{{ i.order.city.name }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- اطلاعات سفارش -->
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133]">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff33] to-[#0bffff55] rounded-lg flex items-center justify-center">
+                                <i class="bi bi-box text-sm text-[#0bffff]"></i>
+                            </div>
+                            <div>
+                                <p class="text-[#0bffffaa] text-xs">تعداد</p>
+                                <p class="text-white font-bold">{{ i.quantity }} عدد</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-[#0b142133]">
+                            <div class="w-8 h-8 bg-gradient-to-br from-[#0bffff33] to-[#0bffff55] rounded-lg flex items-center justify-center">
+                                <i class="bi bi-cash text-sm text-[#0bffff]"></i>
+                            </div>
+                            <div>
+                                <p class="text-[#0bffffaa] text-xs">قیمت واحد</p>
+                                <p class="text-white font-bold">{{ i.product.price|intcomma  }} تومان</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- وضعیت‌های سفارش -->
+                    <div class="flex items-center gap-3 mb-4">
+                        {% if not i.is_sent and not i.delivered and not i.canceled %}
+                        <span class="bg-gradient-to-r from-[#ffa72633] to-[#ffa72611] border border-[#ffa72633] text-[#ffa726] px-3 py-1 rounded-full text-xs font-bold">
+                            📦 جدید
+                        </span>
+                        {% endif %}
+                        
+                        {% if i.is_sent and not i.delivered %}
+                        <span class="bg-gradient-to-r from-[#4ecdc433] to-[#4ecdc411] border border-[#4ecdc433] text-[#4ecdc4] px-3 py-1 rounded-full text-xs font-bold">
+                            🚚 ارسال شده
+                        </span>
+                        {% endif %}
+                        
+                        {% if i.delivered %}
+                        <span class="bg-gradient-to-r from-[#66bb6a33] to-[#66bb6a11] border border-[#66bb6a33] text-[#66bb6a] px-3 py-1 rounded-full text-xs font-bold">
+                            ✅ تحویل شده
+                        </span>
+                        {% endif %}
+                        
+                        {% if i.canceled or i.canceled %}
+                        <span class="bg-gradient-to-r from-[#ff6b6b33] to-[#ff6b6b11] border border-[#ff6b6b33] text-[#ff6b6b] px-3 py-1 rounded-full text-xs font-bold">
+                            ❌ لغو شده
+                        </span>
+                        {% endif %}
+                        
+                        {% if i.tracking_code %}
+                        <span class="bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff33] text-[#0bffff] px-3 py-1 rounded-full text-xs font-bold">
+                            🔗 {{ i.tracking_code|truncatechars:8 }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- اقدامات -->
+                    <div class="flex items-center gap-3 pt-4 border-t border-[#0bffff33]">
+                        <a href="javascript:void(0)" data-modal-target="modal-{{ i.id }}" class="flex-1 text-center py-2 bg-gradient-to-r from-[#0bffff33] to-[#0bffff11] border border-[#0bffff44] text-[#0bffff] rounded-xl hover:border-[#0bffff] hover:shadow-[0_0_15px_rgba(11,255,255,0.3)] transition-all duration-300 font-medium text-sm">
+                            <i class="bi bi-eye ml-1"></i>
+                            جزئیات
+                        </a>
+                    </div>
+
+                    <!-- اطلاعات کوچک -->
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-[#0bffff33]">
+                        <span class="text-[#0bffffaa] text-xs">#{{ i.id }}</span>
+                        <span class="text-[#0bffffaa] text-xs">{{ i.order.created_at|date:"Y/m/d - H:i" }}</span>
+                    </div>
+                </div>
+              {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ 
+<script>
+document.querySelectorAll('a[data-modal-target]').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const modalId = btn.getAttribute(
+      'data-modal-target'
+    );
+    const modal = document.getElementById(
+      modalId);
+    if(modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex'); 
+    }
+  });
+});
+
+document.querySelectorAll('.modal').forEach(modal => {
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  });
+});
+
+document.querySelectorAll('.modal .close-modal').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const modal = btn.closest('.modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  });
+});
+</script>
+ 
+
+{% endblock %}
